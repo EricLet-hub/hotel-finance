@@ -309,7 +309,7 @@ hr.div{border:none;border-top:1px solid var(--border);margin:12px 0;}
           <div class="kpi-card k-fdc">
             <div class="kpi-label">TRI — FDC Exploitation</div>
             <div class="kpi-value n-fdc" id="d-tri-fdc">—</div>
-            <div class="kpi-sub">VAN 8% : <span id="d-van-fdc">—</span></div>
+            <div class="kpi-sub">VAN 8% : <span id="d-van-fdc">—</span> · calculé sur flux tréso</div>
             <span class="badge" id="d-badge-fdc">—</span>
           </div>
           <div class="kpi-card k-green">
@@ -774,6 +774,14 @@ hr.div{border:none;border-top:1px solid var(--border);margin:12px 0;}
           <div class="panel">
             <div class="panel-header"><span class="dot dot-fdc"></span><h3>TRI &amp; KPI FDC</h3></div>
             <div class="panel-body">
+              <div style="margin-bottom:12px;padding:10px 12px;background:rgba(224,168,76,0.06);border:1px solid rgba(224,168,76,0.25);border-radius:3px;border-left:3px solid var(--fdc);">
+                <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--fdc);margin-bottom:4px;">R&eacute;sultat comptable vs TRI</div>
+                <div style="font-size:11px;color:var(--text-dim);line-height:1.6;">
+                  Le <strong style="color:var(--text)">r&eacute;sultat net est n&eacute;gatif</strong> en d&eacute;but car il inclut l&apos;amortissement FF&amp;E (~429k€/an), charge comptable <em>sans sortie de tr&eacute;sorerie</em>.<br>
+                  Le <strong style="color:var(--text)">TRI se calcule sur les flux r&eacute;els</strong> (EBITDA &minus; remb. dette &minus; IS) — positifs d&egrave;s an 2.<br>
+                  La <strong style="color:var(--text)">valeur terminale</strong> &agrave; la cession tire fortement le TRI vers le haut.
+                </div>
+              </div>
               <div class="tri-block">
                 <div class="tri-big-card">
                   <div class="tri-lbl">TRI FDC Exploitation</div>
@@ -787,7 +795,7 @@ hr.div{border:none;border-top:1px solid var(--border);margin:12px 0;}
           </div>
         </div>
         <div class="panel" style="margin-bottom:16px;">
-          <div class="panel-header"><span class="dot dot-fdc"></span><h3>Business Plan FDC — <span id="fdc-bp-years"></span></h3></div>
+          <div class="panel-header"><span class="dot dot-fdc"></span><h3>Business Plan FDC — <span id="fdc-bp-years"></span></h3><span style="margin-left:auto;font-size:10px;color:var(--text-muted);">⚠ Résultat net ≠ trésorerie (amort. FF&amp;E non-cash)</span></div>
           <div class="panel-body">
             <div class="tbl-scroll"><table class="fin-table" id="fdc-bp-table"></table></div>
           </div>
