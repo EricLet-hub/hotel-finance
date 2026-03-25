@@ -29,7 +29,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 .sidebar-logo{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:#c9a84c;letter-spacing:1px;line-height:1.1;}
 .sidebar-logo span{font-style:italic;}
 .sidebar-sub{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#5a607a;margin-top:4px;}
-.sidebar-section{padding:12px 16px 6px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#5a607a;}
+.sidebar-section{padding:12px 16px 6px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#5a607a;}
 .project-list{flex:1;overflow-y:auto;padding:4px 8px;}
 .project-item{padding:10px 10px;border-radius:3px;cursor:pointer;margin-bottom:3px;border:1px solid transparent;transition:all 0.15s;position:relative;}
 .project-item:hover{background:rgba(255,255,255,0.07);border-color:#3a3d4e;}
@@ -54,7 +54,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 
 /* ── TOP NAV ── */
 .topnav{height:48px;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:0;flex-shrink:0;background:var(--bg2);box-shadow:0 1px 3px rgba(0,0,0,0.06);}
-.nav-tab{padding:0 16px;height:100%;display:flex;align-items:center;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s;margin-bottom:-1px;}
+.nav-tab{padding:0 16px;height:100%;display:flex;align-items:center;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1.2px;text-transform:uppercase;color:var(--text-muted);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s;margin-bottom:-1px;}
 .nav-tab:hover{color:var(--text-dim);}
 .nav-tab.active{color:var(--gold);border-bottom-color:var(--gold);}
 .topnav-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
@@ -76,7 +76,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 .config-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
 .panel{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden;}
 .panel-header{padding:11px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;}
-.panel-header h3{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;font-weight:400;}
+.panel-header h3{font-family:'DM Mono',monospace;font-size:11.5px;letter-spacing:1.5px;text-transform:uppercase;font-weight:500;}
 .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
 .dot-gold{background:var(--gold);}
 .dot-sci{background:var(--sci);}
@@ -110,14 +110,14 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 .ramp-badge:hover{color:var(--gold);border-color:var(--gold-dim);}
 
 /* ── DASHBOARD PAGE ── */
-.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
+.kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:16px;}
 .kpi-card{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:14px 16px;position:relative;overflow:hidden;}
 .kpi-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;opacity:0.6;}
 .kpi-card.k-sci::after{background:var(--sci);}
 .kpi-card.k-fdc::after{background:var(--fdc);}
 .kpi-card.k-green::after{background:var(--green);}
 .kpi-card.k-amber::after{background:var(--amber);}
-.kpi-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;}
+.kpi-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;}
 .kpi-value{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:300;line-height:1;margin-bottom:4px;}
 .kpi-sub{font-size:10px;color:var(--text-dim);}
 .badge{display:inline-block;padding:2px 8px;border-radius:2px;font-family:'DM Mono',monospace;font-size:10px;margin-top:5px;}
@@ -152,7 +152,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;heigh
 
 /* ── TABS ── */
 .tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:14px;}
-.tab{padding:8px 14px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s;margin-bottom:-1px;}
+.tab{padding:8px 14px;font-family:'DM Mono',monospace;font-size:10.5px;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s;margin-bottom:-1px;}
 .tab:hover{color:var(--text-dim);}
 .tab.active{color:var(--gold);border-bottom-color:var(--gold);}
 .tab-pane{display:none;}
@@ -160,10 +160,10 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;heigh
 
 /* ── FINANCIAL TABLES ── */
 .fin-table{width:100%;border-collapse:collapse;font-size:11px;}
-.fin-table th{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);padding:5px 7px;text-align:right;border-bottom:1px solid var(--border);white-space:nowrap;}
+.fin-table th{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.8px;text-transform:uppercase;color:var(--text-muted);padding:6px 7px;text-align:right;border-bottom:1px solid var(--border);white-space:nowrap;}
 .fin-table th:first-child{text-align:left;}
-.fin-table td{padding:4px 7px;text-align:right;font-family:'DM Mono',monospace;font-size:11px;border-bottom:1px solid rgba(39,44,58,0.4);color:var(--text-dim);white-space:nowrap;}
-.fin-table td:first-child{text-align:left;color:var(--text);font-family:'DM Sans',sans-serif;font-size:11px;max-width:180px;}
+.fin-table td{padding:5px 7px;text-align:right;font-family:'DM Mono',monospace;font-size:11.5px;border-bottom:1px solid rgba(39,44,58,0.4);color:var(--text-dim);white-space:nowrap;}
+.fin-table td:first-child{text-align:left;color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;max-width:200px;}
 .fin-table tr:hover td{background:rgba(255,255,255,0.012);}
 .fin-table tr.total td{border-top:1px solid var(--border2);font-weight:500;color:var(--text);}
 .fin-table tr.section td{padding-top:9px;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);font-family:'DM Mono',monospace;border-bottom:none;}
@@ -175,6 +175,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;heigh
 .n-neg{color:var(--red)!important;}
 .n-gold{color:var(--gold)!important;}
 .n-sci{color:var(--sci)!important;}
+.n-amber{color:var(--amber)!important;}
 .n-fdc{color:var(--fdc)!important;}
 .n-dim{color:var(--text-dim)!important;}
 .tbl-scroll{overflow-x:auto;}
@@ -228,7 +229,7 @@ hr.div{border:none;border-top:1px solid var(--border);margin:12px 0;}
 .modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;}
 
 /* ── SECTION HEADER ── */
-.sec-hdr{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--text-muted);padding-bottom:8px;border-bottom:1px solid var(--border);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.sec-hdr{font-family:'DM Mono',monospace;font-size:10.5px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);padding-bottom:8px;border-bottom:1px solid var(--border);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
 .sec-hdr .line{flex:1;height:1px;background:var(--border);}
 
 /* ── EMPTY STATE ── */
@@ -246,7 +247,7 @@ hr.div{border:none;border-top:1px solid var(--border);margin:12px 0;}
 @media(max-width:900px){
   .sidebar{width:200px;}
   .dual{grid-template-columns:1fr;}
-  .kpi-row{grid-template-columns:1fr 1fr;}
+  .kpi-row{grid-template-columns:1fr 1fr 1fr;}
   .config-grid{grid-template-columns:1fr 1fr;}
   .loyer-cibles{grid-template-columns:1fr 1fr 1fr;}
 }
@@ -323,6 +324,12 @@ hr.div{border:none;border-top:1px solid var(--border);margin:12px 0;}
             <div class="kpi-value" id="d-poids">—</div>
             <div class="kpi-sub">EBITDA an 4 : <span id="d-ebitda4">—</span></div>
             <span class="badge" id="d-badge-poids">—</span>
+          </div>
+          <div class="kpi-card" style="border-top:3px solid var(--red);grid-column:span 1">
+            <div class="kpi-label">Capitaux Propres FDC</div>
+            <div class="kpi-value" id="d-cp-fdc" style="font-size:26px;">—</div>
+            <div class="kpi-sub">An 1 : <span id="d-cp-fdc-an1">—</span> · Retour positif : <span id="d-cp-fdc-pos">—</span></div>
+            <span class="badge" id="d-badge-cp-fdc">—</span>
           </div>
         </div>
 
@@ -567,6 +574,66 @@ hr.div{border:none;border-top:1px solid var(--border);margin:12px 0;}
             </div>
           </div>
         </div>
+        <!-- CHARGES FDC VARIABILISÉES -->
+        <div style="margin-bottom:16px;">
+          <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--fdc);margin-bottom:8px;padding-left:2px;display:flex;align-items:center;gap:10px;">Charges d&apos;exploitation FDC &mdash; Taux param&eacute;trables <span style="flex:1;height:1px;background:rgba(201,168,76,0.2);"></span></div>
+          <div class="panel">
+            <div class="panel-header" style="border-left:2px solid var(--fdc);">
+              <span class="dot dot-fdc"></span><h3>Charges variables &amp; fixes (% du CA)</h3>
+              <span style="margin-left:auto;font-size:10px;color:var(--text-muted);">Appliqu&eacute;es sur toute la p&eacute;riode · modifiez pour adapter au projet</span>
+            </div>
+            <div class="panel-body">
+              <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;">
+                <div class="field">
+                  <label>Marchandises F&amp;B <span style="color:var(--text-muted);">(% CA F&amp;B)</span></label>
+                  <div class="input-wrap"><input type="number" id="c-taux-fb" oninput="updateTotaux()" value="30" step="0.5" min="0" max="100"><span class="unit">%</span></div>
+                  <div class="field-note">Coût matières PDJ + Resto</div>
+                </div>
+                <div class="field">
+                  <label>Masse salariale <span style="color:var(--text-muted);">(% CA total)</span></label>
+                  <div class="input-wrap"><input type="number" id="c-taux-salaires" oninput="updateTotaux()" value="30" step="0.5" min="0" max="100"><span class="unit">%</span></div>
+                  <div class="field-note">Charges comprises</div>
+                </div>
+                <div class="field">
+                  <label>Redevance franchiseur <span style="color:var(--text-muted);">(% CA)</span></label>
+                  <div class="input-wrap"><input type="number" id="c-taux-franchise" oninput="updateTotaux()" value="8" step="0.5" min="0" max="30"><span class="unit">%</span></div>
+                  <div class="field-note">Marque / r&eacute;seau</div>
+                </div>
+                <div class="field">
+                  <label>Commission agence <span style="color:var(--text-muted);">(% CA h&eacute;berg.)</span></label>
+                  <div class="input-wrap"><input type="number" id="c-taux-comm-agence" oninput="updateTotaux()" value="6" step="0.5" min="0" max="30"><span class="unit">%</span></div>
+                  <div class="field-note">OTA + TO</div>
+                </div>
+                <div class="field">
+                  <label>&Eacute;nergie <span style="color:var(--text-muted);">(% CA total)</span></label>
+                  <div class="input-wrap"><input type="number" id="c-taux-energie" oninput="updateTotaux()" value="1.3" step="0.1" min="0" max="10"><span class="unit">%</span></div>
+                  <div class="field-note">Fluides &amp; &eacute;lectricit&eacute;</div>
+                </div>
+                <div class="field">
+                  <label>Honoraires <span style="color:var(--text-muted);">(% CA total)</span></label>
+                  <div class="input-wrap"><input type="number" id="c-taux-honoraires" oninput="updateTotaux()" value="4.5" step="0.5" min="0" max="20"><span class="unit">%</span></div>
+                  <div class="field-note">Compta, juridique, RH</div>
+                </div>
+                <div class="field">
+                  <label>Redevance holding <span style="color:var(--text-muted);">(% CA total)</span></label>
+                  <div class="input-wrap"><input type="number" id="c-taux-holding" oninput="updateTotaux()" value="4" step="0.5" min="0" max="15"><span class="unit">%</span></div>
+                  <div class="field-note">Management fees</div>
+                </div>
+                <div class="field">
+                  <label>Autres charges <span style="color:var(--text-muted);">(% CA total)</span></label>
+                  <div class="input-wrap"><input type="number" id="c-taux-autres" oninput="updateTotaux()" value="9" step="0.5" min="0" max="30"><span class="unit">%</span></div>
+                  <div class="field-note">Assurances, entretien...</div>
+                </div>
+              </div>
+              <div style="margin-top:12px;padding:10px 12px;background:var(--bg3);border-radius:3px;border:1px solid var(--border);display:flex;gap:20px;flex-wrap:wrap;">
+                <div style="font-size:11px;color:var(--text-dim);">Total charges / CA (hors loyer) : <strong id="c-total-charges-pct" style="color:var(--text);">—</strong></div>
+                <div style="font-size:11px;color:var(--text-dim);">Marge GOP estim&eacute;e plateau : <strong id="c-gop-estim" style="color:var(--green);">—</strong></div>
+                <div style="font-size:11px;color:var(--text-muted);">IS : <span style="color:var(--text-dim);">25% (fixe)</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- MONTÉE EN CHARGE -->
         <div class="panel" style="margin-bottom:16px;">
           <div class="panel-header">
@@ -925,6 +992,16 @@ function defaultProject(nom, ville){
     anneeSortieSCI: 2037, methodeSortieSCI: 'loyer_multiple', multipleLoyer: 15, tauxCapiSCI: 5.5,
     anneeSortieFDC: 2037, methodeSortieFDC: 'ebitda_multiple', multipleFDC: 10,
     tauxVAN: 8,
+    // Charges FDC (% du CA sauf comm hebergement et FB)
+    tauxFB: 30,         // Marchandises F&B (% CA F&B)
+    tauxSalaires: 30,   // Masse salariale (% CA total)
+    tauxFranchise: 8,   // Redevance franchiseur (% CA total)
+    tauxCommAgence: 6,  // Commission agence (% CA hebergement)
+    tauxEnergie: 1.3,   // Energie (% CA total)
+    tauxHonoraires: 4.5,// Honoraires (% CA total)
+    tauxHolding: 4,     // Redevance holding (% CA total)
+    tauxAutres: 9,      // Autres charges (% CA total)
+    tauxIS: 25,         // Impot sur les societes (%)
   };
 }
 
@@ -1051,25 +1128,30 @@ function computeAll(p, loyerOverride){
   const bpFDC = annees.map((_,i)=>{
     const ca = computeCA(p, i);
     const loyer = loyers[i];
-    const fb = (ca.caPDJ+ca.caR)*0.30;
-    const sal = ca.ca*0.30;
-    const franch = ca.ca*0.08;
-    const comm = ca.caH*0.06;
-    const energie = ca.ca*0.013;
-    const honor = ca.ca*0.045;
-    const holding = ca.ca*0.04;
-    const autres = ca.ca*0.09;
+    const fb = (ca.caPDJ+ca.caR)*((p.tauxFB||30)/100);
+    const sal = ca.ca*((p.tauxSalaires||30)/100);
+    const franch = ca.ca*((p.tauxFranchise||8)/100);
+    const comm = ca.caH*((p.tauxCommAgence||6)/100);
+    const energie = ca.ca*((p.tauxEnergie||1.3)/100);
+    const honor = ca.ca*((p.tauxHonoraires||4.5)/100);
+    const holding = ca.ca*((p.tauxHolding||4)/100);
+    const autres = ca.ca*((p.tauxAutres||9)/100);
     const totalHorsLoyer = fb+sal+franch+comm+energie+honor+holding+autres;
     const gop = ca.ca - totalHorsLoyer;
     const ebitda = gop - loyer;
     const intDette = i<dFDC.length ? dFDC[i].interets : 0;
     const remb = i<dFDC.length ? dFDC[i].amortCap : 0;
     const resAvIS = ebitda - amortFFE - intDette - intCCA_FDC;
-    const is = Math.max(0, resAvIS*0.25);
+    const tIS = (p.tauxIS||25)/100;
+    const is = Math.max(0, resAvIS*tIS);
     const resNet = resAvIS - is;
     const fluxTrso = ebitda - remb - is;
+    // Capitaux propres cumulés = equity initial + cumul résultats nets
     return {...ca, loyer, fb, sal, franch, comm, energie, honor, holding, autres, totalHorsLoyer, gop, ebitda, intDette, remb, amortFFE, intCCA:intCCA_FDC, resAvIS, is, resNet, fluxTrso};
   });
+  // Calcul capitaux propres cumulés
+  let cpCumul = p.equityFDC||0;
+  bpFDC.forEach(r=>{ cpCumul += r.resNet; r.cpCumul = cpCumul; });
 
   // ── Paramètres de sortie
   const anneeSortieSCI = Math.max(p.annee+1, p.anneeSortieSCI||2037);
@@ -1164,6 +1246,21 @@ function renderDashboard(p, c){
   setD('d-renta', fmtP(renta));
   setD('d-cible-pct', fmtP(cible)); setD('d-loyer-cible', fmt(loyerCible));
   setD('d-poids', fmtP(poids));
+  // Capitaux propres FDC
+  const cpAn1 = c.bpFDC[0]?.cpCumul||0;
+  const cpFinal = c.bpFDC[c.bpFDC.length-1]?.cpCumul||0;
+  let cpPosYear = null;
+  for(let i=0;i<c.bpFDC.length;i++){ if(c.bpFDC[i].cpCumul>=0){cpPosYear=c.annees[i];break;} }
+  const dCpEl = document.getElementById('d-cp-fdc');
+  if(dCpEl){ dCpEl.textContent=fmt(cpFinal); dCpEl.style.color=cpFinal<0?'var(--red)':cpFinal<(p.equityFDC||0)*0.5?'var(--amber)':'var(--green)'; }
+  setD('d-cp-fdc-an1', fmt(cpAn1));
+  setD('d-cp-fdc-pos', cpPosYear ? cpPosYear.toString() : 'N/A');
+  const cpBadgeEl = document.getElementById('d-badge-cp-fdc');
+  if(cpBadgeEl){
+    if(cpFinal<0){ cpBadgeEl.textContent='Négatif ⚠'; cpBadgeEl.className='badge badge-red'; }
+    else if(cpAn1<0){ cpBadgeEl.textContent='Négatif an 1 ⚠'; cpBadgeEl.className='badge badge-amber'; }
+    else { cpBadgeEl.textContent='Positif ✓'; cpBadgeEl.className='badge badge-green'; }
+  }
   setD('d-ebitda4', fmt(ebitda4));
   document.getElementById('d-tri-sci').style.color = c.triSCI>=0.08?'var(--sci)':'var(--red)';
   document.getElementById('d-tri-fdc').style.color = c.triFDC>=0.10?'var(--fdc)':'var(--red)';
@@ -1314,21 +1411,23 @@ function renderFDC(p, c){
     {l:'TOTAL CA HT',k:'ca',total:true},
     {s:true,l:'Charges'},
     {l:'⚑ Loyer versé à la SCI',k:'loyer',cls:'loyer-row'},
-    {l:'Marchandises F&B (30%)',k:'fb'},
-    {l:'Masse salariale',k:'sal'},
-    {l:'Redevance franchiseur',k:'franch'},
-    {l:'Commission agence',k:'comm'},
-    {l:'Énergie',k:'energie'},
-    {l:'Honoraires',k:'honor'},
-    {l:'Redevance holding',k:'holding'},
-    {l:'Autres charges',k:'autres'},
+    {l:`Marchandises F&B (${p.tauxFB||30}% CA F&B)`,k:'fb'},
+    {l:`Masse salariale (${p.tauxSalaires||30}% CA)`,k:'sal'},
+    {l:`Redevance franchiseur (${p.tauxFranchise||8}% CA)`,k:'franch'},
+    {l:`Commission agence (${p.tauxCommAgence||6}% CA héberg.)`,k:'comm'},
+    {l:`Énergie (${p.tauxEnergie||1.3}% CA)`,k:'energie'},
+    {l:`Honoraires (${p.tauxHonoraires||4.5}% CA)`,k:'honor'},
+    {l:`Redevance holding (${p.tauxHolding||4}% CA)`,k:'holding'},
+    {l:`Autres charges (${p.tauxAutres||9}% CA)`,k:'autres'},
     {s:true,l:'Résultats'},
     {l:'GOP (avant loyer)',k:'gop',res:true},
     {l:'EBITDA (après loyer)',k:'ebitda',res:true},
     {l:'Résultat avant IS',k:'resAvIS',res:true},
-    {l:'IS (25%)',k:'is'},
+    {l:`IS (${p.tauxIS||25}%)`,k:'is'},
     {l:'Résultat net',k:'resNet',total:true},
     {l:'Flux trésorerie net',k:'fluxTrso',res:true},
+    {s:true,l:'Solidité financière'},
+    {l:'⚖ Capitaux propres cumulés',k:'cpCumul',cp:true},
   ];
   renderBPTable('fdc-bp-table', yrs, bpRows, c.bpFDC);
   renderDetteTable('fdc-dette-table', c.dFDC, p.annee);
@@ -1420,12 +1519,15 @@ function renderBPTable(id, yrs, rows, data){
   const head = '<thead><tr><th>Indicateur</th>'+yrs.map(y=>`<th>${y}</th>`).join('')+'</tr></thead>';
   const body = '<tbody>'+rows.map(row=>{
     if(row.s) return `<tr class="section"><td colspan="${yrs.length+1}">${row.l}</td></tr>`;
-    const cls = row.total?'total':row.res?'':row.cls||'';
+    const cls = row.total?'total':row.res?'':row.cp?'total':row.cls||'';
     const cells = yrs.map((_,i)=>{
       const v = row.kFn ? row.kFn(data[i]||{}) : (data[i]?data[i][row.k]:0)||0;
-      return `<td class="${v<0?'n-neg':''}">${fmt(v)}</td>`;
+      let cellCls = v<0?'n-neg':'';
+      if(row.cp) cellCls = v<0?'n-neg':v<(data[0]?.equityFDC||0)*0.5?'n-amber':'n-pos';
+      const alert = row.cp && v<0 ? ' ⚠' : '';
+      return `<td class="${cellCls}" style="${row.cp?'font-weight:600;':''}">${fmt(v)}${alert}</td>`;
     }).join('');
-    return `<tr class="${cls}"><td>${row.l}</td>${cells}</tr>`;
+    return `<tr class="${cls}"><td style="${row.cp?'font-weight:600;':''}">${row.l}</td>${cells}</tr>`;
   }).join('')+'</tbody>';
   document.getElementById(id).innerHTML = head+body;
 }
@@ -1659,6 +1761,23 @@ function updateTotaux(){
   // Dette previews
   updateDettePreview('sci');
   updateDettePreview('fdc');
+  // Charges preview
+  const _fb=(parseFloat(document.getElementById('c-taux-fb')?.value)||30)/100;
+  const _sal=(parseFloat(document.getElementById('c-taux-salaires')?.value)||30)/100;
+  const _fr=(parseFloat(document.getElementById('c-taux-franchise')?.value)||8)/100;
+  const _ca=(parseFloat(document.getElementById('c-taux-comm-agence')?.value)||6)/100*0.74; // comm on ~74% of CA
+  const _en=(parseFloat(document.getElementById('c-taux-energie')?.value)||1.3)/100;
+  const _ho=(parseFloat(document.getElementById('c-taux-honoraires')?.value)||4.5)/100;
+  const _hl=(parseFloat(document.getElementById('c-taux-holding')?.value)||4)/100;
+  const _au=(parseFloat(document.getElementById('c-taux-autres')?.value)||9)/100;
+  // FB applies to ~22% of CA (F&B revenue share), so total charges on CA
+  const fbShare = 0.22; // approx part F&B in total CA
+  const totalChgPct = _fb*fbShare + _sal + _fr + _ca + _en + _ho + _hl + _au;
+  const gopEstim = 1 - totalChgPct;
+  const tcEl=document.getElementById('c-total-charges-pct');
+  if(tcEl) tcEl.textContent=(totalChgPct*100).toFixed(1)+'%';
+  const gopEl=document.getElementById('c-gop-estim');
+  if(gopEl){ gopEl.textContent=(gopEstim*100).toFixed(1)+'%'; gopEl.style.color=gopEstim>0.15?'var(--green)':gopEstim>0.05?'var(--amber)':'var(--red)'; }
 }
 
 function updateDettePreview(which){
@@ -1738,6 +1857,14 @@ function saveConfig(){
   p.detteFDC=num('c-dette-fdc')||num('c-dette-fdc-b');
   p.tauxDetteFDC=num('c-taux-dette-fdc'); p.dureeFDC=num('c-duree-fdc');
   p.loyer=num('c-loyer');
+  p.tauxFB=num('c-taux-fb')||30;
+  p.tauxSalaires=num('c-taux-salaires')||30;
+  p.tauxFranchise=num('c-taux-franchise')||8;
+  p.tauxCommAgence=num('c-taux-comm-agence')||6;
+  p.tauxEnergie=num('c-taux-energie')||1.3;
+  p.tauxHonoraires=num('c-taux-honoraires')||4.5;
+  p.tauxHolding=num('c-taux-holding')||4;
+  p.tauxAutres=num('c-taux-autres')||9;
   p.anneeSortieSCI=num('c-annee-sortie-sci')||2037;
   p.methodeSortieSCI=document.getElementById('c-methode-sortie-sci')?.value||'loyer_multiple';
   p.multipleLoyer=num('c-multiple-loyer-sci')||15;
@@ -1907,6 +2034,16 @@ function onLoyerSlider(){
   setD('d-c-cf-sci5',fmt(c.bpSCI[4]?.cfSCI||0));
   renderTrsoBars('trso-fdc-body',c.annees,c.bpFDC.map(r=>r.fluxTrso),'var(--fdc)');
   renderTrsoBars('trso-sci-body',c.annees,c.bpSCI.map(r=>r.cfSCI),'var(--sci)');
+  // Refresh CP FDC
+  const _cpAn1=c.bpFDC[0]?.cpCumul||0, _cpFinal=c.bpFDC[c.bpFDC.length-1]?.cpCumul||0;
+  let _cpPos=null; for(let i=0;i<c.bpFDC.length;i++){if(c.bpFDC[i].cpCumul>=0){_cpPos=c.annees[i];break;}}
+  const _cpEl=document.getElementById('d-cp-fdc');
+  if(_cpEl){_cpEl.textContent=fmt(_cpFinal);_cpEl.style.color=_cpFinal<0?'var(--red)':_cpFinal<(p.equityFDC||0)*0.5?'var(--amber)':'var(--green)';}
+  setD('d-cp-fdc-an1',fmt(_cpAn1)); setD('d-cp-fdc-pos',_cpPos?_cpPos.toString():'N/A');
+  const _cpB=document.getElementById('d-badge-cp-fdc');
+  if(_cpB){if(_cpFinal<0){_cpB.textContent='Négatif ⚠';_cpB.className='badge badge-red';}
+  else if(_cpAn1<0){_cpB.textContent='Négatif an 1 ⚠';_cpB.className='badge badge-amber';}
+  else{_cpB.textContent='Positif ✓';_cpB.className='badge badge-green';}}
   // Update equilibre page if visible
   if(currentPage==='equilibre'){ calcCache=c; renderEquilibre(p,c); }
 }
