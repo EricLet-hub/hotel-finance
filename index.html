@@ -1232,31 +1232,108 @@ function showPage(name){
 // ══════════════════════════════════════════════════════════════
 // CONFIG FORM
 // ══════════════════════════════════════════════════════════════
+function gv(id){ const el=document.getElementById(id); return el?(parseFloat(el.value)||0):0; }
+function sv(id,val){ const el=document.getElementById(id); if(el)el.textContent=val; }
+function fmtC(n){ if(!isFinite(n))return '--'; return Math.round(n).toLocaleString('fr-FR')+'€'; }
+
+function calcAnnuite(cap, taux, duree){
+  if(cap<=0||duree<=0||taux<=0)return 0;
+  const r=taux/100;
+  return cap*r/(1-Math.pow(1+r,-duree));
+}
+
+function updateTotaux(){
+  // SCI
+  const eSCI = gv('c-vefa')+gv('c-terrain')+gv('c-frais-sci');
+  const rSCI = gv('c-equity-sci')+gv('c-cca-sci')+gv('c-dette-sci');
+  const eqSCI = rSCI-eSCI;
+  sv('c-total-empl-sci', fmtC(eSCI));
+  sv('c-total-res-sci', fmtC(rSCI));
+  const eqElSCI = document.getElementById('c-equil-sci');
+  if(eqElSCI){ eqElSCI.textContent=fmtC(eqSCI); eqElSCI.style.color=eqSCI>=0?'var(--green)':'var(--red)'; }
+  // FDC
+  const eFDC = gv('c-ffe')+gv('c-bfr')+gv('c-frais-fdc');
+  const rFDC = gv('c-equity-fdc')+gv('c-cca-fdc')+gv('c-dette-fdc');
+  const eqFDC = rFDC-eFDC;
+  sv('c-total-empl-fdc', fmtC(eFDC));
+  sv('c-total-res-fdc', fmtC(rFDC));
+  const eqElFDC = document.getElementById('c-equil-fdc');
+  if(eqElFDC){ eqElFDC.textContent=fmtC(eqFDC); eqElFDC.style.color=eqFDC>=0?'var(--green)':'var(--red)'; }
+  // Dette previews
+  updateDettePreview('sci');
+  updateDettePreview('fdc');
+}
+
+function updateDettePreview(which){
+  const montant = which==='sci' ? gv('c-dette-sci') : gv('c-dette-fdc');
+  const taux = which==='sci' ? gv('c-taux-dette-sci') : gv('c-taux-dette-fdc');
+  const duree = which==='sci' ? gv('c-duree-sci') : gv('c-duree-fdc');
+  const color = which==='sci' ? 'var(--sci)' : 'var(--fdc)';
+  const ann = calcAnnuite(montant, taux, duree);
+  const int1 = montant*(taux/100);
+  const cap1 = ann - int1;
+  const annEl = document.getElementById('c-annuite-'+which);
+  if(annEl){ annEl.textContent = ann>0?fmtC(ann)+'/an':'--'; annEl.style.color=color; }
+  sv('c-int1-'+which, int1>0?fmtC(int1):'--');
+  sv('c-cap1-'+which, cap1>0?fmtC(cap1):'--');
+  // Sync display field
+  const dbEl = document.getElementById('c-dette-'+which+'-b');
+  if(dbEl) dbEl.value = montant||'';
+}
+
+// Sync from ressources -> dette display
+function syncDette2(which){
+  const montant = which==='sci' ? gv('c-dette-sci') : gv('c-dette-fdc');
+  const dbEl = document.getElementById('c-dette-'+which+'-b');
+  if(dbEl) dbEl.value = montant||'';
+  updateDettePreview(which);
+}
+
+// Sync from dette display -> ressources
+function syncDette(which, val){
+  const v = parseFloat(val)||0;
+  const resEl = document.getElementById('c-dette-'+which);
+  if(resEl){ resEl.value=v; }
+  updateTotaux();
+}
+
 function loadConfigForm(){
   if(!currentId)return;
   const p = projects[currentId];
-  const fields = ['nom','ville','chambres','annee','to','pm','inflation','idxLoyer',
-    'vefa','terrain','fraisSCI','equitySCI','ccaSCI','tauxCcaSCI','detteSCI','tauxDetteSCI','dureeSCI','cibleRenta',
-    'ffe','bfr','fraisFDC','equityFDC','ccaFDC','tauxCcaFDC','detteFDC','tauxDetteFDC','dureeFDC','loyer'];
-  fields.forEach(f=>{ const el=document.getElementById('c-'+f); if(el)el.value=p[f]??''; });
+  const map = {
+    'nom':p.nom,'ville':p.ville,'chambres':p.chambres,'annee':p.annee,
+    'to':p.to,'pm':p.pm,'inflation':p.inflation,'idx-loyer':p.idxLoyer,
+    'vefa':p.vefa,'terrain':p.terrain,'frais-sci':p.fraisSCI,
+    'equity-sci':p.equitySCI,'cca-sci':p.ccaSCI,'taux-cca-sci':p.tauxCcaSCI,
+    'dette-sci':p.detteSCI,'dette-sci-b':p.detteSCI,
+    'taux-dette-sci':p.tauxDetteSCI,'duree-sci':p.dureeSCI,'cible-renta':p.cibleRenta,
+    'ffe':p.ffe,'bfr':p.bfr,'frais-fdc':p.fraisFDC,
+    'equity-fdc':p.equityFDC,'cca-fdc':p.ccaFDC,'taux-cca-fdc':p.tauxCcaFDC,
+    'dette-fdc':p.detteFDC,'dette-fdc-b':p.detteFDC,
+    'taux-dette-fdc':p.tauxDetteFDC,'duree-fdc':p.dureeFDC,'loyer':p.loyer
+  };
+  Object.entries(map).forEach(([k,v])=>{ const el=document.getElementById('c-'+k); if(el)el.value=v??''; });
+  updateTotaux();
   buildRampTable();
 }
 
 function saveConfig(){
   if(!currentId)return;
   const p = projects[currentId];
-  const num = id => parseFloat(document.getElementById(id).value)||0;
-  const str = id => document.getElementById(id).value||'';
+  const num = id => { const el=document.getElementById(id); return el?(parseFloat(el.value)||0):0; };
+  const str = id => { const el=document.getElementById(id); return el?(el.value||''):''; };
   p.nom=str('c-nom'); p.ville=str('c-ville');
   p.chambres=num('c-chambres'); p.annee=Math.round(num('c-annee')); p.to=num('c-to'); p.pm=num('c-pm');
   p.inflation=num('c-inflation'); p.idxLoyer=num('c-idx-loyer');
   p.vefa=num('c-vefa'); p.terrain=num('c-terrain'); p.fraisSCI=num('c-frais-sci');
   p.equitySCI=num('c-equity-sci'); p.ccaSCI=num('c-cca-sci'); p.tauxCcaSCI=num('c-taux-cca-sci');
-  p.detteSCI=num('c-dette-sci'); p.tauxDetteSCI=num('c-taux-dette-sci'); p.dureeSCI=num('c-duree-sci');
+  p.detteSCI=num('c-dette-sci')||num('c-dette-sci-b');
+  p.tauxDetteSCI=num('c-taux-dette-sci'); p.dureeSCI=num('c-duree-sci');
   p.cibleRenta=num('c-cible-renta');
   p.ffe=num('c-ffe'); p.bfr=num('c-bfr'); p.fraisFDC=num('c-frais-fdc');
   p.equityFDC=num('c-equity-fdc'); p.ccaFDC=num('c-cca-fdc'); p.tauxCcaFDC=num('c-taux-cca-fdc');
-  p.detteFDC=num('c-dette-fdc'); p.tauxDetteFDC=num('c-taux-dette-fdc'); p.dureeFDC=num('c-duree-fdc');
+  p.detteFDC=num('c-dette-fdc')||num('c-dette-fdc-b');
+  p.tauxDetteFDC=num('c-taux-dette-fdc'); p.dureeFDC=num('c-duree-fdc');
   p.loyer=num('c-loyer');
   // Re-extend ramp arrays if needed
   while(p.rampTO.length<N_YEARS)p.rampTO.push(null);
