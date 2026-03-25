@@ -885,7 +885,7 @@ hr.div{border:none;border-top:1px solid var(--border);margin:12px 0;}
 // ══════════════════════════════════════════════════════════════
 // STORAGE
 // ══════════════════════════════════════════════════════════════
-const STORE_KEY = 'hotel_finance_projects_v2';
+const STORE_KEY = 'hotel_finance_projects_v4';
 let projects = {};
 let currentId = null;
 let calcCache = null;
@@ -1101,7 +1101,14 @@ function computeAll(p, loyerOverride){
 function renderAll(){
   if(!currentId) return;
   const p = projects[currentId];
-  calcCache = computeAll(p);
+  let calcCache_local;
+  try {
+    calcCache_local = computeAll(p);
+  } catch(e) {
+    console.error('computeAll failed:', e);
+    return;
+  }
+  calcCache = calcCache_local;
   renderDashboard(p, calcCache);
   renderSCI(p, calcCache);
   renderFDC(p, calcCache);
@@ -1198,7 +1205,7 @@ function renderSCI(p, c){
   document.getElementById('sci-tri-details').innerHTML = `
     <div class="detail-card"><div class="detail-lbl">Rentabilité brute Loyer/VEFA</div><div class="detail-val ${rentaBrute>=p.cibleRenta/100?'n-pos':'n-neg'}">${fmtP(rentaBrute)}</div><div class="detail-sub">Cible ≥ ${fmtP(p.cibleRenta/100)}</div></div>
     <div class="detail-card"><div class="detail-lbl">Loyer cible théorique</div><div class="detail-val n-sci">${fmt(p.vefa*p.cibleRenta/100)}</div><div class="detail-sub">Pour atteindre la cible</div></div>
-    <div class="detail-card"><div class="detail-lbl">Valeur terminale (année ${c.anneeSortieSCI})</div><div class="detail-val n-sci">${fmt(c.vtSCI)}</div><div class="detail-sub">${p.methodeSortieSCI==='taux_capi'?'Loyer / '+p.tauxCapiSCI+'% capi':×+p.multipleLoyer+' loyer'}</div></div>
+    <div class="detail-card"><div class="detail-lbl">Valeur terminale (année ${c.anneeSortieSCI})</div><div class="detail-val n-sci">${fmt(c.vtSCI)}</div><div class="detail-sub">${p.methodeSortieSCI==='taux_capi'?'Loyer / '+p.tauxCapiSCI+'% capi':'×'+p.multipleLoyer+' loyer'}</div></div>
     <div class="detail-card"><div class="detail-lbl">Cash-flow SCI cumulé</div><div class="detail-val n-sci">${fmt(c.bpSCI.reduce((s,r)=>s+r.cfSCI,0))}</div><div class="detail-sub">Hors valeur terminale</div></div>`;
 
   // BP SCI
@@ -1711,7 +1718,7 @@ function saveConfig(){
   while(p.rampPM.length<N_YEARS)p.rampPM.push(null);
   saveStore();
   renderProjectList();
-  renderAll();
+  try { renderAll(); } catch(e) { console.warn('render failed:', e); }
   showPage('dashboard');
 }
 
@@ -1745,7 +1752,7 @@ function openProject(id){
   el.innerHTML = parts.slice(0,-1).join(' ')+' <em>'+parts[parts.length-1]+'</em>';
   document.getElementById('nav-tabs').style.display='flex';
   renderProjectList();
-  renderAll();
+  try { renderAll(); } catch(e) { console.warn('render failed:', e); }
   showPage('dashboard');
 }
 
@@ -1891,17 +1898,22 @@ document.getElementById('modal-new').addEventListener('click',function(e){ if(e.
 // ══════════════════════════════════════════════════════════════
 projects = loadStore();
 renderProjectList();
-// If there are projects, open the most recent one
+// Open most recent project, or show empty state
 const ids = Object.keys(projects);
-if(ids.length>0){
-  openProject(ids[ids.length-1]);
-} else {
-  // Load Béla Valence as demo
-  const demo = defaultProject('Béla Valence', 'Valence');
-  demo.id = 'demo_bela';
-  projects[demo.id]=demo;
+try {
+  if(ids.length > 0){
+    openProject(ids[ids.length-1]);
+  }
+  // No demo auto-load — user creates their own project
+} catch(e) {
+  console.warn('Could not restore project:', e);
+  // Clear broken data and show empty state
+  projects = {};
   saveStore();
-  openProject(demo.id);
+  renderProjectList();
+  document.getElementById('nav-tabs').style.display='none';
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-empty').classList.add('active');
 }
 </script>
 </body>
