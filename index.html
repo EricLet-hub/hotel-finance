@@ -1884,7 +1884,7 @@ function onEqCible(){
 // ══════════════════════════════════════════════════════════════
 document.getElementById('modal-nom').addEventListener('keydown',e=>{ if(e.key==='Enter')createProject(); if(e.key==='Escape')closeNewModal(); });
 document.getElementById('modal-ville').addEventListener('keydown',e=>{ if(e.key==='Enter')createProject(); if(e.key==='Escape')closeNewModal(); });
-document.getElementById('modal-overlay'||'modal-new').addEventListener('click',function(e){ if(e.target===this)closeNewModal(); });
+document.getElementById('modal-new').addEventListener('click',function(e){ if(e.target===this)closeNewModal(); });
 
 // ══════════════════════════════════════════════════════════════
 // INIT
