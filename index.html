@@ -309,7 +309,7 @@ hr.div{border:none;border-top:1px solid var(--border);margin:12px 0;}
           <div class="kpi-card k-fdc">
             <div class="kpi-label">TRI — FDC Exploitation</div>
             <div class="kpi-value n-fdc" id="d-tri-fdc">—</div>
-            <div class="kpi-sub">VAN 8% : <span id="d-van-fdc">—</span> · calculé sur flux tréso</div>
+            <div class="kpi-sub">VAN 8% : <span id="d-van-fdc">—</span> · Multiple : <span id="d-multiple-fdc">—</span>×</div>
             <span class="badge" id="d-badge-fdc">—</span>
           </div>
           <div class="kpi-card k-green">
@@ -933,7 +933,8 @@ function defaultProject(nom, ville){
 // ══════════════════════════════════════════════════════════════
 const fmt = (n,dec=0)=>{ if(!isFinite(n)||n===null)return '—'; const a=Math.abs(n); if(a>=1e6)return (n/1e6).toFixed(dec>0?dec:2).replace('.',',')+'M€'; return Math.round(n).toLocaleString('fr-FR')+'€'; };
 const fmtK = n=>{ if(!isFinite(n))return '—'; return Math.round(n/1000).toLocaleString('fr-FR')+'k€'; };
-const fmtP = (n,d=1)=>{ if(!isFinite(n))return '—'; return (n*100).toFixed(d).replace('.',',')+'%'; };
+const fmtP = (n,d=1)=>{ if(!isFinite(n)||isNaN(n))return '—'; return (n*100).toFixed(d).replace('.',',')+'%'; };
+const fmtTRI = (n)=>{ if(!isFinite(n)||isNaN(n)||Math.abs(n)>5) return 'N/A'; return fmtP(n); };
 
 function buildDette(cap, taux, duree){
   if(cap<=0||duree<=0)return [];
@@ -947,21 +948,42 @@ function buildDette(cap, taux, duree){
   return rows;
 }
 
+function npvAt(cfs, r){
+  return cfs.reduce((s,cf,t)=>s+cf/Math.pow(1+r,t),0);
+}
 function calcTRI(cfs){
-  let r=0.12;
-  for(let iter=0;iter<200;iter++){
-    let npv=0,d=0;
-    for(let t=0;t<cfs.length;t++){
-      const disc=Math.pow(1+r,t);
-      npv+=cfs[t]/disc;
-      d-=t*cfs[t]/(disc*(1+r));
+  // Check if TRI makes sense: need at least one sign change
+  const hasNeg = cfs.some(c=>c<0);
+  const hasPos = cfs.some(c=>c>0);
+  if(!hasNeg || !hasPos) return NaN;
+
+  // Bisection first to find a bracket
+  let lo=-0.999, hi=50, mid;
+  const npvLo=npvAt(cfs,lo), npvHi=npvAt(cfs,hi);
+  // If no bracket found (same sign at both ends), Newton from 0.1
+  if(npvLo*npvHi>0){
+    // Try Newton-Raphson with cap
+    let r=0.10;
+    for(let i=0;i<100;i++){
+      let npv=0,d=0;
+      cfs.forEach((cf,t)=>{
+        const disc=Math.pow(1+r,t);
+        npv+=cf/disc; d-=t*cf/(disc*(1+r));
+      });
+      if(Math.abs(npv)<1) return (r>50||r<-1)?NaN:r;
+      if(Math.abs(d)<1e-12) break;
+      r=Math.min(50,Math.max(-0.999,r-npv/d));
     }
-    if(Math.abs(npv)<0.01)return r;
-    if(Math.abs(d)<1e-10)break;
-    r-=npv/d;
-    if(r<-0.9999)r=-0.9999;
+    return NaN;
   }
-  return r;
+  // Bisection for 60 iterations (precision ~1e-18)
+  for(let i=0;i<60;i++){
+    mid=(lo+hi)/2;
+    const npvMid=npvAt(cfs,mid);
+    if(Math.abs(npvMid)<1) return mid;
+    if(npvAt(cfs,lo)*npvMid<0) hi=mid; else lo=mid;
+  }
+  return mid;
 }
 
 function calcVAN(cfs, rate){
@@ -1134,8 +1156,11 @@ function renderDashboard(p, c){
   const marge4 = c.bpFDC[3] ? ebitda4/c.bpFDC[3].ca : 0;
 
   // KPIs
-  setD('d-tri-sci', fmtP(c.triSCI)); setD('d-van-sci', fmt(c.vanSCI));
-  setD('d-tri-fdc', fmtP(c.triFDC)); setD('d-van-fdc', fmt(c.vanFDC));
+  setD('d-tri-sci', fmtTRI(c.triSCI)); setD('d-van-sci', fmt(c.vanSCI));
+  setD('d-tri-fdc', fmtTRI(c.triFDC)); setD('d-van-fdc', fmt(c.vanFDC));
+  const totalRetourFDC = c.fFDC.slice(1).reduce((s,f)=>s+(f>0?f:0),0);
+  const multipleMise = c.invFDC!==0 ? (totalRetourFDC/Math.abs(c.invFDC)).toFixed(1)+'x' : '--';
+  setD('d-multiple-fdc', multipleMise);
   setD('d-renta', fmtP(renta));
   setD('d-cible-pct', fmtP(cible)); setD('d-loyer-cible', fmt(loyerCible));
   setD('d-poids', fmtP(poids));
@@ -1204,7 +1229,7 @@ function renderSCI(p, c){
     </tbody>`;
 
   // TRI details
-  document.getElementById('sci-tri-big').textContent = fmtP(c.triSCI);
+  document.getElementById('sci-tri-big').textContent = fmtTRI(c.triSCI);
   document.getElementById('sci-tri-big').style.color = c.triSCI>=0.08?'var(--sci)':'var(--red)';
   setD('sci-tri-inv', fmt(Math.abs(c.invSCI)));
   setD('sci-tri-van', fmt(c.vanSCI)); const sciVanEl=document.querySelector('#page-sci .tri-van'); if(sciVanEl) sciVanEl.innerHTML='VAN '+((p.tauxVAN||8))+'% : <span id="sci-tri-van">'+fmt(c.vanSCI)+'</span>';
@@ -1269,7 +1294,7 @@ function renderFDC(p, c){
       <tr class="highlight"><td>✔ Équilibre</td><td class="${totalRes-totalEmpl>=0?'n-pos':'n-neg'}">${fmt(totalRes-totalEmpl)}</td><td>—</td><td>—</td></tr>
     </tbody>`;
 
-  document.getElementById('fdc-tri-big').textContent = fmtP(c.triFDC);
+  document.getElementById('fdc-tri-big').textContent = fmtTRI(c.triFDC);
   document.getElementById('fdc-tri-big').style.color = c.triFDC>=0.10?'var(--fdc)':'var(--red)';
   setD('fdc-tri-inv', fmt(Math.abs(c.invFDC)));
   setD('fdc-tri-van', fmt(c.vanFDC)); const fdcVanEl=document.querySelector('#page-fdc .tri-van'); if(fdcVanEl) fdcVanEl.innerHTML='VAN '+((p.tauxVAN||8))+'% : <span id="fdc-tri-van">'+fmt(c.vanFDC)+'</span>';
@@ -1864,7 +1889,7 @@ function onLoyerSlider(){
   const ebitda4=c.bpFDC[3]?.ebitda||0;
   document.getElementById('d-tri-sci').textContent=fmtP(c.triSCI);
   document.getElementById('d-tri-sci').style.color=c.triSCI>=0.08?'var(--sci)':'var(--red)';
-  document.getElementById('d-tri-fdc').textContent=fmtP(c.triFDC);
+  document.getElementById('d-tri-fdc').textContent=fmtTRI(c.triFDC);
   document.getElementById('d-tri-fdc').style.color=c.triFDC>=0.10?'var(--fdc)':'var(--red)';
   document.getElementById('d-renta').textContent=fmtP(renta);
   document.getElementById('d-renta').style.color=renta>=cible?'var(--green)':'var(--amber)';
