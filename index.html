@@ -1860,7 +1860,7 @@ function onLoyerSlider(){
   setD('d-loyer-monthly', `→ ${Math.round(v/12).toLocaleString('fr-FR')} €/mois`);
   setD('d-loyer-n2', fmtK(c.loyers[1]));
   setD('d-loyer-n5', fmtK(c.loyers[4]));
-  const renta=v/p.vefa, cible=p.cibleRenta/100, poids=v/c.bpFDC[0].ca;
+  const vefaTotal=p.vefa+p.terrain+p.fraisSCI; const renta=v/vefaTotal, cible=p.cibleRenta/100, poids=v/c.bpFDC[0].ca;
   const ebitda4=c.bpFDC[3]?.ebitda||0;
   document.getElementById('d-tri-sci').textContent=fmtP(c.triSCI);
   document.getElementById('d-tri-sci').style.color=c.triSCI>=0.08?'var(--sci)':'var(--red)';
