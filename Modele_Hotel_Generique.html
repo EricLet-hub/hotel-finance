@@ -1,0 +1,1449 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modèle Hôtelier — SCI + FDC</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0d0f14; --bg2:#13161e; --bg3:#1a1e29; --bg4:#1f2433;
+  --border:#272c3a; --border2:#323848;
+  --gold:#c9a84c; --gold-dim:#8a6e2f; --gold-pale:rgba(201,168,76,0.08);
+  --text:#e8eaf0; --text-dim:#7a8299; --text-muted:#4a5168;
+  --blue:#5b9bd5; --blue-dim:rgba(91,155,213,0.12);
+  --green:#4caf82; --green-dim:rgba(76,175,130,0.1);
+  --red:#e05c5c; --red-dim:rgba(224,92,92,0.1);
+  --amber:#e0a84c; --amber-dim:rgba(224,168,76,0.1);
+  --sci:#7b9fd4; --fdc:#c9a84c;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;min-height:100vh;}
+
+/* ── LAYOUT GLOBAL ── */
+.app{display:flex;height:100vh;overflow:hidden;}
+
+/* ── SIDEBAR PROJETS ── */
+.sidebar{width:240px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;}
+.sidebar-header{padding:20px 16px 12px;border-bottom:1px solid var(--border);}
+.sidebar-logo{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:var(--gold);letter-spacing:1px;line-height:1.1;}
+.sidebar-logo span{font-style:italic;}
+.sidebar-sub{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-top:4px;}
+.sidebar-section{padding:12px 16px 6px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);}
+.project-list{flex:1;overflow-y:auto;padding:4px 8px;}
+.project-item{padding:10px 10px;border-radius:3px;cursor:pointer;margin-bottom:3px;border:1px solid transparent;transition:all 0.15s;position:relative;}
+.project-item:hover{background:var(--bg3);border-color:var(--border);}
+.project-item.active{background:var(--gold-pale);border-color:var(--gold-dim);}
+.project-name{font-size:12px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:20px;}
+.project-item.active .project-name{color:var(--gold);}
+.project-meta{font-family:'DM Mono',monospace;font-size:9px;color:var(--text-muted);margin-top:3px;}
+.project-del{position:absolute;right:8px;top:50%;transform:translateY(-50%);opacity:0;color:var(--text-muted);font-size:14px;line-height:1;cursor:pointer;transition:opacity 0.15s;}
+.project-item:hover .project-del{opacity:1;}
+.project-del:hover{color:var(--red);}
+.sidebar-actions{padding:12px 8px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:6px;}
+.btn{padding:8px 12px;border:none;border-radius:3px;cursor:pointer;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;transition:all 0.15s;text-align:center;}
+.btn-gold{background:var(--gold);color:#0d0f14;font-weight:500;}
+.btn-gold:hover{background:#d4b056;}
+.btn-ghost{background:transparent;color:var(--text-dim);border:1px solid var(--border);}
+.btn-ghost:hover{border-color:var(--border2);color:var(--text);}
+.btn-danger{background:var(--red-dim);color:var(--red);border:1px solid rgba(224,92,92,0.2);}
+.btn-danger:hover{background:rgba(224,92,92,0.2);}
+
+/* ── MAIN AREA ── */
+.main{flex:1;overflow:hidden;display:flex;flex-direction:column;}
+
+/* ── TOP NAV ── */
+.topnav{height:48px;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:0;flex-shrink:0;background:var(--bg2);}
+.nav-tab{padding:0 16px;height:100%;display:flex;align-items:center;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s;margin-bottom:-1px;}
+.nav-tab:hover{color:var(--text-dim);}
+.nav-tab.active{color:var(--gold);border-bottom-color:var(--gold);}
+.topnav-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.project-title-display{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;color:var(--text-dim);letter-spacing:0.5px;}
+.project-title-display em{font-style:italic;color:var(--gold);}
+
+/* ── CONTENT ── */
+.content{flex:1;overflow-y:auto;padding:20px 24px 60px;}
+.content::-webkit-scrollbar{width:4px;}
+.content::-webkit-scrollbar-track{background:var(--bg);}
+.content::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+
+/* ── SECTIONS ── */
+.page{display:none;}
+.page.active{display:block;}
+
+/* ── CONFIG PAGE ── */
+.config-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px;}
+.config-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+.panel{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden;}
+.panel-header{padding:11px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;}
+.panel-header h3{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;font-weight:400;}
+.dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.dot-gold{background:var(--gold);}
+.dot-sci{background:var(--sci);}
+.dot-fdc{background:var(--fdc);}
+.dot-green{background:var(--green);}
+.panel-body{padding:16px;}
+
+/* INPUT FIELDS */
+.field-grid{display:grid;gap:8px;}
+.field-grid-2{grid-template-columns:1fr 1fr;}
+.field-grid-3{grid-template-columns:1fr 1fr 1fr;}
+.field{display:flex;flex-direction:column;gap:3px;}
+.field label{font-size:10px;color:var(--text-muted);}
+.input-wrap{display:flex;align-items:center;gap:5px;background:var(--bg3);border:1px solid var(--border);border-radius:3px;padding:6px 8px;transition:border-color 0.15s;}
+.input-wrap:focus-within{border-color:var(--gold-dim);}
+.input-wrap input{background:none;border:none;outline:none;color:var(--blue);font-family:'DM Mono',monospace;font-size:12px;width:100%;min-width:0;}
+.input-wrap .unit{font-size:10px;color:var(--text-muted);flex-shrink:0;white-space:nowrap;}
+.field-note{font-size:10px;color:var(--text-muted);margin-top:2px;}
+
+/* ── RAMP TABLE ── */
+.ramp-table{width:100%;border-collapse:collapse;font-size:11px;}
+.ramp-table th{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);padding:5px 8px;text-align:center;border-bottom:1px solid var(--border);}
+.ramp-table th:first-child{text-align:left;}
+.ramp-table td{padding:4px 4px;text-align:center;border-bottom:1px solid rgba(39,44,58,0.4);}
+.ramp-table td:first-child{text-align:left;color:var(--text-dim);font-size:10px;padding-left:8px;}
+.ramp-table input[type=number]{background:var(--bg3);border:1px solid var(--border);border-radius:2px;color:var(--blue);font-family:'DM Mono',monospace;font-size:11px;padding:3px 5px;width:70px;text-align:center;outline:none;transition:border-color 0.15s;}
+.ramp-table input[type=number]:focus{border-color:var(--gold-dim);}
+.ramp-table .auto-val{font-family:'DM Mono',monospace;font-size:11px;color:var(--text-muted);padding:3px 5px;}
+.ramp-table tr:hover td{background:rgba(255,255,255,0.01);}
+.ramp-badge{display:inline-block;padding:1px 6px;border-radius:2px;font-family:'DM Mono',monospace;font-size:9px;background:var(--bg4);color:var(--text-muted);border:1px solid var(--border);cursor:pointer;transition:all 0.15s;}
+.ramp-badge:hover{color:var(--gold);border-color:var(--gold-dim);}
+
+/* ── DASHBOARD PAGE ── */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
+.kpi-card{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:14px 16px;position:relative;overflow:hidden;}
+.kpi-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;opacity:0.6;}
+.kpi-card.k-sci::after{background:var(--sci);}
+.kpi-card.k-fdc::after{background:var(--fdc);}
+.kpi-card.k-green::after{background:var(--green);}
+.kpi-card.k-amber::after{background:var(--amber);}
+.kpi-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;}
+.kpi-value{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:300;line-height:1;margin-bottom:4px;}
+.kpi-sub{font-size:10px;color:var(--text-dim);}
+.badge{display:inline-block;padding:2px 8px;border-radius:2px;font-family:'DM Mono',monospace;font-size:10px;margin-top:5px;}
+.badge-green{background:var(--green-dim);color:var(--green);border:1px solid rgba(76,175,130,0.25);}
+.badge-amber{background:var(--amber-dim);color:var(--amber);border:1px solid rgba(224,168,76,0.25);}
+.badge-red{background:var(--red-dim);color:var(--red);border:1px solid rgba(224,92,92,0.25);}
+
+/* ── LOYER SLIDER ── */
+.loyer-panel{background:linear-gradient(135deg,#13161e,#1a1e29);border:1px solid var(--gold-dim);border-radius:4px;padding:18px 22px;margin-bottom:16px;position:relative;overflow:hidden;}
+.loyer-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.loyer-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;}
+.loyer-eyebrow{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:4px;}
+.loyer-subtitle{font-size:11px;color:var(--text-dim);}
+.loyer-display{display:flex;align-items:baseline;gap:6px;margin-bottom:12px;}
+.loyer-val{font-family:'Cormorant Garamond',serif;font-size:50px;font-weight:300;color:var(--gold);line-height:1;}
+.loyer-unit{font-size:13px;color:var(--text-dim);}
+.loyer-monthly{font-family:'DM Mono',monospace;font-size:11px;color:var(--text-muted);margin-left:10px;}
+input[type=range]{-webkit-appearance:none;width:100%;height:3px;background:var(--border);border-radius:2px;outline:none;cursor:pointer;margin:6px 0 4px;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--gold);cursor:pointer;box-shadow:0 0 12px rgba(201,168,76,0.4);}
+.slider-labels{display:flex;justify-content:space-between;font-family:'DM Mono',monospace;font-size:10px;color:var(--text-muted);}
+.loyer-cibles{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:14px;padding-top:14px;border-top:1px solid var(--border);}
+.cible-cell{background:var(--bg3);border:1px solid var(--border);border-radius:3px;padding:9px 10px;}
+.cible-lbl{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px;}
+.cible-val{font-family:'DM Mono',monospace;font-size:13px;font-weight:500;}
+.cible-val.good{color:var(--green);}
+.cible-val.warn{color:var(--amber);}
+.cible-val.bad{color:var(--red);}
+.cible-sub{font-size:10px;color:var(--text-dim);margin-top:2px;}
+
+/* ── DUAL PANEL ── */
+.dual{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+
+/* ── TABS ── */
+.tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:14px;}
+.tab{padding:8px 14px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s;margin-bottom:-1px;}
+.tab:hover{color:var(--text-dim);}
+.tab.active{color:var(--gold);border-bottom-color:var(--gold);}
+.tab-pane{display:none;}
+.tab-pane.active{display:block;}
+
+/* ── FINANCIAL TABLES ── */
+.fin-table{width:100%;border-collapse:collapse;font-size:11px;}
+.fin-table th{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);padding:5px 7px;text-align:right;border-bottom:1px solid var(--border);white-space:nowrap;}
+.fin-table th:first-child{text-align:left;}
+.fin-table td{padding:4px 7px;text-align:right;font-family:'DM Mono',monospace;font-size:11px;border-bottom:1px solid rgba(39,44,58,0.4);color:var(--text-dim);white-space:nowrap;}
+.fin-table td:first-child{text-align:left;color:var(--text);font-family:'DM Sans',sans-serif;font-size:11px;max-width:180px;}
+.fin-table tr:hover td{background:rgba(255,255,255,0.012);}
+.fin-table tr.total td{border-top:1px solid var(--border2);font-weight:500;color:var(--text);}
+.fin-table tr.section td{padding-top:9px;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);font-family:'DM Mono',monospace;border-bottom:none;}
+.fin-table tr.loyer-row td{color:var(--gold);}
+.fin-table tr.highlight td{background:var(--gold-pale);color:var(--gold);font-weight:500;}
+.fin-table tr.result-pos td{color:var(--green);}
+.fin-table tr.result-neg td{color:var(--red);}
+.n-pos{color:var(--green)!important;}
+.n-neg{color:var(--red)!important;}
+.n-gold{color:var(--gold)!important;}
+.n-sci{color:var(--sci)!important;}
+.n-fdc{color:var(--fdc)!important;}
+.n-dim{color:var(--text-dim)!important;}
+.tbl-scroll{overflow-x:auto;}
+.tbl-scroll::-webkit-scrollbar{height:4px;}
+.tbl-scroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+
+/* ── TRÉSO BARS ── */
+.trso-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.trso-yr{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-muted);width:36px;flex-shrink:0;}
+.trso-track{flex:1;height:13px;background:var(--bg3);border-radius:2px;overflow:hidden;}
+.trso-fill{height:100%;border-radius:2px;transition:width 0.35s;}
+.trso-amount{font-family:'DM Mono',monospace;font-size:10px;width:95px;text-align:right;flex-shrink:0;}
+
+/* ── TRI DISPLAY ── */
+.tri-block{display:flex;gap:12px;margin-bottom:12px;}
+.tri-big-card{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:3px;padding:20px;text-align:center;}
+.tri-lbl{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;}
+.tri-num{font-family:'Cormorant Garamond',serif;font-size:52px;font-weight:300;line-height:1;}
+.tri-meta{font-size:10px;color:var(--text-dim);margin-top:5px;font-family:'DM Mono',monospace;}
+.tri-van{margin-top:8px;font-family:'DM Mono',monospace;font-size:11px;color:var(--text-dim);padding:5px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:2px;display:inline-block;}
+.tri-details{flex:1;display:flex;flex-direction:column;gap:8px;}
+.detail-card{background:var(--bg3);border:1px solid var(--border);border-radius:3px;padding:9px 11px;}
+.detail-lbl{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);margin-bottom:3px;}
+.detail-val{font-family:'DM Mono',monospace;font-size:13px;font-weight:500;}
+.detail-sub{font-size:10px;color:var(--text-dim);margin-top:1px;}
+
+/* ── EQUILIBRE PAGE ── */
+.equilibre-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+.balance-vis{display:flex;height:38px;border-radius:3px;overflow:hidden;margin:10px 0;}
+.bal-fdc{display:flex;align-items:center;justify-content:flex-end;padding:0 10px;font-family:'DM Mono',monospace;font-size:10px;color:var(--fdc);background:rgba(201,168,76,0.12);transition:width 0.35s;}
+.bal-sep{width:2px;background:var(--bg);flex-shrink:0;}
+.bal-sci{display:flex;align-items:center;padding:0 10px;font-family:'DM Mono',monospace;font-size:10px;color:var(--sci);background:rgba(91,155,213,0.12);transition:width 0.35s;}
+.gauge-wrap{margin:10px 0 6px;position:relative;height:34px;}
+.gauge-track{height:7px;background:var(--bg3);border-radius:4px;overflow:visible;margin-top:14px;}
+.gauge-fill{height:100%;border-radius:4px;transition:width 0.35s,background 0.3s;}
+.gauge-marker{position:absolute;top:0;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;}
+.gauge-mline{width:1px;height:20px;background:var(--text-muted);}
+.gauge-mlabel{font-family:'DM Mono',monospace;font-size:9px;color:var(--text-muted);white-space:nowrap;margin-top:2px;}
+hr.div{border:none;border-top:1px solid var(--border);margin:12px 0;}
+
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:100;display:flex;align-items:center;justify-content:center;}
+.modal-overlay.hidden{display:none;}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:6px;padding:28px;width:420px;max-width:95vw;}
+.modal h2{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;margin-bottom:6px;color:var(--text);}
+.modal p{font-size:12px;color:var(--text-dim);margin-bottom:20px;}
+.modal-field{margin-bottom:14px;}
+.modal-field label{display:block;font-size:11px;color:var(--text-dim);margin-bottom:5px;}
+.modal-field input{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:3px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;padding:9px 12px;outline:none;transition:border-color 0.15s;}
+.modal-field input:focus{border-color:var(--gold-dim);}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;}
+
+/* ── SECTION HEADER ── */
+.sec-hdr{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--text-muted);padding-bottom:8px;border-bottom:1px solid var(--border);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.sec-hdr .line{flex:1;height:1px;background:var(--border);}
+
+/* ── EMPTY STATE ── */
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:60vh;gap:16px;}
+.empty-icon{font-size:48px;opacity:0.2;}
+.empty-title{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:var(--text-dim);}
+.empty-sub{font-size:12px;color:var(--text-muted);text-align:center;max-width:300px;line-height:1.6;}
+
+/* ── MISC ── */
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+.panel{animation:fadeIn 0.3s ease;}
+.ramp-cta{display:flex;justify-content:flex-end;margin-top:8px;}
+.info-chip{display:inline-flex;align-items:center;gap:4px;font-family:'DM Mono',monospace;font-size:9px;padding:2px 7px;border-radius:2px;background:var(--bg3);color:var(--text-muted);border:1px solid var(--border);}
+
+@media(max-width:900px){
+  .sidebar{width:200px;}
+  .dual{grid-template-columns:1fr;}
+  .kpi-row{grid-template-columns:1fr 1fr;}
+  .config-grid{grid-template-columns:1fr 1fr;}
+  .loyer-cibles{grid-template-columns:1fr 1fr 1fr;}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ══ SIDEBAR ══ -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">Hôtel<span>Finance</span></div>
+      <div class="sidebar-sub">SCI + FDC · Multi-projets</div>
+    </div>
+    <div class="sidebar-section">Projets</div>
+    <div class="project-list" id="project-list"></div>
+    <div class="sidebar-actions">
+      <button class="btn btn-gold" onclick="openNewModal()">+ Nouveau projet</button>
+      <button class="btn btn-ghost" onclick="duplicateProject()">Dupliquer</button>
+      <button class="btn btn-ghost" onclick="exportProject()">Export JSON</button>
+      <button class="btn btn-ghost" onclick="triggerImport()">Import JSON</button>
+      <input type="file" id="import-input" accept=".json" style="display:none" onchange="importProject(event)">
+    </div>
+  </div>
+
+  <!-- ══ MAIN ══ -->
+  <div class="main">
+    <div class="topnav">
+      <span class="project-title-display" id="topnav-title">Aucun projet</span>
+      <div class="topnav-right" id="nav-tabs" style="display:none">
+        <div class="nav-tab active" onclick="showPage('dashboard')">Dashboard</div>
+        <div class="nav-tab" onclick="showPage('config')">Paramètres</div>
+        <div class="nav-tab" onclick="showPage('sci')">SCI Murs</div>
+        <div class="nav-tab" onclick="showPage('fdc')">FDC Exploitation</div>
+        <div class="nav-tab" onclick="showPage('equilibre')">Équilibre</div>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ── EMPTY STATE ── -->
+      <div class="page active" id="page-empty">
+        <div class="empty-state">
+          <div class="empty-icon">🏨</div>
+          <div class="empty-title">Aucun projet ouvert</div>
+          <div class="empty-sub">Créez un nouveau projet hôtelier ou importez un fichier JSON existant pour commencer.</div>
+          <button class="btn btn-gold" style="padding:10px 20px;" onclick="openNewModal()">+ Créer un projet</button>
+        </div>
+      </div>
+
+      <!-- ── DASHBOARD ── -->
+      <div class="page" id="page-dashboard">
+        <div class="kpi-row">
+          <div class="kpi-card k-sci">
+            <div class="kpi-label">TRI — SCI Murs</div>
+            <div class="kpi-value n-sci" id="d-tri-sci">—</div>
+            <div class="kpi-sub">VAN 8% : <span id="d-van-sci">—</span></div>
+            <span class="badge" id="d-badge-sci">—</span>
+          </div>
+          <div class="kpi-card k-fdc">
+            <div class="kpi-label">TRI — FDC Exploitation</div>
+            <div class="kpi-value n-fdc" id="d-tri-fdc">—</div>
+            <div class="kpi-sub">VAN 8% : <span id="d-van-fdc">—</span></div>
+            <span class="badge" id="d-badge-fdc">—</span>
+          </div>
+          <div class="kpi-card k-green">
+            <div class="kpi-label">Rentabilité VEFA (Loyer/VEFA)</div>
+            <div class="kpi-value" id="d-renta">—</div>
+            <div class="kpi-sub">Cible : <span id="d-cible-pct">6,5%</span> — Loyer cible : <span id="d-loyer-cible">—</span></div>
+            <span class="badge" id="d-badge-renta">—</span>
+          </div>
+          <div class="kpi-card k-amber">
+            <div class="kpi-label">Poids loyer / CA FDC an 1</div>
+            <div class="kpi-value" id="d-poids">—</div>
+            <div class="kpi-sub">EBITDA an 4 : <span id="d-ebitda4">—</span></div>
+            <span class="badge" id="d-badge-poids">—</span>
+          </div>
+        </div>
+
+        <!-- LOYER SLIDER -->
+        <div class="loyer-panel">
+          <div class="loyer-top">
+            <div>
+              <div class="loyer-eyebrow">⚡ Loyer Annuel HT — Variable centrale</div>
+              <div class="loyer-subtitle">Déplacez le curseur pour voir l'impact en temps réel sur les TRI des deux entités</div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <span class="info-chip">An 2 : <span id="d-loyer-n2">—</span></span>
+              <span class="info-chip">An 5 : <span id="d-loyer-n5">—</span></span>
+              <span class="info-chip">Idx : <span id="d-idx">—</span>/an</span>
+            </div>
+          </div>
+          <div class="loyer-display">
+            <span class="loyer-val" id="d-loyer-val">—</span>
+            <span class="loyer-unit">€ HT/an</span>
+            <span class="loyer-monthly" id="d-loyer-monthly"></span>
+          </div>
+          <input type="range" id="loyer-slider" min="200000" max="3000000" step="5000" value="1100000" oninput="onLoyerSlider()">
+          <div class="slider-labels" id="slider-labels">
+            <span>—</span><span>—</span><span>—</span><span>—</span><span>—</span>
+          </div>
+          <div class="loyer-cibles">
+            <div class="cible-cell">
+              <div class="cible-lbl">Loyer cible théorique</div>
+              <div class="cible-val" id="d-c-loyer-cible">—</div>
+              <div class="cible-sub" id="d-c-loyer-cible-sub">à — × VEFA</div>
+            </div>
+            <div class="cible-cell">
+              <div class="cible-lbl">Ratio Loyer / VEFA</div>
+              <div class="cible-val" id="d-c-renta">—</div>
+              <div class="cible-sub">VEFA : <span id="d-c-vefa">—</span></div>
+            </div>
+            <div class="cible-cell">
+              <div class="cible-lbl">Poids loyer / CA an 1</div>
+              <div class="cible-val" id="d-c-poids">—</div>
+              <div class="cible-sub">Recommandé &lt; 35%</div>
+            </div>
+            <div class="cible-cell">
+              <div class="cible-lbl">EBITDA FDC an 4</div>
+              <div class="cible-val" id="d-c-ebitda4">—</div>
+              <div class="cible-sub">Marge : <span id="d-c-marge4">—</span></div>
+            </div>
+            <div class="cible-cell">
+              <div class="cible-lbl">Cash-flow SCI an 1</div>
+              <div class="cible-val" id="d-c-cf-sci1">—</div>
+              <div class="cible-sub">An 5 : <span id="d-c-cf-sci5">—</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TRÉSORERIE -->
+        <div class="dual">
+          <div class="panel">
+            <div class="panel-header"><span class="dot dot-fdc"></span><h3>Trésorerie FDC (flux net annuel)</h3></div>
+            <div class="panel-body" id="trso-fdc-body"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-header"><span class="dot dot-sci"></span><h3>Cash-flow SCI (annuel)</h3></div>
+            <div class="panel-body" id="trso-sci-body"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── CONFIG ── -->
+      <div class="page" id="page-config">
+        <div class="config-grid">
+          <!-- Hôtel -->
+          <div class="panel">
+            <div class="panel-header"><span class="dot dot-gold"></span><h3>Hôtel — Général</h3></div>
+            <div class="panel-body">
+              <div class="field-grid field-grid-2" style="gap:8px;">
+                <div class="field"><label>Nom du projet</label><div class="input-wrap"><input type="text" id="c-nom" placeholder="Ex: Hôtel Lumière Lyon"></div></div>
+                <div class="field"><label>Ville</label><div class="input-wrap"><input type="text" id="c-ville" placeholder="Lyon"></div></div>
+                <div class="field"><label>Nb chambres</label><div class="input-wrap"><input type="number" id="c-chambres" value="85"><span class="unit">ch</span></div></div>
+                <div class="field"><label>Année ouverture</label><div class="input-wrap"><input type="number" id="c-annee" value="2027"></div></div>
+                <div class="field"><label>TO plateau (an 4+)</label><div class="input-wrap"><input type="number" id="c-to" value="68" step="0.5"><span class="unit">%</span></div></div>
+                <div class="field"><label>Prix Moyen HT plateau</label><div class="input-wrap"><input type="number" id="c-pm" value="190"><span class="unit">€</span></div></div>
+                <div class="field"><label>Inflation tarif (dès an 4)</label><div class="input-wrap"><input type="number" id="c-inflation" value="2.5" step="0.1"><span class="unit">%</span></div></div>
+                <div class="field"><label>Indexation loyer/an</label><div class="input-wrap"><input type="number" id="c-idx-loyer" value="2.0" step="0.1"><span class="unit">%</span></div></div>
+              </div>
+            </div>
+          </div>
+          <!-- SCI -->
+          <div class="panel">
+            <div class="panel-header"><span class="dot dot-sci"></span><h3>SCI — Murs</h3></div>
+            <div class="panel-body">
+              <div class="field-grid field-grid-2" style="gap:8px;">
+                <div class="field"><label>Prix VEFA murs</label><div class="input-wrap"><input type="number" id="c-vefa" value="15000000" step="100000"><span class="unit">€</span></div></div>
+                <div class="field"><label>Terrain</label><div class="input-wrap"><input type="number" id="c-terrain" value="1000000" step="50000"><span class="unit">€</span></div></div>
+                <div class="field"><label>Frais acq. / notaire</label><div class="input-wrap"><input type="number" id="c-frais-sci" value="960000" step="10000"><span class="unit">€</span></div></div>
+                <div class="field"><label>Equity associés SCI</label><div class="input-wrap"><input type="number" id="c-equity-sci" value="2000000" step="100000"><span class="unit">€</span></div></div>
+                <div class="field"><label>CCA SCI (solde)</label><div class="input-wrap"><input type="number" id="c-cca-sci" value="6000000" step="100000"><span class="unit">€</span></div></div>
+                <div class="field"><label>Taux CCA SCI</label><div class="input-wrap"><input type="number" id="c-taux-cca-sci" value="4.0" step="0.1"><span class="unit">%</span></div></div>
+                <div class="field"><label>Dette murs</label><div class="input-wrap"><input type="number" id="c-dette-sci" value="9000000" step="100000"><span class="unit">€</span></div></div>
+                <div class="field"><label>Taux dette murs</label><div class="input-wrap"><input type="number" id="c-taux-dette-sci" value="4.0" step="0.1"><span class="unit">%</span></div></div>
+                <div class="field"><label>Durée dette murs</label><div class="input-wrap"><input type="number" id="c-duree-sci" value="20"><span class="unit">ans</span></div></div>
+                <div class="field"><label>Cible rentabilité VEFA</label><div class="input-wrap"><input type="number" id="c-cible-renta" value="6.5" step="0.1"><span class="unit">%</span></div></div>
+              </div>
+            </div>
+          </div>
+          <!-- FDC -->
+          <div class="panel">
+            <div class="panel-header"><span class="dot dot-fdc"></span><h3>FDC — Exploitation</h3></div>
+            <div class="panel-body">
+              <div class="field-grid field-grid-2" style="gap:8px;">
+                <div class="field"><label>FF&E mobilier</label><div class="input-wrap"><input type="number" id="c-ffe" value="3000000" step="100000"><span class="unit">€</span></div></div>
+                <div class="field"><label>BFR initial</label><div class="input-wrap"><input type="number" id="c-bfr" value="150000" step="10000"><span class="unit">€</span></div></div>
+                <div class="field"><label>Frais constitution</label><div class="input-wrap"><input type="number" id="c-frais-fdc" value="50000" step="5000"><span class="unit">€</span></div></div>
+                <div class="field"><label>Equity exploitant</label><div class="input-wrap"><input type="number" id="c-equity-fdc" value="500000" step="50000"><span class="unit">€</span></div></div>
+                <div class="field"><label>CCA exploitant (solde)</label><div class="input-wrap"><input type="number" id="c-cca-fdc" value="1200000" step="50000"><span class="unit">€</span></div></div>
+                <div class="field"><label>Taux CCA exploitant</label><div class="input-wrap"><input type="number" id="c-taux-cca-fdc" value="4.0" step="0.1"><span class="unit">%</span></div></div>
+                <div class="field"><label>Dette FF&E</label><div class="input-wrap"><input type="number" id="c-dette-fdc" value="1500000" step="50000"><span class="unit">€</span></div></div>
+                <div class="field"><label>Taux dette FF&E</label><div class="input-wrap"><input type="number" id="c-taux-dette-fdc" value="4.5" step="0.1"><span class="unit">%</span></div></div>
+                <div class="field"><label>Durée dette FF&E</label><div class="input-wrap"><input type="number" id="c-duree-fdc" value="7"><span class="unit">ans</span></div></div>
+                <div class="field"><label>Loyer an 1 (HT)</label><div class="input-wrap"><input type="number" id="c-loyer" value="1100000" step="5000"><span class="unit">€</span></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MONTÉE EN CHARGE -->
+        <div class="panel" style="margin-bottom:16px;">
+          <div class="panel-header">
+            <span class="dot dot-gold"></span>
+            <h3>Montée en charge — TO &amp; Prix Moyen par année</h3>
+            <span style="margin-left:auto;font-size:10px;color:var(--text-muted);">Les cases vides utilisent le calcul automatique (ramp 80/90/95% puis plateau)</span>
+            <button class="btn btn-ghost" style="padding:4px 10px;font-size:9px;margin-left:10px;" onclick="resetRamp()">Réinitialiser auto</button>
+          </div>
+          <div class="panel-body">
+            <div class="tbl-scroll"><table class="ramp-table" id="ramp-table"></table></div>
+            <div class="ramp-cta">
+              <span class="info-chip">Laissez vide = calcul automatique basé sur le plateau</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:flex-end;gap:10px;margin-bottom:20px;">
+          <button class="btn btn-ghost" onclick="loadFromProject()">Annuler</button>
+          <button class="btn btn-gold" style="padding:10px 24px;" onclick="saveConfig()">Enregistrer &amp; Calculer</button>
+        </div>
+      </div>
+
+      <!-- ── SCI PAGE ── -->
+      <div class="page" id="page-sci">
+        <div class="dual">
+          <!-- Plan Financement -->
+          <div class="panel">
+            <div class="panel-header"><span class="dot dot-sci"></span><h3>Plan de Financement SCI</h3></div>
+            <div class="panel-body">
+              <div class="sec-hdr"><span>Emplois</span><span class="line"></span></div>
+              <table class="fin-table" id="sci-emplois-table"></table>
+              <div class="sec-hdr" style="margin-top:14px;"><span>Ressources</span><span class="line"></span></div>
+              <table class="fin-table" id="sci-ressources-table"></table>
+            </div>
+          </div>
+          <!-- TRI SCI -->
+          <div class="panel">
+            <div class="panel-header"><span class="dot dot-sci"></span><h3>TRI &amp; KPI SCI</h3></div>
+            <div class="panel-body">
+              <div class="tri-block">
+                <div class="tri-big-card">
+                  <div class="tri-lbl">TRI SCI Murs</div>
+                  <div class="tri-num n-sci" id="sci-tri-big">—</div>
+                  <div class="tri-meta">Equity + CCA : <span id="sci-tri-inv">—</span></div>
+                  <div class="tri-van">VAN 8% : <span id="sci-tri-van">—</span></div>
+                </div>
+                <div class="tri-details" id="sci-tri-details"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- BP SCI -->
+        <div class="panel" style="margin-bottom:16px;">
+          <div class="panel-header"><span class="dot dot-sci"></span><h3>Business Plan SCI — <span id="sci-bp-years"></span></h3></div>
+          <div class="panel-body">
+            <div class="tbl-scroll"><table class="fin-table" id="sci-bp-table"></table></div>
+          </div>
+        </div>
+        <!-- Dette + Flux -->
+        <div class="dual">
+          <div class="panel">
+            <div class="panel-header"><span class="dot dot-sci"></span><h3>Amortissement dette murs</h3></div>
+            <div class="panel-body"><div class="tbl-scroll"><table class="fin-table" id="sci-dette-table"></table></div></div>
+          </div>
+          <div class="panel">
+            <div class="panel-header"><span class="dot dot-sci"></span><h3>Flux TRI SCI</h3></div>
+            <div class="panel-body"><div class="tbl-scroll"><table class="fin-table" id="sci-flux-table"></table></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── FDC PAGE ── -->
+      <div class="page" id="page-fdc">
+        <div class="dual">
+          <div class="panel">
+            <div class="panel-header"><span class="dot dot-fdc"></span><h3>Plan de Financement FDC</h3></div>
+            <div class="panel-body">
+              <div class="sec-hdr"><span>Emplois</span><span class="line"></span></div>
+              <table class="fin-table" id="fdc-emplois-table"></table>
+              <div class="sec-hdr" style="margin-top:14px;"><span>Ressources</span><span class="line"></span></div>
+              <table class="fin-table" id="fdc-ressources-table"></table>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-header"><span class="dot dot-fdc"></span><h3>TRI &amp; KPI FDC</h3></div>
+            <div class="panel-body">
+              <div class="tri-block">
+                <div class="tri-big-card">
+                  <div class="tri-lbl">TRI FDC Exploitation</div>
+                  <div class="tri-num n-fdc" id="fdc-tri-big">—</div>
+                  <div class="tri-meta">Equity + CCA : <span id="fdc-tri-inv">—</span></div>
+                  <div class="tri-van">VAN 8% : <span id="fdc-tri-van">—</span></div>
+                </div>
+                <div class="tri-details" id="fdc-tri-details"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="panel" style="margin-bottom:16px;">
+          <div class="panel-header"><span class="dot dot-fdc"></span><h3>Business Plan FDC — <span id="fdc-bp-years"></span></h3></div>
+          <div class="panel-body">
+            <div class="tbl-scroll"><table class="fin-table" id="fdc-bp-table"></table></div>
+          </div>
+        </div>
+        <div class="dual">
+          <div class="panel">
+            <div class="panel-header"><span class="dot dot-fdc"></span><h3>Amortissement dette FF&E</h3></div>
+            <div class="panel-body"><div class="tbl-scroll"><table class="fin-table" id="fdc-dette-table"></table></div></div>
+          </div>
+          <div class="panel">
+            <div class="panel-header"><span class="dot dot-fdc"></span><h3>Flux TRI FDC</h3></div>
+            <div class="panel-body"><div class="tbl-scroll"><table class="fin-table" id="fdc-flux-table"></table></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── ÉQUILIBRE PAGE ── -->
+      <div class="page" id="page-equilibre">
+        <div class="equilibre-grid">
+          <div class="panel">
+            <div class="panel-header"><span class="dot dot-gold"></span><h3>Balance Loyer</h3></div>
+            <div class="panel-body">
+              <div style="font-size:11px;color:var(--text-dim);margin-bottom:10px;">Un loyer élevé favorise la SCI et pèse sur le FDC. L'équilibre dépend de la capacité de remboursement des deux entités.</div>
+              <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;">
+                <span style="color:var(--fdc)">FDC — poids loyer / CA</span>
+                <span style="color:var(--sci)">SCI — rentabilité brute</span>
+              </div>
+              <div class="balance-vis">
+                <div class="bal-fdc" id="eq-bal-fdc" style="width:50%"><span id="eq-lbl-fdc">—</span></div>
+                <div class="bal-sep"></div>
+                <div class="bal-sci" id="eq-bal-sci" style="width:50%"><span id="eq-lbl-sci">—</span></div>
+              </div>
+              <hr class="div">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                <span style="font-size:11px;color:var(--text-dim);">Cible rentabilité VEFA :</span>
+                <div class="input-wrap" style="width:90px;"><input type="number" id="eq-cible" value="6.5" step="0.1" oninput="onEqCible()" style="color:var(--blue);font-family:'DM Mono',monospace;font-size:12px;"><span class="unit">%</span></div>
+                <span style="font-size:11px;color:var(--text-dim);">Loyer cible :</span>
+                <span style="font-family:'DM Mono',monospace;font-size:12px;color:var(--gold)" id="eq-loyer-cible">—</span>
+              </div>
+              <div class="gauge-wrap">
+                <div class="gauge-marker" id="eq-marker" style="left:50%">
+                  <div class="gauge-mline"></div>
+                  <div class="gauge-mlabel" id="eq-marker-lbl">Cible 6,5%</div>
+                </div>
+                <div class="gauge-track"><div class="gauge-fill" id="eq-gauge-fill" style="width:50%;"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header"><span class="dot dot-gold"></span><h3>Synthèse 5 ans</h3></div>
+            <div class="panel-body">
+              <table class="fin-table">
+                <thead><tr><th>Année</th><th>Loyer HT</th><th>Loyer/VEFA</th><th>Loyer/CA</th><th>CF SCI</th><th>Flux FDC</th></tr></thead>
+                <tbody id="eq-synth-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header"><span class="dot dot-gold"></span><h3>Sensibilité loyer — impact sur TRI</h3></div>
+          <div class="panel-body">
+            <div style="font-size:11px;color:var(--text-dim);margin-bottom:12px;">Simulation pour différents niveaux de loyer. Le loyer actuel est indiqué en surbrillance.</div>
+            <div class="tbl-scroll"><table class="fin-table" id="eq-sensib-table"></table></div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- ── MODAL NOUVEAU PROJET ── -->
+<div class="modal-overlay hidden" id="modal-new">
+  <div class="modal">
+    <h2>Nouveau projet</h2>
+    <p>Donnez un nom à ce projet hôtelier. Vous pourrez renseigner tous les paramètres ensuite.</p>
+    <div class="modal-field">
+      <label>Nom du projet</label>
+      <input type="text" id="modal-nom" placeholder="Ex: Hôtel Lumière Lyon" autofocus>
+    </div>
+    <div class="modal-field">
+      <label>Ville</label>
+      <input type="text" id="modal-ville" placeholder="Lyon">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeNewModal()">Annuler</button>
+      <button class="btn btn-gold" onclick="createProject()">Créer →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+// STORAGE
+// ══════════════════════════════════════════════════════════════
+const STORE_KEY = 'hotel_finance_projects_v2';
+let projects = {};
+let currentId = null;
+let calcCache = null;
+
+function loadStore(){ try{ const s=localStorage.getItem(STORE_KEY); return s?JSON.parse(s):{}; }catch(e){ return {}; } }
+function saveStore(){ try{ localStorage.setItem(STORE_KEY,JSON.stringify(projects)); }catch(e){} }
+
+function defaultProject(nom, ville){
+  return {
+    id: 'p_'+Date.now(),
+    nom, ville,
+    createdAt: new Date().toISOString(),
+    // Hotel
+    chambres:85, annee:2027, to:68, pm:190, inflation:2.5, idxLoyer:2.0,
+    // SCI
+    vefa:15000000, terrain:1000000, fraisSCI:960000,
+    equitySCI:2000000, ccaSCI:6000000, tauxCcaSCI:4.0,
+    detteSCI:9000000, tauxDetteSCI:4.0, dureeSCI:20,
+    cibleRenta:6.5,
+    // FDC
+    ffe:3000000, bfr:150000, fraisFDC:50000,
+    equityFDC:500000, ccaFDC:1200000, tauxCcaFDC:4.0,
+    detteFDC:1500000, tauxDetteFDC:4.5, dureeFDC:7,
+    loyer:1100000,
+    // Ramp overrides: null = auto
+    rampTO: [null,null,null,null,null,null,null,null,null,null,null],
+    rampPM: [null,null,null,null,null,null,null,null,null,null,null],
+  };
+}
+
+// ══════════════════════════════════════════════════════════════
+// MATH
+// ══════════════════════════════════════════════════════════════
+const fmt = (n,dec=0)=>{ if(!isFinite(n)||n===null)return '—'; const a=Math.abs(n); if(a>=1e6)return (n/1e6).toFixed(dec>0?dec:2).replace('.',',')+'M€'; return Math.round(n).toLocaleString('fr-FR')+'€'; };
+const fmtK = n=>{ if(!isFinite(n))return '—'; return Math.round(n/1000).toLocaleString('fr-FR')+'k€'; };
+const fmtP = (n,d=1)=>{ if(!isFinite(n))return '—'; return (n*100).toFixed(d).replace('.',',')+'%'; };
+
+function buildDette(cap, taux, duree){
+  if(cap<=0||duree<=0)return [];
+  const ann = cap*taux/(1-Math.pow(1+taux,-duree));
+  const rows=[]; let c=cap;
+  for(let i=0;i<duree;i++){
+    const int=c*taux; const amort=ann-int; const fin=Math.max(0,c-amort);
+    rows.push({capDebut:c,interets:int,amortCap:amort,annuite:ann,capFin:fin});
+    c=fin; if(c<0.5)c=0;
+  }
+  return rows;
+}
+
+function calcTRI(cfs){
+  let r=0.12;
+  for(let iter=0;iter<200;iter++){
+    let npv=0,d=0;
+    for(let t=0;t<cfs.length;t++){
+      const disc=Math.pow(1+r,t);
+      npv+=cfs[t]/disc;
+      d-=t*cfs[t]/(disc*(1+r));
+    }
+    if(Math.abs(npv)<0.01)return r;
+    if(Math.abs(d)<1e-10)break;
+    r-=npv/d;
+    if(r<-0.9999)r=-0.9999;
+  }
+  return r;
+}
+
+function calcVAN(cfs, rate){
+  return cfs.reduce((s,cf,t)=>s+cf/Math.pow(1+rate,t),0);
+}
+
+function getAutoTO(p, yi){ // yi = year index 0-based
+  const ramp=[0.80,0.90,0.95];
+  if(yi<=2)return (p.to/100)*ramp[yi];
+  return p.to/100;
+}
+function getAutoPM(p, yi){
+  const ramp=[0.80,0.90,0.95];
+  const base=p.pm;
+  if(yi<=2)return base*ramp[yi];
+  const inf=Math.pow(1+(p.inflation/100),Math.max(0,yi-3));
+  return base*inf;
+}
+function getTO(p, yi){ return p.rampTO[yi]!==null&&p.rampTO[yi]!==undefined ? p.rampTO[yi]/100 : getAutoTO(p,yi); }
+function getPM(p, yi){ return p.rampPM[yi]!==null&&p.rampPM[yi]!==undefined ? p.rampPM[yi] : getAutoPM(p,yi); }
+
+function computeCA(p, yi){
+  const to=getTO(p,yi), pm=getPM(p,yi);
+  const nuitees=Math.round(p.chambres*to*365);
+  const caH=nuitees*pm;
+  const caPDJ=nuitees*0.65*1.5*22;
+  const caR=nuitees*0.5*1.5*40;
+  const caSal=caH*0.04;
+  return {to,pm,revpar:to*pm,nuitees,caH,caPDJ,caR,caSal,ca:caH+caPDJ+caR+caSal};
+}
+
+const N_YEARS = 11;
+
+function computeAll(p, loyerOverride){
+  const loyer0 = loyerOverride !== undefined ? loyerOverride : p.loyer;
+  const idx = p.idxLoyer/100;
+
+  // Annees
+  const annees = Array.from({length:N_YEARS},(_,i)=>p.annee+i);
+  const loyers = annees.map((_,i)=>loyer0*Math.pow(1+idx,i));
+
+  // Dette SCI
+  const dSCI = buildDette(p.detteSCI, p.tauxDetteSCI/100, p.dureeSCI);
+  // Dette FDC
+  const dFDC = buildDette(p.detteFDC, p.tauxDetteFDC/100, p.dureeFDC);
+
+  const amortMurs = p.vefa/40;
+  const chargesFonc = p.vefa*0.01;
+  const amortFFE = p.ffe/7;
+  const intCCA_SCI = p.ccaSCI * p.tauxCcaSCI/100;
+  const intCCA_FDC = p.ccaFDC * p.tauxCcaFDC/100;
+
+  // BP SCI
+  const bpSCI = annees.map((_,i)=>{
+    const loyer=loyers[i];
+    const intDette = i<dSCI.length ? dSCI[i].interets : 0;
+    const remb = i<dSCI.length ? dSCI[i].amortCap : 0;
+    const totalCharges = intDette + intCCA_SCI + amortMurs + chargesFonc;
+    const resultat = loyer - totalCharges;
+    const cfSCI = resultat + amortMurs - remb;
+    return {loyer,intDette,intCCA:intCCA_SCI,amortMurs,chargesFonc,totalCharges,resultat,cfSCI,remb};
+  });
+
+  // BP FDC
+  const bpFDC = annees.map((_,i)=>{
+    const ca = computeCA(p, i);
+    const loyer = loyers[i];
+    const fb = (ca.caPDJ+ca.caR)*0.30;
+    const sal = ca.ca*0.30;
+    const franch = ca.ca*0.08;
+    const comm = ca.caH*0.06;
+    const energie = ca.ca*0.013;
+    const honor = ca.ca*0.045;
+    const holding = ca.ca*0.04;
+    const autres = ca.ca*0.09;
+    const totalHorsLoyer = fb+sal+franch+comm+energie+honor+holding+autres;
+    const gop = ca.ca - totalHorsLoyer;
+    const ebitda = gop - loyer;
+    const intDette = i<dFDC.length ? dFDC[i].interets : 0;
+    const remb = i<dFDC.length ? dFDC[i].amortCap : 0;
+    const resAvIS = ebitda - amortFFE - intDette - intCCA_FDC;
+    const is = Math.max(0, resAvIS*0.25);
+    const resNet = resAvIS - is;
+    const fluxTrso = ebitda - remb - is;
+    return {...ca, loyer, fb, sal, franch, comm, energie, honor, holding, autres, totalHorsLoyer, gop, ebitda, intDette, remb, amortFFE, intCCA:intCCA_FDC, resAvIS, is, resNet, fluxTrso};
+  });
+
+  // TRI SCI
+  const invSCI = -(p.equitySCI + p.ccaSCI);
+  const vtSCI = 15 * loyers[N_YEARS-1];
+  const fSCI = [invSCI, ...bpSCI.slice(0,N_YEARS-1).map(r=>r.cfSCI), bpSCI[N_YEARS-1].cfSCI+vtSCI];
+  const triSCI = calcTRI(fSCI);
+  const vanSCI = calcVAN(fSCI, 0.08);
+
+  // TRI FDC
+  const invFDC = -(p.equityFDC + p.ccaFDC);
+  const vtFDC = 10 * bpFDC[N_YEARS-1].ebitda;
+  const fFDC = [invFDC, ...bpFDC.slice(0,N_YEARS-1).map(r=>r.fluxTrso), bpFDC[N_YEARS-1].fluxTrso+vtFDC];
+  const triFDC = calcTRI(fFDC);
+  const vanFDC = calcVAN(fFDC, 0.08);
+
+  // First pos FDC
+  let firstPos = null;
+  for(let i=0;i<bpFDC.length;i++){ if(bpFDC[i].fluxTrso>0){firstPos=p.annee+i;break;} }
+
+  return {annees,loyers,bpSCI,bpFDC,dSCI,dFDC,
+    triSCI,vanSCI,invSCI,vtSCI,fSCI,
+    triFDC,vanFDC,invFDC,vtFDC,fFDC,
+    amortMurs,amortFFE,intCCA_SCI,intCCA_FDC,chargesFonc,
+    firstPos, loyer0};
+}
+
+// ══════════════════════════════════════════════════════════════
+// RENDER
+// ══════════════════════════════════════════════════════════════
+function renderAll(){
+  if(!currentId) return;
+  const p = projects[currentId];
+  calcCache = computeAll(p);
+  renderDashboard(p, calcCache);
+  renderSCI(p, calcCache);
+  renderFDC(p, calcCache);
+  renderEquilibre(p, calcCache);
+}
+
+function renderDashboard(p, c){
+  const renta = c.loyer0 / p.vefa;
+  const cible = p.cibleRenta/100;
+  const loyerCible = p.vefa * cible;
+  const poids = c.loyer0 / c.bpFDC[0].ca;
+  const ebitda4 = c.bpFDC[3]?.ebitda||0;
+  const marge4 = c.bpFDC[3] ? ebitda4/c.bpFDC[3].ca : 0;
+
+  // KPIs
+  setD('d-tri-sci', fmtP(c.triSCI)); setD('d-van-sci', fmt(c.vanSCI));
+  setD('d-tri-fdc', fmtP(c.triFDC)); setD('d-van-fdc', fmt(c.vanFDC));
+  setD('d-renta', fmtP(renta));
+  setD('d-cible-pct', fmtP(cible)); setD('d-loyer-cible', fmt(loyerCible));
+  setD('d-poids', fmtP(poids));
+  setD('d-ebitda4', fmt(ebitda4));
+  document.getElementById('d-tri-sci').style.color = c.triSCI>=0.08?'var(--sci)':'var(--red)';
+  document.getElementById('d-tri-fdc').style.color = c.triFDC>=0.10?'var(--fdc)':'var(--red)';
+  document.getElementById('d-renta').style.color = renta>=cible?'var(--green)':'var(--amber)';
+  document.getElementById('d-poids').style.color = poids<0.32?'var(--green)':poids<0.40?'var(--amber)':'var(--red)';
+
+  setBadge('d-badge-sci', c.triSCI>=0.10?'≥ 10% ✓':c.triSCI>=0.08?'≥ 8%':'< 8% ⚠', c.triSCI>=0.10?'badge-green':c.triSCI>=0.08?'badge-amber':'badge-red');
+  setBadge('d-badge-fdc', c.triFDC>=0.15?'≥ 15% ✓':c.triFDC>=0.10?'≥ 10%':'< 10% ⚠', c.triFDC>=0.15?'badge-green':c.triFDC>=0.10?'badge-amber':'badge-red');
+  setBadge('d-badge-renta', renta>=cible?'≥ cible ✓':'< cible ⚠', renta>=cible?'badge-green':'badge-red');
+  setBadge('d-badge-poids', poids<0.32?'Confortable ✓':poids<0.40?'Acceptable':'Pesant ⚠', poids<0.32?'badge-green':poids<0.40?'badge-amber':'badge-red');
+
+  // Slider
+  const sliderMin = Math.max(50000, Math.round(loyerCible*0.4/5000)*5000);
+  const sliderMax = Math.round(loyerCible*2.2/5000)*5000;
+  const sl = document.getElementById('loyer-slider');
+  sl.min=sliderMin; sl.max=sliderMax; sl.value=c.loyer0;
+  const step5 = (sliderMax-sliderMin)/4;
+  const labs = document.getElementById('slider-labels');
+  labs.innerHTML = [0,1,2,3,4].map(i=>{ const v=sliderMin+i*step5; return `<span>${fmtK(v)}</span>`; }).join('');
+
+  setD('d-loyer-val', Math.round(c.loyer0).toLocaleString('fr-FR'));
+  setD('d-loyer-monthly', `→ ${Math.round(c.loyer0/12).toLocaleString('fr-FR')} €/mois`);
+  setD('d-loyer-n2', fmtK(c.loyers[1]));
+  setD('d-loyer-n5', fmtK(c.loyers[4]));
+  setD('d-idx', (p.idxLoyer).toFixed(1).replace('.',',')+' %');
+
+  // Cibles
+  setCible('d-c-loyer-cible', fmt(loyerCible), Math.abs(c.loyer0-loyerCible)<5000?'good':c.loyer0>=loyerCible?'good':'warn');
+  setD('d-c-loyer-cible-sub', `à ${fmtP(cible)} × VEFA`);
+  setCible('d-c-renta', fmtP(renta), renta>=cible?'good':'warn');
+  setD('d-c-vefa', fmt(p.vefa));
+  setCible('d-c-poids', fmtP(poids), poids<0.32?'good':poids<0.40?'warn':'bad');
+  setCible('d-c-ebitda4', fmt(ebitda4), ebitda4>0?'good':'bad');
+  setD('d-c-marge4', fmtP(marge4));
+  setCible('d-c-cf-sci1', fmt(c.bpSCI[0].cfSCI), c.bpSCI[0].cfSCI>=0?'good':'bad');
+  setD('d-c-cf-sci5', fmt(c.bpSCI[4]?.cfSCI||0));
+
+  // Tréso bars
+  renderTrsoBars('trso-fdc-body', c.annees, c.bpFDC.map(r=>r.fluxTrso), 'var(--fdc)');
+  renderTrsoBars('trso-sci-body', c.annees, c.bpSCI.map(r=>r.cfSCI), 'var(--sci)');
+}
+
+function renderSCI(p, c){
+  // Emplois
+  const totalEmpl = p.vefa+p.terrain+p.fraisSCI;
+  document.getElementById('sci-emplois-table').innerHTML = `
+    <thead><tr><th>Poste</th><th>Montant</th><th>%</th><th>Nature</th></tr></thead>
+    <tbody>
+      <tr><td>Prix VEFA murs</td><td>${fmt(p.vefa)}</td><td>${fmtP(p.vefa/totalEmpl)}</td><td class="n-dim">Immobilier</td></tr>
+      <tr><td>Terrain</td><td>${fmt(p.terrain)}</td><td>${fmtP(p.terrain/totalEmpl)}</td><td class="n-dim">Foncier</td></tr>
+      <tr><td>Frais acquisition</td><td>${fmt(p.fraisSCI)}</td><td>${fmtP(p.fraisSCI/totalEmpl)}</td><td class="n-dim">Notaire</td></tr>
+      <tr class="total"><td>TOTAL EMPLOIS</td><td>${fmt(totalEmpl)}</td><td>100%</td><td>—</td></tr>
+    </tbody>`;
+  const totalRes = p.equitySCI+p.ccaSCI+p.detteSCI;
+  document.getElementById('sci-ressources-table').innerHTML = `
+    <thead><tr><th>Poste</th><th>Montant</th><th>%</th><th>Taux/Durée</th></tr></thead>
+    <tbody>
+      <tr><td>Equity associés SCI</td><td>${fmt(p.equitySCI)}</td><td>${fmtP(p.equitySCI/totalRes)}</td><td class="n-dim">12% att.</td></tr>
+      <tr><td>Compte courant associés</td><td>${fmt(p.ccaSCI)}</td><td>${fmtP(p.ccaSCI/totalRes)}</td><td class="n-dim">${p.tauxCcaSCI}%/an</td></tr>
+      <tr><td>Dette murs / VEFA</td><td>${fmt(p.detteSCI)}</td><td>${fmtP(p.detteSCI/totalRes)}</td><td class="n-dim">${p.tauxDetteSCI}% / ${p.dureeSCI} ans</td></tr>
+      <tr class="total"><td>TOTAL RESSOURCES</td><td>${fmt(totalRes)}</td><td>100%</td><td>—</td></tr>
+      <tr class="highlight"><td>✔ Équilibre</td><td class="${totalRes-totalEmpl>=0?'n-pos':'n-neg'}">${fmt(totalRes-totalEmpl)}</td><td>—</td><td>—</td></tr>
+    </tbody>`;
+
+  // TRI details
+  document.getElementById('sci-tri-big').textContent = fmtP(c.triSCI);
+  document.getElementById('sci-tri-big').style.color = c.triSCI>=0.08?'var(--sci)':'var(--red)';
+  setD('sci-tri-inv', fmt(Math.abs(c.invSCI)));
+  setD('sci-tri-van', fmt(c.vanSCI));
+  const rentaBrute = c.loyer0/p.vefa;
+  document.getElementById('sci-tri-details').innerHTML = `
+    <div class="detail-card"><div class="detail-lbl">Rentabilité brute Loyer/VEFA</div><div class="detail-val ${rentaBrute>=p.cibleRenta/100?'n-pos':'n-neg'}">${fmtP(rentaBrute)}</div><div class="detail-sub">Cible ≥ ${fmtP(p.cibleRenta/100)}</div></div>
+    <div class="detail-card"><div class="detail-lbl">Loyer cible théorique</div><div class="detail-val n-sci">${fmt(p.vefa*p.cibleRenta/100)}</div><div class="detail-sub">Pour atteindre la cible</div></div>
+    <div class="detail-card"><div class="detail-lbl">Valeur terminale (×15 loyer an 11)</div><div class="detail-val n-sci">${fmt(c.vtSCI)}</div><div class="detail-sub">Hypothèse de sortie</div></div>
+    <div class="detail-card"><div class="detail-lbl">Cash-flow SCI cumulé</div><div class="detail-val n-sci">${fmt(c.bpSCI.reduce((s,r)=>s+r.cfSCI,0))}</div><div class="detail-sub">Hors valeur terminale</div></div>`;
+
+  // BP SCI
+  const yrs = c.annees.slice(0,Math.min(8,N_YEARS));
+  document.getElementById('sci-bp-years').textContent = `${yrs[0]}–${yrs[yrs.length-1]}`;
+  const bpRows = [
+    {s:true,l:'Produits'},
+    {l:'Loyer annuel HT',k:'loyer',cls:'loyer-row'},
+    {s:true,l:'Charges'},
+    {l:'Intérêts dette murs',k:'intDette'},
+    {l:'Intérêts CCA SCI',k:'intCCA'},
+    {l:'Amort. murs (40 ans)',k:'amortMurs'},
+    {l:'Charges foncières (~1%)',k:'chargesFonc'},
+    {l:'TOTAL CHARGES',k:'totalCharges',total:true},
+    {s:true,l:'Résultats'},
+    {l:'Résultat avant IS',k:'resultat',res:true},
+    {l:'Cash-flow SCI',k:'cfSCI',res:true},
+  ];
+  renderBPTable('sci-bp-table', yrs, bpRows, c.bpSCI);
+
+  // Dette
+  renderDetteTable('sci-dette-table', c.dSCI, p.annee);
+  // Flux
+  const fSCIrows = [
+    {l:'(−) Equity + CCA investis', data:[c.invSCI,...Array(N_YEARS).fill(0)]},
+    {l:'(+) Cash-flow SCI annuel', data:[0,...c.bpSCI.map(r=>r.cfSCI)]},
+    {l:'(+) Valeur terminale (×15)', data:[0,...Array(N_YEARS-1).fill(0),c.vtSCI]},
+    {l:'FLUX TOTAL', data:c.fSCI, total:true},
+  ];
+  renderFluxTable('sci-flux-table', c.annees, fSCIrows);
+}
+
+function renderFDC(p, c){
+  const totalEmpl = p.ffe+p.bfr+p.fraisFDC;
+  document.getElementById('fdc-emplois-table').innerHTML = `
+    <thead><tr><th>Poste</th><th>Montant</th><th>%</th><th>Nature</th></tr></thead>
+    <tbody>
+      <tr><td>FF&amp;E mobilier &amp; équipements</td><td>${fmt(p.ffe)}</td><td>${fmtP(p.ffe/totalEmpl)}</td><td class="n-dim">Équipements</td></tr>
+      <tr><td>BFR initial</td><td>${fmt(p.bfr)}</td><td>${fmtP(p.bfr/totalEmpl)}</td><td class="n-dim">Fonds de roulement</td></tr>
+      <tr><td>Frais de constitution</td><td>${fmt(p.fraisFDC)}</td><td>${fmtP(p.fraisFDC/totalEmpl)}</td><td class="n-dim">Divers</td></tr>
+      <tr class="total"><td>TOTAL EMPLOIS</td><td>${fmt(totalEmpl)}</td><td>100%</td><td>—</td></tr>
+    </tbody>`;
+  const totalRes = p.equityFDC+p.ccaFDC+p.detteFDC;
+  document.getElementById('fdc-ressources-table').innerHTML = `
+    <thead><tr><th>Poste</th><th>Montant</th><th>%</th><th>Taux/Durée</th></tr></thead>
+    <tbody>
+      <tr><td>Equity exploitant</td><td>${fmt(p.equityFDC)}</td><td>${fmtP(p.equityFDC/totalRes)}</td><td class="n-dim">15% att.</td></tr>
+      <tr><td>Compte courant exploitant</td><td>${fmt(p.ccaFDC)}</td><td>${fmtP(p.ccaFDC/totalRes)}</td><td class="n-dim">${p.tauxCcaFDC}%/an</td></tr>
+      <tr><td>Dette FF&amp;E</td><td>${fmt(p.detteFDC)}</td><td>${fmtP(p.detteFDC/totalRes)}</td><td class="n-dim">${p.tauxDetteFDC}% / ${p.dureeFDC} ans</td></tr>
+      <tr class="total"><td>TOTAL RESSOURCES</td><td>${fmt(totalRes)}</td><td>100%</td><td>—</td></tr>
+      <tr class="highlight"><td>✔ Équilibre</td><td class="${totalRes-totalEmpl>=0?'n-pos':'n-neg'}">${fmt(totalRes-totalEmpl)}</td><td>—</td><td>—</td></tr>
+    </tbody>`;
+
+  document.getElementById('fdc-tri-big').textContent = fmtP(c.triFDC);
+  document.getElementById('fdc-tri-big').style.color = c.triFDC>=0.10?'var(--fdc)':'var(--red)';
+  setD('fdc-tri-inv', fmt(Math.abs(c.invFDC)));
+  setD('fdc-tri-van', fmt(c.vanFDC));
+  document.getElementById('fdc-tri-details').innerHTML = `
+    <div class="detail-card"><div class="detail-lbl">EBITDA plateau (an 4)</div><div class="detail-val n-fdc">${fmt(c.bpFDC[3]?.ebitda||0)}</div><div class="detail-sub">Marge ${fmtP(c.bpFDC[3]?(c.bpFDC[3].ebitda/c.bpFDC[3].ca):0)}</div></div>
+    <div class="detail-card"><div class="detail-lbl">Flux tréso FDC an 1</div><div class="detail-val ${c.bpFDC[0].fluxTrso>=0?'n-pos':'n-neg'}">${fmt(c.bpFDC[0].fluxTrso)}</div><div class="detail-sub">Après loyer, dette, IS</div></div>
+    <div class="detail-card"><div class="detail-lbl">Valeur terminale (×10 EBITDA)</div><div class="detail-val n-fdc">${fmt(c.vtFDC)}</div><div class="detail-sub">Hypothèse de sortie</div></div>
+    <div class="detail-card"><div class="detail-lbl">1ère tréso positive FDC</div><div class="detail-val ${c.firstPos&&c.firstPos<=p.annee+3?'n-pos':c.firstPos?'':'n-neg'}">${c.firstPos||'N/A'}</div><div class="detail-sub">Flux annuel net positif</div></div>`;
+
+  const yrs = c.annees.slice(0,Math.min(8,N_YEARS));
+  document.getElementById('fdc-bp-years').textContent = `${yrs[0]}–${yrs[yrs.length-1]}`;
+  const bpRows = [
+    {s:true,l:'Activité hôtelière'},
+    {l:'CA Hébergement HT',k:'caH'},
+    {l:'CA F&B (PDJ + Resto)',kFn:r=>(r.caPDJ||0)+(r.caR||0)},
+    {l:'Salles / Spa / Parking',k:'caSal'},
+    {l:'TOTAL CA HT',k:'ca',total:true},
+    {s:true,l:'Charges'},
+    {l:'⚑ Loyer versé à la SCI',k:'loyer',cls:'loyer-row'},
+    {l:'Marchandises F&B (30%)',k:'fb'},
+    {l:'Masse salariale',k:'sal'},
+    {l:'Redevance franchiseur',k:'franch'},
+    {l:'Commission agence',k:'comm'},
+    {l:'Énergie',k:'energie'},
+    {l:'Honoraires',k:'honor'},
+    {l:'Redevance holding',k:'holding'},
+    {l:'Autres charges',k:'autres'},
+    {s:true,l:'Résultats'},
+    {l:'GOP (avant loyer)',k:'gop',res:true},
+    {l:'EBITDA (après loyer)',k:'ebitda',res:true},
+    {l:'Résultat avant IS',k:'resAvIS',res:true},
+    {l:'IS (25%)',k:'is'},
+    {l:'Résultat net',k:'resNet',total:true},
+    {l:'Flux trésorerie net',k:'fluxTrso',res:true},
+  ];
+  renderBPTable('fdc-bp-table', yrs, bpRows, c.bpFDC);
+  renderDetteTable('fdc-dette-table', c.dFDC, p.annee);
+
+  const fFDCrows = [
+    {l:'(−) Equity + CCA investis', data:[c.invFDC,...Array(N_YEARS).fill(0)]},
+    {l:'(+) EBITDA FDC', data:[0,...c.bpFDC.map(r=>r.ebitda)]},
+    {l:'(−) Remb. capital dette FF&E', data:[0,...c.bpFDC.map(r=>-r.remb)]},
+    {l:'(−) IS payé', data:[0,...c.bpFDC.map(r=>-r.is)]},
+    {l:'(+) Valeur terminale (×10 EBITDA)', data:[0,...Array(N_YEARS-1).fill(0),c.vtFDC]},
+    {l:'FLUX FDC TOTAL', data:c.fFDC, total:true},
+  ];
+  renderFluxTable('fdc-flux-table', c.annees, fFDCrows);
+}
+
+function renderEquilibre(p, c){
+  const renta = c.loyer0/p.vefa;
+  const cible = p.cibleRenta/100;
+  const poids = c.loyer0/c.bpFDC[0].ca;
+  document.getElementById('eq-cible').value = p.cibleRenta;
+
+  // Balance
+  const fdcW = Math.max(5, Math.min(90, poids*100/0.5*50));
+  const sciW = Math.max(5, Math.min(90, renta*100/0.10*50));
+  document.getElementById('eq-bal-fdc').style.width = fdcW+'%';
+  document.getElementById('eq-bal-sci').style.width = sciW+'%';
+  setD('eq-lbl-fdc', fmtP(poids)+' CA');
+  setD('eq-lbl-sci', fmtP(renta)+' VEFA');
+
+  const loyCible = p.vefa*cible;
+  setD('eq-loyer-cible', fmt(loyCible));
+  document.getElementById('eq-marker-lbl').textContent = `Cible ${fmtP(cible)}`;
+
+  const maxVis=0.12;
+  const fillPct = Math.min(100, renta/maxVis*100);
+  const markPct = Math.min(98, cible/maxVis*100);
+  document.getElementById('eq-gauge-fill').style.width = fillPct+'%';
+  document.getElementById('eq-gauge-fill').style.backgroundColor = renta>=cible?'var(--green)':'var(--amber)';
+  document.getElementById('eq-marker').style.left = markPct+'%';
+
+  // Synthèse 5 ans
+  const tbody = document.getElementById('eq-synth-body');
+  tbody.innerHTML = c.annees.slice(0,5).map((_,i)=>{
+    const ri = c.loyers[i]/p.vefa;
+    const pi = c.bpFDC[i] ? c.loyers[i]/c.bpFDC[i].ca : 0;
+    return `<tr>
+      <td class="n-dim">${c.annees[i]}</td>
+      <td class="n-gold">${fmt(c.loyers[i])}</td>
+      <td class="${ri>=cible?'n-pos':'n-neg'}">${fmtP(ri)}</td>
+      <td class="${pi<0.35?'n-pos':pi<0.42?'':'n-neg'}">${fmtP(pi)}</td>
+      <td class="${c.bpSCI[i].cfSCI>=0?'n-pos':'n-neg'}">${fmt(c.bpSCI[i].cfSCI)}</td>
+      <td class="${c.bpFDC[i].fluxTrso>=0?'n-pos':'n-neg'}">${fmt(c.bpFDC[i].fluxTrso)}</td>
+    </tr>`;
+  }).join('');
+
+  // Sensibilité loyer
+  const loyerBase = c.loyer0;
+  const steps = [-20,-15,-10,-5,0,+5,+10,+15,+20];
+  const rows = steps.map(pct=>{
+    const l = Math.round(loyerBase*(1+pct/100)/5000)*5000;
+    const cc = computeAll(p, l);
+    const r = l/p.vefa;
+    const po = l/cc.bpFDC[0].ca;
+    return {pct, l, triSCI:cc.triSCI, triFDC:cc.triFDC, renta:r, poids:po, current: pct===0};
+  });
+  const stHead = '<tr><th>Loyer</th><th>Var.</th><th>Renta VEFA</th><th>TRI SCI</th><th>TRI FDC</th><th>Poids/CA</th></tr>';
+  const stBody = rows.map(r=>{
+    const hl = r.current?'background:var(--gold-pale);':'';
+    return `<tr style="${hl}">
+      <td class="${r.current?'n-gold':''}">${fmt(r.l)}${r.current?' ◄':''}</td>
+      <td class="n-dim">${r.pct>=0?'+':''}${r.pct}%</td>
+      <td class="${r.renta>=cible?'n-pos':'n-neg'}">${fmtP(r.renta)}</td>
+      <td class="${r.triSCI>=0.08?'n-sci':'n-neg'}">${fmtP(r.triSCI)}</td>
+      <td class="${r.triFDC>=0.10?'n-fdc':'n-neg'}">${fmtP(r.triFDC)}</td>
+      <td class="${r.poids<0.35?'n-pos':r.poids<0.42?'':'n-neg'}">${fmtP(r.poids)}</td>
+    </tr>`;
+  }).join('');
+  document.getElementById('eq-sensib-table').innerHTML = `<thead>${stHead}</thead><tbody>${stBody}</tbody>`;
+}
+
+// ── TABLE HELPERS ──
+function renderBPTable(id, yrs, rows, data){
+  const head = '<thead><tr><th>Indicateur</th>'+yrs.map(y=>`<th>${y}</th>`).join('')+'</tr></thead>';
+  const body = '<tbody>'+rows.map(row=>{
+    if(row.s) return `<tr class="section"><td colspan="${yrs.length+1}">${row.l}</td></tr>`;
+    const cls = row.total?'total':row.res?'':row.cls||'';
+    const cells = yrs.map((_,i)=>{
+      const v = row.kFn ? row.kFn(data[i]||{}) : (data[i]?data[i][row.k]:0)||0;
+      return `<td class="${v<0?'n-neg':''}">${fmt(v)}</td>`;
+    }).join('');
+    return `<tr class="${cls}"><td>${row.l}</td>${cells}</tr>`;
+  }).join('')+'</tbody>';
+  document.getElementById(id).innerHTML = head+body;
+}
+
+function renderDetteTable(id, rows, anneeOuv){
+  const head = '<thead><tr><th>Année</th><th>Cap. début</th><th>Intérêts</th><th>Amort.</th><th>Annuité</th><th>Cap. fin</th></tr></thead>';
+  const body = '<tbody>'+rows.map((r,i)=>`<tr>
+    <td class="n-dim">${anneeOuv+i}</td>
+    <td>${fmt(r.capDebut)}</td>
+    <td class="n-neg">${fmt(r.interets)}</td>
+    <td>${fmt(r.amortCap)}</td>
+    <td>${fmt(r.annuite)}</td>
+    <td>${fmt(r.capFin)}</td>
+  </tr>`).join('')+'</tbody>';
+  document.getElementById(id).innerHTML = head+body;
+}
+
+function renderFluxTable(id, annees, rows){
+  const cols = ['An 0',...annees.map(y=>y.toString())];
+  const head = '<thead><tr><th>Flux</th>'+cols.map(c=>`<th>${c}</th>`).join('')+'</tr></thead>';
+  const body = '<tbody>'+rows.map(row=>{
+    const cls = row.total?'total':'';
+    const cells = Array(N_YEARS+1).fill(0).map((_,i)=>{
+      const v = (row.data[i])||0;
+      return `<td class="${v<0?'n-neg':v>0?'n-pos':'n-dim'}">${fmt(v)}</td>`;
+    }).join('');
+    return `<tr class="${cls}"><td>${row.l}</td>${cells}</tr>`;
+  }).join('')+'</tbody>';
+  document.getElementById(id).innerHTML = head+body;
+}
+
+function renderTrsoBars(id, annees, values, color){
+  const maxA = Math.max(...values.map(Math.abs),1);
+  document.getElementById(id).innerHTML = annees.map((yr,i)=>{
+    const v=values[i]||0;
+    const pct=Math.min(100,Math.abs(v)/maxA*100);
+    const c = v>=0?color:'var(--red)';
+    return `<div class="trso-bar-row">
+      <div class="trso-yr">${yr}</div>
+      <div class="trso-track"><div class="trso-fill" style="width:${pct}%;background:${c};opacity:0.75;"></div></div>
+      <div class="trso-amount" style="color:${c}">${fmt(v)}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── RAMP TABLE ──
+function buildRampTable(){
+  if(!currentId)return;
+  const p = projects[currentId];
+  const N=N_YEARS;
+  const annees = Array.from({length:N},(_,i)=>p.annee+i);
+  let html = `<thead><tr><th>Indicateur</th>`;
+  annees.forEach(yr=>{ html+=`<th>${yr}</th>`; });
+  html += `</tr></thead><tbody>`;
+
+  // TO row
+  html += `<tr><td>TO (%)<br><span class="ramp-badge" onclick="resetRampField('TO')">↺ Auto</span></td>`;
+  annees.forEach((_,i)=>{
+    const auto = (getAutoTO(p,i)*100).toFixed(1);
+    const val = p.rampTO[i]!==null&&p.rampTO[i]!==undefined ? p.rampTO[i] : '';
+    html += `<td><input type="number" class="ramp-to" data-i="${i}" value="${val}" placeholder="${auto}" step="0.5" min="1" max="100" onchange="onRampChange('TO',${i},this.value)"></td>`;
+  });
+  html += `</tr>`;
+
+  // PM row
+  html += `<tr><td>Prix Moyen HT (€)<br><span class="ramp-badge" onclick="resetRampField('PM')">↺ Auto</span></td>`;
+  annees.forEach((_,i)=>{
+    const auto = Math.round(getAutoPM(p,i));
+    const val = p.rampPM[i]!==null&&p.rampPM[i]!==undefined ? p.rampPM[i] : '';
+    html += `<td><input type="number" class="ramp-pm" data-i="${i}" value="${val}" placeholder="${auto}" step="1" min="10" onchange="onRampChange('PM',${i},this.value)"></td>`;
+  });
+  html += `</tr>`;
+
+  // RevPAR auto
+  html += `<tr><td>RevPAR auto (€)</td>`;
+  annees.forEach((_,i)=>{
+    const to=getTO(p,i), pm=getPM(p,i);
+    html += `<td class="auto-val">${(to*pm).toFixed(0)}</td>`;
+  });
+  html += `</tr></tbody>`;
+  document.getElementById('ramp-table').innerHTML = html;
+}
+
+function onRampChange(field, i, val){
+  if(!currentId)return;
+  const p = projects[currentId];
+  const v = val===''||val===null ? null : parseFloat(val);
+  if(field==='TO') p.rampTO[i] = v;
+  else p.rampPM[i] = v;
+  saveStore();
+}
+
+function resetRamp(){
+  if(!currentId)return;
+  const p = projects[currentId];
+  p.rampTO = Array(N_YEARS).fill(null);
+  p.rampPM = Array(N_YEARS).fill(null);
+  saveStore(); buildRampTable();
+}
+
+function resetRampField(field){
+  if(!currentId)return;
+  const p = projects[currentId];
+  if(field==='TO') p.rampTO = Array(N_YEARS).fill(null);
+  else p.rampPM = Array(N_YEARS).fill(null);
+  saveStore(); buildRampTable();
+}
+
+// ══════════════════════════════════════════════════════════════
+// UTIL DOM
+// ══════════════════════════════════════════════════════════════
+function setD(id,val){ const el=document.getElementById(id); if(el)el.textContent=val; }
+function setCible(id,val,cls){ const el=document.getElementById(id); if(!el)return; el.textContent=val; el.className='cible-val '+(cls||''); }
+function setBadge(id,txt,cls){ const el=document.getElementById(id); if(!el)return; el.textContent=txt; el.className='badge '+(cls||''); }
+
+// ══════════════════════════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════════════════════════
+let currentPage = 'empty';
+function showPage(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+name)?.classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach(t=>{ if(t.getAttribute('onclick')?.includes("'"+name+"'"))t.classList.add('active'); });
+  currentPage = name;
+  if(name==='config') loadConfigForm();
+}
+
+// ══════════════════════════════════════════════════════════════
+// CONFIG FORM
+// ══════════════════════════════════════════════════════════════
+function loadConfigForm(){
+  if(!currentId)return;
+  const p = projects[currentId];
+  const fields = ['nom','ville','chambres','annee','to','pm','inflation','idxLoyer',
+    'vefa','terrain','fraisSCI','equitySCI','ccaSCI','tauxCcaSCI','detteSCI','tauxDetteSCI','dureeSCI','cibleRenta',
+    'ffe','bfr','fraisFDC','equityFDC','ccaFDC','tauxCcaFDC','detteFDC','tauxDetteFDC','dureeFDC','loyer'];
+  fields.forEach(f=>{ const el=document.getElementById('c-'+f); if(el)el.value=p[f]??''; });
+  buildRampTable();
+}
+
+function saveConfig(){
+  if(!currentId)return;
+  const p = projects[currentId];
+  const num = id => parseFloat(document.getElementById(id).value)||0;
+  const str = id => document.getElementById(id).value||'';
+  p.nom=str('c-nom'); p.ville=str('c-ville');
+  p.chambres=num('c-chambres'); p.annee=Math.round(num('c-annee')); p.to=num('c-to'); p.pm=num('c-pm');
+  p.inflation=num('c-inflation'); p.idxLoyer=num('c-idx-loyer');
+  p.vefa=num('c-vefa'); p.terrain=num('c-terrain'); p.fraisSCI=num('c-frais-sci');
+  p.equitySCI=num('c-equity-sci'); p.ccaSCI=num('c-cca-sci'); p.tauxCcaSCI=num('c-taux-cca-sci');
+  p.detteSCI=num('c-dette-sci'); p.tauxDetteSCI=num('c-taux-dette-sci'); p.dureeSCI=num('c-duree-sci');
+  p.cibleRenta=num('c-cible-renta');
+  p.ffe=num('c-ffe'); p.bfr=num('c-bfr'); p.fraisFDC=num('c-frais-fdc');
+  p.equityFDC=num('c-equity-fdc'); p.ccaFDC=num('c-cca-fdc'); p.tauxCcaFDC=num('c-taux-cca-fdc');
+  p.detteFDC=num('c-dette-fdc'); p.tauxDetteFDC=num('c-taux-dette-fdc'); p.dureeFDC=num('c-duree-fdc');
+  p.loyer=num('c-loyer');
+  // Re-extend ramp arrays if needed
+  while(p.rampTO.length<N_YEARS)p.rampTO.push(null);
+  while(p.rampPM.length<N_YEARS)p.rampPM.push(null);
+  saveStore();
+  renderProjectList();
+  renderAll();
+  showPage('dashboard');
+}
+
+function loadFromProject(){ loadConfigForm(); }
+
+// ══════════════════════════════════════════════════════════════
+// PROJECT MANAGEMENT
+// ══════════════════════════════════════════════════════════════
+function renderProjectList(){
+  const list = document.getElementById('project-list');
+  const ids = Object.keys(projects);
+  if(ids.length===0){ list.innerHTML='<div style="padding:12px;font-size:11px;color:var(--text-muted);text-align:center;">Aucun projet</div>'; return; }
+  list.innerHTML = ids.map(id=>{
+    const p=projects[id];
+    const active = id===currentId?'active':'';
+    const title = p.nom||(p.ville?'Hôtel '+p.ville:'Nouveau projet');
+    return `<div class="project-item ${active}" onclick="openProject('${id}')">
+      <div class="project-name">${title}</div>
+      <div class="project-meta">${p.ville||'—'} · ${p.chambres||'—'} ch · ${p.annee||'—'}</div>
+      <span class="project-del" onclick="event.stopPropagation();deleteProject('${id}')">✕</span>
+    </div>`;
+  }).join('');
+}
+
+function openProject(id){
+  currentId = id;
+  const p = projects[id];
+  const title = p.nom||(p.ville?'Hôtel '+p.ville:'Projet sans nom');
+  const el = document.getElementById('topnav-title');
+  const parts = title.split(' ');
+  el.innerHTML = parts.slice(0,-1).join(' ')+' <em>'+parts[parts.length-1]+'</em>';
+  document.getElementById('nav-tabs').style.display='flex';
+  renderProjectList();
+  renderAll();
+  showPage('dashboard');
+}
+
+function openNewModal(){
+  document.getElementById('modal-new').classList.remove('hidden');
+  document.getElementById('modal-nom').value='';
+  document.getElementById('modal-ville').value='';
+  setTimeout(()=>document.getElementById('modal-nom').focus(),50);
+}
+function closeNewModal(){ document.getElementById('modal-new').classList.add('hidden'); }
+
+function createProject(){
+  const nom = document.getElementById('modal-nom').value.trim();
+  const ville = document.getElementById('modal-ville').value.trim();
+  if(!nom){ document.getElementById('modal-nom').focus(); return; }
+  const p = defaultProject(nom, ville);
+  projects[p.id] = p;
+  saveStore();
+  closeNewModal();
+  openProject(p.id);
+  setTimeout(()=>showPage('config'),100);
+}
+
+function deleteProject(id){
+  if(!confirm('Supprimer ce projet ?'))return;
+  delete projects[id];
+  if(currentId===id){
+    currentId=null;
+    document.getElementById('nav-tabs').style.display='none';
+    setD('topnav-title','Aucun projet');
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    document.getElementById('page-empty').classList.add('active');
+  }
+  saveStore(); renderProjectList();
+}
+
+function duplicateProject(){
+  if(!currentId)return;
+  const src = projects[currentId];
+  const copy = JSON.parse(JSON.stringify(src));
+  copy.id = 'p_'+Date.now();
+  copy.nom = (copy.nom||'Projet')+' (copie)';
+  copy.createdAt = new Date().toISOString();
+  projects[copy.id]=copy;
+  saveStore(); openProject(copy.id);
+}
+
+function exportProject(){
+  if(!currentId)return;
+  const p=projects[currentId];
+  const blob=new Blob([JSON.stringify(p,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=(p.nom||'projet').replace(/\s+/g,'_')+'.json';
+  a.click();
+}
+
+function triggerImport(){ document.getElementById('import-input').click(); }
+function importProject(e){
+  const file=e.target.files[0]; if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    try{
+      const p=JSON.parse(ev.target.result);
+      if(!p.id)p.id='p_'+Date.now();
+      while((p.rampTO||[]).length<N_YEARS)(p.rampTO=p.rampTO||[]).push(null);
+      while((p.rampPM||[]).length<N_YEARS)(p.rampPM=p.rampPM||[]).push(null);
+      projects[p.id]=p;
+      saveStore(); openProject(p.id);
+    }catch(err){ alert('Fichier JSON invalide'); }
+  };
+  reader.readAsText(file);
+  e.target.value='';
+}
+
+// ══════════════════════════════════════════════════════════════
+// SLIDER & REALTIME
+// ══════════════════════════════════════════════════════════════
+function onLoyerSlider(){
+  if(!currentId)return;
+  const v = parseInt(document.getElementById('loyer-slider').value);
+  const p = projects[currentId];
+  const c = computeAll(p, v);
+  // Mise à jour légère (pas toutes les tables)
+  setD('d-loyer-val', Math.round(v).toLocaleString('fr-FR'));
+  setD('d-loyer-monthly', `→ ${Math.round(v/12).toLocaleString('fr-FR')} €/mois`);
+  setD('d-loyer-n2', fmtK(c.loyers[1]));
+  setD('d-loyer-n5', fmtK(c.loyers[4]));
+  const renta=v/p.vefa, cible=p.cibleRenta/100, poids=v/c.bpFDC[0].ca;
+  const ebitda4=c.bpFDC[3]?.ebitda||0;
+  document.getElementById('d-tri-sci').textContent=fmtP(c.triSCI);
+  document.getElementById('d-tri-sci').style.color=c.triSCI>=0.08?'var(--sci)':'var(--red)';
+  document.getElementById('d-tri-fdc').textContent=fmtP(c.triFDC);
+  document.getElementById('d-tri-fdc').style.color=c.triFDC>=0.10?'var(--fdc)':'var(--red)';
+  document.getElementById('d-renta').textContent=fmtP(renta);
+  document.getElementById('d-renta').style.color=renta>=cible?'var(--green)':'var(--amber)';
+  document.getElementById('d-poids').textContent=fmtP(poids);
+  document.getElementById('d-poids').style.color=poids<0.32?'var(--green)':poids<0.40?'var(--amber)':'var(--red)';
+  setBadge('d-badge-sci',c.triSCI>=0.10?'≥ 10% ✓':c.triSCI>=0.08?'≥ 8%':'< 8% ⚠',c.triSCI>=0.10?'badge-green':c.triSCI>=0.08?'badge-amber':'badge-red');
+  setBadge('d-badge-fdc',c.triFDC>=0.15?'≥ 15% ✓':c.triFDC>=0.10?'≥ 10%':'< 10% ⚠',c.triFDC>=0.15?'badge-green':c.triFDC>=0.10?'badge-amber':'badge-red');
+  setBadge('d-badge-renta',renta>=cible?'≥ cible ✓':'< cible ⚠',renta>=cible?'badge-green':'badge-red');
+  setBadge('d-badge-poids',poids<0.32?'Confortable ✓':poids<0.40?'Acceptable':'Pesant ⚠',poids<0.32?'badge-green':poids<0.40?'badge-amber':'badge-red');
+  setCible('d-c-renta',fmtP(renta),renta>=cible?'good':'warn');
+  setCible('d-c-poids',fmtP(poids),poids<0.32?'good':poids<0.40?'warn':'bad');
+  setCible('d-c-ebitda4',fmt(ebitda4),ebitda4>0?'good':'bad');
+  setD('d-c-marge4',fmtP(c.bpFDC[3]?ebitda4/c.bpFDC[3].ca:0));
+  setCible('d-c-cf-sci1',fmt(c.bpSCI[0].cfSCI),c.bpSCI[0].cfSCI>=0?'good':'bad');
+  setD('d-c-cf-sci5',fmt(c.bpSCI[4]?.cfSCI||0));
+  renderTrsoBars('trso-fdc-body',c.annees,c.bpFDC.map(r=>r.fluxTrso),'var(--fdc)');
+  renderTrsoBars('trso-sci-body',c.annees,c.bpSCI.map(r=>r.cfSCI),'var(--sci)');
+  // Update equilibre page if visible
+  if(currentPage==='equilibre'){ calcCache=c; renderEquilibre(p,c); }
+}
+
+function onEqCible(){
+  if(!currentId)return;
+  const p=projects[currentId];
+  p.cibleRenta=parseFloat(document.getElementById('eq-cible').value)||6.5;
+  saveStore();
+  if(calcCache) renderEquilibre(p, calcCache);
+}
+
+// ══════════════════════════════════════════════════════════════
+// MODAL KEYBOARD
+// ══════════════════════════════════════════════════════════════
+document.getElementById('modal-nom').addEventListener('keydown',e=>{ if(e.key==='Enter')createProject(); if(e.key==='Escape')closeNewModal(); });
+document.getElementById('modal-ville').addEventListener('keydown',e=>{ if(e.key==='Enter')createProject(); if(e.key==='Escape')closeNewModal(); });
+document.getElementById('modal-overlay'||'modal-new').addEventListener('click',function(e){ if(e.target===this)closeNewModal(); });
+
+// ══════════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════════
+projects = loadStore();
+renderProjectList();
+// If there are projects, open the most recent one
+const ids = Object.keys(projects);
+if(ids.length>0){
+  openProject(ids[ids.length-1]);
+} else {
+  // Load Béla Valence as demo
+  const demo = defaultProject('Béla Valence', 'Valence');
+  demo.id = 'demo_bela';
+  projects[demo.id]=demo;
+  saveStore();
+  openProject(demo.id);
+}
+</script>
+</body>
+</html>
