@@ -392,61 +392,181 @@ hr.div{border:none;border-top:1px solid var(--border);margin:12px 0;}
 
       <!-- ── CONFIG ── -->
       <div class="page" id="page-config">
-        <div class="config-grid">
-          <!-- Hôtel -->
+
+        <!-- ROW 1 : Hotel general -->
+        <div style="margin-bottom:16px;">
           <div class="panel">
-            <div class="panel-header"><span class="dot dot-gold"></span><h3>Hôtel — Général</h3></div>
+            <div class="panel-header"><span class="dot dot-gold"></span><h3>H&ocirc;tel &mdash; G&eacute;n&eacute;ral</h3></div>
             <div class="panel-body">
-              <div class="field-grid field-grid-2" style="gap:8px;">
-                <div class="field"><label>Nom du projet</label><div class="input-wrap"><input type="text" id="c-nom" placeholder="Ex: Hôtel Lumière Lyon"></div></div>
+              <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
+                <div class="field"><label>Nom du projet</label><div class="input-wrap"><input type="text" id="c-nom" placeholder="Ex: H&ocirc;tel Lumi&egrave;re Lyon"></div></div>
                 <div class="field"><label>Ville</label><div class="input-wrap"><input type="text" id="c-ville" placeholder="Lyon"></div></div>
                 <div class="field"><label>Nb chambres</label><div class="input-wrap"><input type="number" id="c-chambres" value="85"><span class="unit">ch</span></div></div>
-                <div class="field"><label>Année ouverture</label><div class="input-wrap"><input type="number" id="c-annee" value="2027"></div></div>
+                <div class="field"><label>Ann&eacute;e ouverture</label><div class="input-wrap"><input type="number" id="c-annee" value="2027"></div></div>
                 <div class="field"><label>TO plateau (an 4+)</label><div class="input-wrap"><input type="number" id="c-to" value="68" step="0.5"><span class="unit">%</span></div></div>
-                <div class="field"><label>Prix Moyen HT plateau</label><div class="input-wrap"><input type="number" id="c-pm" value="190"><span class="unit">€</span></div></div>
-                <div class="field"><label>Inflation tarif (dès an 4)</label><div class="input-wrap"><input type="number" id="c-inflation" value="2.5" step="0.1"><span class="unit">%</span></div></div>
+                <div class="field"><label>Prix Moyen HT plateau</label><div class="input-wrap"><input type="number" id="c-pm" value="190"><span class="unit">&euro;</span></div></div>
+                <div class="field"><label>Inflation tarif (d&egrave;s an 4)</label><div class="input-wrap"><input type="number" id="c-inflation" value="2.5" step="0.1"><span class="unit">%</span></div></div>
                 <div class="field"><label>Indexation loyer/an</label><div class="input-wrap"><input type="number" id="c-idx-loyer" value="2.0" step="0.1"><span class="unit">%</span></div></div>
-              </div>
-            </div>
-          </div>
-          <!-- SCI -->
-          <div class="panel">
-            <div class="panel-header"><span class="dot dot-sci"></span><h3>SCI — Murs</h3></div>
-            <div class="panel-body">
-              <div class="field-grid field-grid-2" style="gap:8px;">
-                <div class="field"><label>Prix VEFA murs</label><div class="input-wrap"><input type="number" id="c-vefa" value="15000000" step="100000"><span class="unit">€</span></div></div>
-                <div class="field"><label>Terrain</label><div class="input-wrap"><input type="number" id="c-terrain" value="1000000" step="50000"><span class="unit">€</span></div></div>
-                <div class="field"><label>Frais acq. / notaire</label><div class="input-wrap"><input type="number" id="c-frais-sci" value="960000" step="10000"><span class="unit">€</span></div></div>
-                <div class="field"><label>Equity associés SCI</label><div class="input-wrap"><input type="number" id="c-equity-sci" value="2000000" step="100000"><span class="unit">€</span></div></div>
-                <div class="field"><label>CCA SCI (solde)</label><div class="input-wrap"><input type="number" id="c-cca-sci" value="6000000" step="100000"><span class="unit">€</span></div></div>
-                <div class="field"><label>Taux CCA SCI</label><div class="input-wrap"><input type="number" id="c-taux-cca-sci" value="4.0" step="0.1"><span class="unit">%</span></div></div>
-                <div class="field"><label>Dette murs</label><div class="input-wrap"><input type="number" id="c-dette-sci" value="9000000" step="100000"><span class="unit">€</span></div></div>
-                <div class="field"><label>Taux dette murs</label><div class="input-wrap"><input type="number" id="c-taux-dette-sci" value="4.0" step="0.1"><span class="unit">%</span></div></div>
-                <div class="field"><label>Durée dette murs</label><div class="input-wrap"><input type="number" id="c-duree-sci" value="20"><span class="unit">ans</span></div></div>
-                <div class="field"><label>Cible rentabilité VEFA</label><div class="input-wrap"><input type="number" id="c-cible-renta" value="6.5" step="0.1"><span class="unit">%</span></div></div>
-              </div>
-            </div>
-          </div>
-          <!-- FDC -->
-          <div class="panel">
-            <div class="panel-header"><span class="dot dot-fdc"></span><h3>FDC — Exploitation</h3></div>
-            <div class="panel-body">
-              <div class="field-grid field-grid-2" style="gap:8px;">
-                <div class="field"><label>FF&E mobilier</label><div class="input-wrap"><input type="number" id="c-ffe" value="3000000" step="100000"><span class="unit">€</span></div></div>
-                <div class="field"><label>BFR initial</label><div class="input-wrap"><input type="number" id="c-bfr" value="150000" step="10000"><span class="unit">€</span></div></div>
-                <div class="field"><label>Frais constitution</label><div class="input-wrap"><input type="number" id="c-frais-fdc" value="50000" step="5000"><span class="unit">€</span></div></div>
-                <div class="field"><label>Equity exploitant</label><div class="input-wrap"><input type="number" id="c-equity-fdc" value="500000" step="50000"><span class="unit">€</span></div></div>
-                <div class="field"><label>CCA exploitant (solde)</label><div class="input-wrap"><input type="number" id="c-cca-fdc" value="1200000" step="50000"><span class="unit">€</span></div></div>
-                <div class="field"><label>Taux CCA exploitant</label><div class="input-wrap"><input type="number" id="c-taux-cca-fdc" value="4.0" step="0.1"><span class="unit">%</span></div></div>
-                <div class="field"><label>Dette FF&E</label><div class="input-wrap"><input type="number" id="c-dette-fdc" value="1500000" step="50000"><span class="unit">€</span></div></div>
-                <div class="field"><label>Taux dette FF&E</label><div class="input-wrap"><input type="number" id="c-taux-dette-fdc" value="4.5" step="0.1"><span class="unit">%</span></div></div>
-                <div class="field"><label>Durée dette FF&E</label><div class="input-wrap"><input type="number" id="c-duree-fdc" value="7"><span class="unit">ans</span></div></div>
-                <div class="field"><label>Loyer an 1 (HT)</label><div class="input-wrap"><input type="number" id="c-loyer" value="1100000" step="5000"><span class="unit">€</span></div></div>
               </div>
             </div>
           </div>
         </div>
 
+        <!-- ROW 2 : SCI -->
+        <div style="margin-bottom:16px;">
+          <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--sci);margin-bottom:8px;padding-left:2px;display:flex;align-items:center;gap:10px;">SCI &mdash; Murs <span style="flex:1;height:1px;background:rgba(123,159,212,0.2);"></span></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+
+            <!-- SCI Emplois -->
+            <div class="panel">
+              <div class="panel-header" style="border-left:2px solid var(--sci);">
+                <span class="dot dot-sci"></span><h3>Emplois SCI</h3>
+                <span style="margin-left:auto;font-family:'DM Mono',monospace;font-size:9px;color:var(--text-muted);">Actif acquis</span>
+              </div>
+              <div class="panel-body">
+                <div class="field-grid" style="gap:8px;">
+                  <div class="field"><label>Travaux &mdash; murs h&ocirc;tel (VEFA)</label><div class="input-wrap"><input type="number" id="c-vefa" value="15000000" step="100000" oninput="updateTotaux()"><span class="unit">&euro;</span></div></div>
+                  <div class="field"><label>Terrain (hors VEFA)</label><div class="input-wrap"><input type="number" id="c-terrain" value="1000000" step="50000" oninput="updateTotaux()"><span class="unit">&euro;</span></div></div>
+                  <div class="field"><label>Honoraires / frais acquisition</label><div class="input-wrap"><input type="number" id="c-frais-sci" value="960000" step="10000" oninput="updateTotaux()"><span class="unit">&euro;</span></div></div>
+                </div>
+                <div style="margin-top:10px;padding:8px 10px;background:var(--bg3);border-radius:3px;border:1px solid var(--border);">
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
+                    <span style="font-size:10px;color:var(--text-muted);">Total VEFA = Travaux + Terrain + Honoraires</span>
+                    <span style="font-family:'DM Mono',monospace;font-size:13px;color:var(--text);font-weight:500;" id="c-total-empl-sci">--</span>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-size:10px;color:var(--text-muted);">Loyer cible (<span id="c-cible-pct-display">6,5</span>% &times; VEFA total)</span>
+                    <span style="font-family:'DM Mono',monospace;font-size:13px;color:var(--gold);font-weight:500;" id="c-loyer-cible-display">--</span>
+                  </div>
+                </div>
+                <div style="margin-top:8px;">
+                  <div class="field"><label>Cible rentabilit&eacute; VEFA</label><div class="input-wrap"><input type="number" id="c-cible-renta" value="6.5" step="0.1" oninput="updateTotaux()"><span class="unit">%</span></div></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- SCI Ressources -->
+            <div class="panel">
+              <div class="panel-header" style="border-left:2px solid var(--sci);">
+                <span class="dot dot-sci"></span><h3>Ressources SCI</h3>
+                <span style="margin-left:auto;font-family:'DM Mono',monospace;font-size:9px;color:var(--text-muted);">Financement</span>
+              </div>
+              <div class="panel-body">
+                <div class="field-grid" style="gap:8px;">
+                  <div class="field"><label>Equity associ&eacute;s SCI</label><div class="input-wrap"><input type="number" id="c-equity-sci" value="2000000" step="100000" oninput="updateTotaux()"><span class="unit">&euro;</span></div></div>
+                  <div class="field"><label>CCA SCI &mdash; solde</label><div class="input-wrap"><input type="number" id="c-cca-sci" value="6000000" step="100000" oninput="updateTotaux()"><span class="unit">&euro;</span></div></div>
+                  <div class="field"><label>Taux int&eacute;r&ecirc;ts CCA SCI</label><div class="input-wrap"><input type="number" id="c-taux-cca-sci" value="4.0" step="0.1"><span class="unit">%/an</span></div></div>
+                  <div class="field"><label>Dette murs (montant)</label><div class="input-wrap"><input type="number" id="c-dette-sci" value="9000000" step="100000" oninput="updateTotaux();syncDette2('sci')"><span class="unit">&euro;</span></div></div>
+                </div>
+                <div style="margin-top:10px;padding:8px 10px;background:var(--bg3);border-radius:3px;border:1px solid var(--border);">
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                    <span style="font-size:10px;color:var(--text-muted);">Total ressources SCI</span>
+                    <span style="font-family:'DM Mono',monospace;font-size:12px;color:var(--text)" id="c-total-res-sci">--</span>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-size:10px;color:var(--text-muted);">&check; &Eacute;quilibre (Res &minus; Emplois)</span>
+                    <span style="font-family:'DM Mono',monospace;font-size:12px;" id="c-equil-sci">--</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- SCI Dette -->
+            <div class="panel">
+              <div class="panel-header" style="border-left:2px solid var(--sci);">
+                <span class="dot dot-sci"></span><h3>Dette SCI &mdash; Param&egrave;tres</h3>
+                <span style="margin-left:auto;font-family:'DM Mono',monospace;font-size:9px;color:var(--text-muted);">Emprunt bancaire</span>
+              </div>
+              <div class="panel-body">
+                <div class="field-grid" style="gap:8px;">
+                  <div class="field"><label>Montant emprunt</label><div class="input-wrap"><input type="number" id="c-dette-sci-b" value="9000000" step="100000" oninput="syncDette('sci',this.value)"><span class="unit">&euro;</span></div><div class="field-note">Synchronis&eacute; avec ressources</div></div>
+                  <div class="field"><label>Taux d&apos;int&eacute;r&ecirc;t annuel</label><div class="input-wrap"><input type="number" id="c-taux-dette-sci" value="4.0" step="0.05" oninput="updateDettePreview('sci')"><span class="unit">%</span></div></div>
+                  <div class="field"><label>Dur&eacute;e</label><div class="input-wrap"><input type="number" id="c-duree-sci" value="20" oninput="updateDettePreview('sci')"><span class="unit">ans</span></div></div>
+                </div>
+                <div style="margin-top:10px;padding:8px 10px;background:var(--bg3);border-radius:3px;border:1px solid var(--border);">
+                  <div style="font-size:10px;color:var(--text-muted);margin-bottom:4px;">Annuit&eacute; constante estim&eacute;e</div>
+                  <div style="font-family:'DM Mono',monospace;font-size:14px;color:var(--sci)" id="c-annuite-sci">--</div>
+                  <div style="font-size:10px;color:var(--text-muted);margin-top:5px;">Int&eacute;r&ecirc;ts an 1 : <span id="c-int1-sci" style="color:var(--text-dim)">--</span> &nbsp;|&nbsp; Capital an 1 : <span id="c-cap1-sci" style="color:var(--text-dim)">--</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ROW 3 : FDC -->
+        <div style="margin-bottom:16px;">
+          <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--fdc);margin-bottom:8px;padding-left:2px;display:flex;align-items:center;gap:10px;">FDC &mdash; Fond de Commerce / Exploitation <span style="flex:1;height:1px;background:rgba(201,168,76,0.2);"></span></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+
+            <!-- FDC Emplois -->
+            <div class="panel">
+              <div class="panel-header" style="border-left:2px solid var(--fdc);">
+                <span class="dot dot-fdc"></span><h3>Emplois FDC</h3>
+                <span style="margin-left:auto;font-family:'DM Mono',monospace;font-size:9px;color:var(--text-muted);">Actif acquis</span>
+              </div>
+              <div class="panel-body">
+                <div class="field-grid" style="gap:8px;">
+                  <div class="field"><label>FF&amp;E mobilier &amp; &eacute;quipements</label><div class="input-wrap"><input type="number" id="c-ffe" value="3000000" step="100000" oninput="updateTotaux()"><span class="unit">&euro;</span></div></div>
+                  <div class="field"><label>BFR initial</label><div class="input-wrap"><input type="number" id="c-bfr" value="150000" step="10000" oninput="updateTotaux()"><span class="unit">&euro;</span></div></div>
+                  <div class="field"><label>Frais de constitution / divers</label><div class="input-wrap"><input type="number" id="c-frais-fdc" value="50000" step="5000" oninput="updateTotaux()"><span class="unit">&euro;</span></div></div>
+                </div>
+                <div style="margin-top:10px;padding:8px 10px;background:var(--bg3);border-radius:3px;border:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+                  <span style="font-size:10px;color:var(--text-muted);">Total emplois FDC</span>
+                  <span style="font-family:'DM Mono',monospace;font-size:12px;color:var(--text)" id="c-total-empl-fdc">--</span>
+                </div>
+                <div style="margin-top:8px;">
+                  <div class="field"><label>Loyer an 1 HT (point de d&eacute;part slider)</label><div class="input-wrap"><input type="number" id="c-loyer" value="1100000" step="5000"><span class="unit">&euro;</span></div></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- FDC Ressources -->
+            <div class="panel">
+              <div class="panel-header" style="border-left:2px solid var(--fdc);">
+                <span class="dot dot-fdc"></span><h3>Ressources FDC</h3>
+                <span style="margin-left:auto;font-family:'DM Mono',monospace;font-size:9px;color:var(--text-muted);">Financement</span>
+              </div>
+              <div class="panel-body">
+                <div class="field-grid" style="gap:8px;">
+                  <div class="field"><label>Equity exploitant</label><div class="input-wrap"><input type="number" id="c-equity-fdc" value="500000" step="50000" oninput="updateTotaux()"><span class="unit">&euro;</span></div></div>
+                  <div class="field"><label>CCA exploitant &mdash; solde</label><div class="input-wrap"><input type="number" id="c-cca-fdc" value="1200000" step="50000" oninput="updateTotaux()"><span class="unit">&euro;</span></div></div>
+                  <div class="field"><label>Taux int&eacute;r&ecirc;ts CCA exploitant</label><div class="input-wrap"><input type="number" id="c-taux-cca-fdc" value="4.0" step="0.1"><span class="unit">%/an</span></div></div>
+                  <div class="field"><label>Dette FF&amp;E (montant)</label><div class="input-wrap"><input type="number" id="c-dette-fdc" value="1500000" step="50000" oninput="updateTotaux();syncDette2('fdc')"><span class="unit">&euro;</span></div></div>
+                </div>
+                <div style="margin-top:10px;padding:8px 10px;background:var(--bg3);border-radius:3px;border:1px solid var(--border);">
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                    <span style="font-size:10px;color:var(--text-muted);">Total ressources FDC</span>
+                    <span style="font-family:'DM Mono',monospace;font-size:12px;color:var(--text)" id="c-total-res-fdc">--</span>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-size:10px;color:var(--text-muted);">&check; &Eacute;quilibre (Res &minus; Emplois)</span>
+                    <span style="font-family:'DM Mono',monospace;font-size:12px;" id="c-equil-fdc">--</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- FDC Dette -->
+            <div class="panel">
+              <div class="panel-header" style="border-left:2px solid var(--fdc);">
+                <span class="dot dot-fdc"></span><h3>Dette FDC &mdash; Param&egrave;tres</h3>
+                <span style="margin-left:auto;font-family:'DM Mono',monospace;font-size:9px;color:var(--text-muted);">Emprunt FF&amp;E</span>
+              </div>
+              <div class="panel-body">
+                <div class="field-grid" style="gap:8px;">
+                  <div class="field"><label>Montant emprunt</label><div class="input-wrap"><input type="number" id="c-dette-fdc-b" value="1500000" step="50000" oninput="syncDette('fdc',this.value)"><span class="unit">&euro;</span></div><div class="field-note">Synchronis&eacute; avec ressources</div></div>
+                  <div class="field"><label>Taux d&apos;int&eacute;r&ecirc;t annuel</label><div class="input-wrap"><input type="number" id="c-taux-dette-fdc" value="4.5" step="0.05" oninput="updateDettePreview('fdc')"><span class="unit">%</span></div></div>
+                  <div class="field"><label>Dur&eacute;e</label><div class="input-wrap"><input type="number" id="c-duree-fdc" value="7" oninput="updateDettePreview('fdc')"><span class="unit">ans</span></div></div>
+                </div>
+                <div style="margin-top:10px;padding:8px 10px;background:var(--bg3);border-radius:3px;border:1px solid var(--border);">
+                  <div style="font-size:10px;color:var(--text-muted);margin-bottom:4px;">Annuit&eacute; constante estim&eacute;e</div>
+                  <div style="font-family:'DM Mono',monospace;font-size:14px;color:var(--fdc)" id="c-annuite-fdc">--</div>
+                  <div style="font-size:10px;color:var(--text-muted);margin-top:5px;">Int&eacute;r&ecirc;ts an 1 : <span id="c-int1-fdc" style="color:var(--text-dim)">--</span> &nbsp;|&nbsp; Capital an 1 : <span id="c-cap1-fdc" style="color:var(--text-dim)">--</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         <!-- MONTÉE EN CHARGE -->
         <div class="panel" style="margin-bottom:16px;">
           <div class="panel-header">
@@ -835,9 +955,10 @@ function renderAll(){
 }
 
 function renderDashboard(p, c){
-  const renta = c.loyer0 / p.vefa;
+  const vefaTotal = p.vefa + p.terrain + p.fraisSCI;
+  const renta = c.loyer0 / vefaTotal;
   const cible = p.cibleRenta/100;
-  const loyerCible = p.vefa * cible;
+  const loyerCible = vefaTotal * cible;
   const poids = c.loyer0 / c.bpFDC[0].ca;
   const ebitda4 = c.bpFDC[3]?.ebitda||0;
   const marge4 = c.bpFDC[3] ? ebitda4/c.bpFDC[3].ca : 0;
@@ -878,7 +999,7 @@ function renderDashboard(p, c){
   setCible('d-c-loyer-cible', fmt(loyerCible), Math.abs(c.loyer0-loyerCible)<5000?'good':c.loyer0>=loyerCible?'good':'warn');
   setD('d-c-loyer-cible-sub', `à ${fmtP(cible)} × VEFA`);
   setCible('d-c-renta', fmtP(renta), renta>=cible?'good':'warn');
-  setD('d-c-vefa', fmt(p.vefa));
+  setD('d-c-vefa', fmt(p.vefa+p.terrain+p.fraisSCI)+' (Trav.+Terrain+Honor.)');
   setCible('d-c-poids', fmtP(poids), poids<0.32?'good':poids<0.40?'warn':'bad');
   setCible('d-c-ebitda4', fmt(ebitda4), ebitda4>0?'good':'bad');
   setD('d-c-marge4', fmtP(marge4));
@@ -896,9 +1017,9 @@ function renderSCI(p, c){
   document.getElementById('sci-emplois-table').innerHTML = `
     <thead><tr><th>Poste</th><th>Montant</th><th>%</th><th>Nature</th></tr></thead>
     <tbody>
-      <tr><td>Prix VEFA murs</td><td>${fmt(p.vefa)}</td><td>${fmtP(p.vefa/totalEmpl)}</td><td class="n-dim">Immobilier</td></tr>
+      <tr><td>Travaux murs (VEFA)</td><td>${fmt(p.vefa)}</td><td>${fmtP(p.vefa/totalEmpl)}</td><td class="n-dim">Immobilier</td></tr>
       <tr><td>Terrain</td><td>${fmt(p.terrain)}</td><td>${fmtP(p.terrain/totalEmpl)}</td><td class="n-dim">Foncier</td></tr>
-      <tr><td>Frais acquisition</td><td>${fmt(p.fraisSCI)}</td><td>${fmtP(p.fraisSCI/totalEmpl)}</td><td class="n-dim">Notaire</td></tr>
+      <tr><td>Honoraires / frais acq.</td><td>${fmt(p.fraisSCI)}</td><td>${fmtP(p.fraisSCI/totalEmpl)}</td><td class="n-dim">Notaire</td></tr>
       <tr class="total"><td>TOTAL EMPLOIS</td><td>${fmt(totalEmpl)}</td><td>100%</td><td>—</td></tr>
     </tbody>`;
   const totalRes = p.equitySCI+p.ccaSCI+p.detteSCI;
@@ -917,7 +1038,8 @@ function renderSCI(p, c){
   document.getElementById('sci-tri-big').style.color = c.triSCI>=0.08?'var(--sci)':'var(--red)';
   setD('sci-tri-inv', fmt(Math.abs(c.invSCI)));
   setD('sci-tri-van', fmt(c.vanSCI));
-  const rentaBrute = c.loyer0/p.vefa;
+  const vefaTotal = p.vefa+p.terrain+p.fraisSCI;
+  const rentaBrute = c.loyer0/vefaTotal;
   document.getElementById('sci-tri-details').innerHTML = `
     <div class="detail-card"><div class="detail-lbl">Rentabilité brute Loyer/VEFA</div><div class="detail-val ${rentaBrute>=p.cibleRenta/100?'n-pos':'n-neg'}">${fmtP(rentaBrute)}</div><div class="detail-sub">Cible ≥ ${fmtP(p.cibleRenta/100)}</div></div>
     <div class="detail-card"><div class="detail-lbl">Loyer cible théorique</div><div class="detail-val n-sci">${fmt(p.vefa*p.cibleRenta/100)}</div><div class="detail-sub">Pour atteindre la cible</div></div>
@@ -1026,7 +1148,8 @@ function renderFDC(p, c){
 }
 
 function renderEquilibre(p, c){
-  const renta = c.loyer0/p.vefa;
+  const vefaTotal = p.vefa+p.terrain+p.fraisSCI;
+  const renta = c.loyer0/vefaTotal;
   const cible = p.cibleRenta/100;
   const poids = c.loyer0/c.bpFDC[0].ca;
   document.getElementById('eq-cible').value = p.cibleRenta;
@@ -1039,7 +1162,7 @@ function renderEquilibre(p, c){
   setD('eq-lbl-fdc', fmtP(poids)+' CA');
   setD('eq-lbl-sci', fmtP(renta)+' VEFA');
 
-  const loyCible = p.vefa*cible;
+  const loyCible = vefaTotal*cible;
   setD('eq-loyer-cible', fmt(loyCible));
   document.getElementById('eq-marker-lbl').textContent = `Cible ${fmtP(cible)}`;
 
@@ -1053,7 +1176,8 @@ function renderEquilibre(p, c){
   // Synthèse 5 ans
   const tbody = document.getElementById('eq-synth-body');
   tbody.innerHTML = c.annees.slice(0,5).map((_,i)=>{
-    const ri = c.loyers[i]/p.vefa;
+    const vefaTot = p.vefa+p.terrain+p.fraisSCI;
+    const ri = c.loyers[i]/vefaTot;
     const pi = c.bpFDC[i] ? c.loyers[i]/c.bpFDC[i].ca : 0;
     return `<tr>
       <td class="n-dim">${c.annees[i]}</td>
@@ -1071,7 +1195,8 @@ function renderEquilibre(p, c){
   const rows = steps.map(pct=>{
     const l = Math.round(loyerBase*(1+pct/100)/5000)*5000;
     const cc = computeAll(p, l);
-    const r = l/p.vefa;
+    const vefaTotS = p.vefa+p.terrain+p.fraisSCI;
+    const r = l/vefaTotS;
     const po = l/cc.bpFDC[0].ca;
     return {pct, l, triSCI:cc.triSCI, triFDC:cc.triFDC, renta:r, poids:po, current: pct===0};
   });
@@ -1243,14 +1368,21 @@ function calcAnnuite(cap, taux, duree){
 }
 
 function updateTotaux(){
-  // SCI
-  const eSCI = gv('c-vefa')+gv('c-terrain')+gv('c-frais-sci');
+  // SCI emplois = Travaux (VEFA) + Terrain + Honoraires
+  const vefa = gv('c-vefa'), terrain = gv('c-terrain'), honoraires = gv('c-frais-sci');
+  const eSCI = vefa + terrain + honoraires;
   const rSCI = gv('c-equity-sci')+gv('c-cca-sci')+gv('c-dette-sci');
   const eqSCI = rSCI-eSCI;
   sv('c-total-empl-sci', fmtC(eSCI));
   sv('c-total-res-sci', fmtC(rSCI));
   const eqElSCI = document.getElementById('c-equil-sci');
   if(eqElSCI){ eqElSCI.textContent=fmtC(eqSCI); eqElSCI.style.color=eqSCI>=0?'var(--green)':'var(--red)'; }
+  // Loyer cible = cible% x VEFA total (travaux+terrain+honoraires)
+  const ciblePct = gv('c-cible-renta')/100;
+  const loyerCible = eSCI * ciblePct;
+  sv('c-loyer-cible-display', fmtC(loyerCible));
+  const cpEl = document.getElementById('c-cible-pct-display');
+  if(cpEl) cpEl.textContent = (ciblePct*100).toFixed(1).replace('.',',');
   // FDC
   const eFDC = gv('c-ffe')+gv('c-bfr')+gv('c-frais-fdc');
   const rFDC = gv('c-equity-fdc')+gv('c-cca-fdc')+gv('c-dette-fdc');
