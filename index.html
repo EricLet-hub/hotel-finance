@@ -583,6 +583,127 @@ hr.div{border:none;border-top:1px solid var(--border);margin:12px 0;}
           </div>
         </div>
 
+        <!-- ROW 4 : HYPOTHÈSES DE SORTIE -->
+        <div style="margin-bottom:16px;">
+          <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--green);margin-bottom:8px;padding-left:2px;display:flex;align-items:center;gap:10px;">Hypoth&egrave;ses de Sortie &mdash; Calcul du TRI <span style="flex:1;height:1px;background:rgba(76,175,130,0.2);"></span></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+
+            <!-- SCI : Sortie Murs -->
+            <div class="panel">
+              <div class="panel-header" style="border-left:2px solid var(--sci);">
+                <span class="dot dot-sci"></span><h3>Sortie SCI &mdash; Cession des Murs</h3>
+                <span style="margin-left:auto;font-family:'DM Mono',monospace;font-size:9px;color:var(--text-muted);">Valeur terminale SCI</span>
+              </div>
+              <div class="panel-body">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
+                  <div class="field">
+                    <label>Ann&eacute;e de cession SCI</label>
+                    <div class="input-wrap"><input type="number" id="c-annee-sortie-sci" value="2037" oninput="updateSortiePreview()"><span class="unit">Ann&eacute;e</span></div>
+                    <div class="field-note">Horizon de d&eacute;tention depuis l&apos;ouverture</div>
+                  </div>
+                  <div class="field">
+                    <label>M&eacute;thode de valorisation</label>
+                    <div class="input-wrap" style="padding:4px 8px;">
+                      <select id="c-methode-sortie-sci" onchange="updateSortiePreview()" style="background:none;border:none;outline:none;color:var(--blue);font-family:'DM Mono',monospace;font-size:11px;width:100%;cursor:pointer;">
+                        <option value="loyer_multiple">&times; Multiple de loyer</option>
+                        <option value="taux_capi">Taux de capitalisation</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="field" id="sci-sortie-field-a">
+                    <label id="c-sortie-sci-label-a">Multiple de loyer (&times;)</label>
+                    <div class="input-wrap"><input type="number" id="c-multiple-loyer-sci" value="15" step="0.5" oninput="updateSortiePreview()"><span class="unit">&times;</span></div>
+                    <div class="field-note">Appliqu&eacute; au loyer de l&apos;ann&eacute;e de cession</div>
+                  </div>
+                  <div class="field" id="sci-sortie-field-b" style="display:none">
+                    <label>Taux de capitalisation</label>
+                    <div class="input-wrap"><input type="number" id="c-taux-capi-sci" value="5.5" step="0.1" oninput="updateSortiePreview()"><span class="unit">%</span></div>
+                    <div class="field-note">Loyer / taux capi = valeur</div>
+                  </div>
+                </div>
+                <div style="padding:10px 12px;background:var(--bg3);border-radius:3px;border:1px solid var(--border);">
+                  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+                    <div>
+                      <div style="font-size:9px;color:var(--text-muted);margin-bottom:3px;">Ann&eacute;e cession</div>
+                      <div style="font-family:'DM Mono',monospace;font-size:12px;color:var(--text)" id="prev-sci-annee">2037</div>
+                    </div>
+                    <div>
+                      <div style="font-size:9px;color:var(--text-muted);margin-bottom:3px;">Loyer &agrave; cette date</div>
+                      <div style="font-family:'DM Mono',monospace;font-size:12px;color:var(--text)" id="prev-sci-loyer">--</div>
+                    </div>
+                    <div>
+                      <div style="font-size:9px;color:var(--text-muted);margin-bottom:3px;">Valeur de cession</div>
+                      <div style="font-family:'DM Mono',monospace;font-size:14px;font-weight:500;color:var(--sci)" id="prev-sci-valeur">--</div>
+                    </div>
+                  </div>
+                  <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-size:10px;color:var(--text-muted);">Dur&eacute;e de d&eacute;tention</span>
+                    <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text-dim)" id="prev-sci-duree">-- ans</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- FDC : Sortie Fonds -->
+            <div class="panel">
+              <div class="panel-header" style="border-left:2px solid var(--fdc);">
+                <span class="dot dot-fdc"></span><h3>Sortie FDC &mdash; Cession du Fonds</h3>
+                <span style="margin-left:auto;font-family:'DM Mono',monospace;font-size:9px;color:var(--text-muted);">Valeur terminale FDC</span>
+              </div>
+              <div class="panel-body">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
+                  <div class="field">
+                    <label>Ann&eacute;e de cession FDC</label>
+                    <div class="input-wrap"><input type="number" id="c-annee-sortie-fdc" value="2037" oninput="updateSortiePreview()"><span class="unit">Ann&eacute;e</span></div>
+                    <div class="field-note">Peut diff&eacute;rer de la cession murs</div>
+                  </div>
+                  <div class="field">
+                    <label>M&eacute;thode de valorisation</label>
+                    <div class="input-wrap" style="padding:4px 8px;">
+                      <select id="c-methode-sortie-fdc" onchange="updateSortiePreview()" style="background:none;border:none;outline:none;color:var(--blue);font-family:'DM Mono',monospace;font-size:11px;width:100%;cursor:pointer;">
+                        <option value="ebitda_multiple">&times; Multiple EBITDA</option>
+                        <option value="ca_multiple">&times; Multiple CA</option>
+                        <option value="gop_multiple">&times; Multiple GOP</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label id="c-sortie-fdc-label">Multiple EBITDA (&times;)</label>
+                    <div class="input-wrap"><input type="number" id="c-multiple-fdc" value="10" step="0.5" oninput="updateSortiePreview()"><span class="unit">&times;</span></div>
+                    <div class="field-note">Appliqu&eacute; &agrave; l&apos;ann&eacute;e de cession</div>
+                  </div>
+                  <div class="field">
+                    <label>Taux d&apos;actualisation (VAN)</label>
+                    <div class="input-wrap"><input type="number" id="c-taux-van" value="8" step="0.5" oninput="updateSortiePreview()"><span class="unit">%</span></div>
+                    <div class="field-note">Commun aux deux entit&eacute;s</div>
+                  </div>
+                </div>
+                <div style="padding:10px 12px;background:var(--bg3);border-radius:3px;border:1px solid var(--border);">
+                  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+                    <div>
+                      <div style="font-size:9px;color:var(--text-muted);margin-bottom:3px;">Ann&eacute;e cession</div>
+                      <div style="font-family:'DM Mono',monospace;font-size:12px;color:var(--text)" id="prev-fdc-annee">2037</div>
+                    </div>
+                    <div>
+                      <div style="font-size:9px;color:var(--text-muted);margin-bottom:3px;">EBITDA &agrave; cette date</div>
+                      <div style="font-family:'DM Mono',monospace;font-size:12px;color:var(--text)" id="prev-fdc-base">--</div>
+                    </div>
+                    <div>
+                      <div style="font-size:9px;color:var(--text-muted);margin-bottom:3px;">Valeur de cession</div>
+                      <div style="font-family:'DM Mono',monospace;font-size:14px;font-weight:500;color:var(--fdc)" id="prev-fdc-valeur">--</div>
+                    </div>
+                  </div>
+                  <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-size:10px;color:var(--text-muted);">Dur&eacute;e de d&eacute;tention</span>
+                    <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text-dim)" id="prev-fdc-duree">-- ans</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
         <div style="display:flex;justify-content:flex-end;gap:10px;margin-bottom:20px;">
           <button class="btn btn-ghost" onclick="loadFromProject()">Annuler</button>
           <button class="btn btn-gold" style="padding:10px 24px;" onclick="saveConfig()">Enregistrer &amp; Calculer</button>
@@ -792,6 +913,10 @@ function defaultProject(nom, ville){
     // Ramp overrides: null = auto
     rampTO: [null,null,null,null,null,null,null,null,null,null,null],
     rampPM: [null,null,null,null,null,null,null,null,null,null,null],
+    // Exit hypotheses
+    anneeSortieSCI: 2037, methodeSortieSCI: 'loyer_multiple', multipleLoyer: 15, tauxCapiSCI: 5.5,
+    anneeSortieFDC: 2037, methodeSortieFDC: 'ebitda_multiple', multipleFDC: 10,
+    tauxVAN: 8,
   };
 }
 
@@ -860,7 +985,7 @@ function computeCA(p, yi){
   return {to,pm,revpar:to*pm,nuitees,caH,caPDJ,caR,caSal,ca:caH+caPDJ+caR+caSal};
 }
 
-const N_YEARS = 11;
+const N_YEARS = 11; // max years computed; actual exit uses p.anneeSortie*
 
 function computeAll(p, loyerOverride){
   const loyer0 = loyerOverride !== undefined ? loyerOverride : p.loyer;
@@ -916,19 +1041,46 @@ function computeAll(p, loyerOverride){
     return {...ca, loyer, fb, sal, franch, comm, energie, honor, holding, autres, totalHorsLoyer, gop, ebitda, intDette, remb, amortFFE, intCCA:intCCA_FDC, resAvIS, is, resNet, fluxTrso};
   });
 
-  // TRI SCI
-  const invSCI = -(p.equitySCI + p.ccaSCI);
-  const vtSCI = 15 * loyers[N_YEARS-1];
-  const fSCI = [invSCI, ...bpSCI.slice(0,N_YEARS-1).map(r=>r.cfSCI), bpSCI[N_YEARS-1].cfSCI+vtSCI];
-  const triSCI = calcTRI(fSCI);
-  const vanSCI = calcVAN(fSCI, 0.08);
+  // ── Paramètres de sortie
+  const anneeSortieSCI = Math.max(p.annee+1, p.anneeSortieSCI||2037);
+  const anneeSortieFDC = Math.max(p.annee+1, p.anneeSortieFDC||2037);
+  const iSortieSCI = Math.min(N_YEARS-1, anneeSortieSCI - p.annee); // index dans bpSCI
+  const iSortieFDC = Math.min(N_YEARS-1, anneeSortieFDC - p.annee);
+  const tauxVAN = (p.tauxVAN||8) / 100;
 
-  // TRI FDC
+  // Valeur terminale SCI
+  const loyerSortieSCI = loyers[iSortieSCI];
+  let vtSCI;
+  if((p.methodeSortieSCI||'loyer_multiple')==='taux_capi'){
+    vtSCI = loyerSortieSCI / ((p.tauxCapiSCI||5.5)/100);
+  } else {
+    vtSCI = loyerSortieSCI * (p.multipleLoyer||15);
+  }
+
+  // Flux TRI SCI sur horizon réel
+  const invSCI = -(p.equitySCI + p.ccaSCI);
+  const fSCI = [invSCI];
+  for(let i=0; i<iSortieSCI; i++) fSCI.push(bpSCI[i].cfSCI);
+  fSCI.push((bpSCI[iSortieSCI]?.cfSCI||0) + vtSCI);
+  const triSCI = calcTRI(fSCI);
+  const vanSCI = calcVAN(fSCI, tauxVAN);
+
+  // Valeur terminale FDC
+  const fdcSortie = bpFDC[iSortieFDC];
+  let vtFDCbase;
+  const mFDC = p.methodeSortieFDC||'ebitda_multiple';
+  if(mFDC==='ca_multiple') vtFDCbase = fdcSortie?.ca||0;
+  else if(mFDC==='gop_multiple') vtFDCbase = fdcSortie?.gop||0;
+  else vtFDCbase = fdcSortie?.ebitda||0;
+  const vtFDC = vtFDCbase * (p.multipleFDC||10);
+
+  // Flux TRI FDC sur horizon réel
   const invFDC = -(p.equityFDC + p.ccaFDC);
-  const vtFDC = 10 * bpFDC[N_YEARS-1].ebitda;
-  const fFDC = [invFDC, ...bpFDC.slice(0,N_YEARS-1).map(r=>r.fluxTrso), bpFDC[N_YEARS-1].fluxTrso+vtFDC];
+  const fFDC = [invFDC];
+  for(let i=0; i<iSortieFDC; i++) fFDC.push(bpFDC[i].fluxTrso);
+  fFDC.push((bpFDC[iSortieFDC]?.fluxTrso||0) + vtFDC);
   const triFDC = calcTRI(fFDC);
-  const vanFDC = calcVAN(fFDC, 0.08);
+  const vanFDC = calcVAN(fFDC, tauxVAN);
 
   // First pos FDC
   let firstPos = null;
@@ -938,7 +1090,9 @@ function computeAll(p, loyerOverride){
     triSCI,vanSCI,invSCI,vtSCI,fSCI,
     triFDC,vanFDC,invFDC,vtFDC,fFDC,
     amortMurs,amortFFE,intCCA_SCI,intCCA_FDC,chargesFonc,
-    firstPos, loyer0};
+    firstPos, loyer0,
+    iSortieSCI, iSortieFDC, anneeSortieSCI, anneeSortieFDC,
+    loyerSortieSCI, vtFDCbase, tauxVAN};
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -952,6 +1106,7 @@ function renderAll(){
   renderSCI(p, calcCache);
   renderFDC(p, calcCache);
   renderEquilibre(p, calcCache);
+  updateSortiePreview();
 }
 
 function renderDashboard(p, c){
@@ -1037,18 +1192,18 @@ function renderSCI(p, c){
   document.getElementById('sci-tri-big').textContent = fmtP(c.triSCI);
   document.getElementById('sci-tri-big').style.color = c.triSCI>=0.08?'var(--sci)':'var(--red)';
   setD('sci-tri-inv', fmt(Math.abs(c.invSCI)));
-  setD('sci-tri-van', fmt(c.vanSCI));
+  setD('sci-tri-van', fmt(c.vanSCI)); const sciVanEl=document.querySelector('#page-sci .tri-van'); if(sciVanEl) sciVanEl.innerHTML='VAN '+((p.tauxVAN||8))+'% : <span id="sci-tri-van">'+fmt(c.vanSCI)+'</span>';
   const vefaTotal = p.vefa+p.terrain+p.fraisSCI;
   const rentaBrute = c.loyer0/vefaTotal;
   document.getElementById('sci-tri-details').innerHTML = `
     <div class="detail-card"><div class="detail-lbl">Rentabilité brute Loyer/VEFA</div><div class="detail-val ${rentaBrute>=p.cibleRenta/100?'n-pos':'n-neg'}">${fmtP(rentaBrute)}</div><div class="detail-sub">Cible ≥ ${fmtP(p.cibleRenta/100)}</div></div>
     <div class="detail-card"><div class="detail-lbl">Loyer cible théorique</div><div class="detail-val n-sci">${fmt(p.vefa*p.cibleRenta/100)}</div><div class="detail-sub">Pour atteindre la cible</div></div>
-    <div class="detail-card"><div class="detail-lbl">Valeur terminale (×15 loyer an 11)</div><div class="detail-val n-sci">${fmt(c.vtSCI)}</div><div class="detail-sub">Hypothèse de sortie</div></div>
+    <div class="detail-card"><div class="detail-lbl">Valeur terminale (année ${c.anneeSortieSCI})</div><div class="detail-val n-sci">${fmt(c.vtSCI)}</div><div class="detail-sub">${p.methodeSortieSCI==='taux_capi'?'Loyer / '+p.tauxCapiSCI+'% capi':×+p.multipleLoyer+' loyer'}</div></div>
     <div class="detail-card"><div class="detail-lbl">Cash-flow SCI cumulé</div><div class="detail-val n-sci">${fmt(c.bpSCI.reduce((s,r)=>s+r.cfSCI,0))}</div><div class="detail-sub">Hors valeur terminale</div></div>`;
 
   // BP SCI
   const yrs = c.annees.slice(0,Math.min(8,N_YEARS));
-  document.getElementById('sci-bp-years').textContent = `${yrs[0]}–${yrs[yrs.length-1]}`;
+  document.getElementById('sci-bp-years').textContent = `${yrs[0]}–${yrs[yrs.length-1]} (sortie ${c.anneeSortieSCI})`;
   const bpRows = [
     {s:true,l:'Produits'},
     {l:'Loyer annuel HT',k:'loyer',cls:'loyer-row'},
@@ -1067,13 +1222,15 @@ function renderSCI(p, c){
   // Dette
   renderDetteTable('sci-dette-table', c.dSCI, p.annee);
   // Flux
+  // Flux SCI sur horizon réel de sortie
+  const nSCI = c.iSortieSCI + 1; // nb annees de flux hors an0
   const fSCIrows = [
-    {l:'(−) Equity + CCA investis', data:[c.invSCI,...Array(N_YEARS).fill(0)]},
-    {l:'(+) Cash-flow SCI annuel', data:[0,...c.bpSCI.map(r=>r.cfSCI)]},
-    {l:'(+) Valeur terminale (×15)', data:[0,...Array(N_YEARS-1).fill(0),c.vtSCI]},
+    {l:'(−) Equity + CCA investis', data:[c.invSCI,...Array(nSCI).fill(0)]},
+    {l:'(+) Cash-flow SCI annuel', data:[0,...c.bpSCI.slice(0,nSCI).map(r=>r.cfSCI)]},
+    {l:'(+) Valeur terminale année '+c.anneeSortieSCI, data:[0,...Array(nSCI-1).fill(0),c.vtSCI]},
     {l:'FLUX TOTAL', data:c.fSCI, total:true},
   ];
-  renderFluxTable('sci-flux-table', c.annees, fSCIrows);
+  renderFluxTable('sci-flux-table', c.annees.slice(0,nSCI), fSCIrows);
 }
 
 function renderFDC(p, c){
@@ -1100,15 +1257,15 @@ function renderFDC(p, c){
   document.getElementById('fdc-tri-big').textContent = fmtP(c.triFDC);
   document.getElementById('fdc-tri-big').style.color = c.triFDC>=0.10?'var(--fdc)':'var(--red)';
   setD('fdc-tri-inv', fmt(Math.abs(c.invFDC)));
-  setD('fdc-tri-van', fmt(c.vanFDC));
+  setD('fdc-tri-van', fmt(c.vanFDC)); const fdcVanEl=document.querySelector('#page-fdc .tri-van'); if(fdcVanEl) fdcVanEl.innerHTML='VAN '+((p.tauxVAN||8))+'% : <span id="fdc-tri-van">'+fmt(c.vanFDC)+'</span>';
   document.getElementById('fdc-tri-details').innerHTML = `
     <div class="detail-card"><div class="detail-lbl">EBITDA plateau (an 4)</div><div class="detail-val n-fdc">${fmt(c.bpFDC[3]?.ebitda||0)}</div><div class="detail-sub">Marge ${fmtP(c.bpFDC[3]?(c.bpFDC[3].ebitda/c.bpFDC[3].ca):0)}</div></div>
     <div class="detail-card"><div class="detail-lbl">Flux tréso FDC an 1</div><div class="detail-val ${c.bpFDC[0].fluxTrso>=0?'n-pos':'n-neg'}">${fmt(c.bpFDC[0].fluxTrso)}</div><div class="detail-sub">Après loyer, dette, IS</div></div>
-    <div class="detail-card"><div class="detail-lbl">Valeur terminale (×10 EBITDA)</div><div class="detail-val n-fdc">${fmt(c.vtFDC)}</div><div class="detail-sub">Hypothèse de sortie</div></div>
+    <div class="detail-card"><div class="detail-lbl">Valeur terminale (année ${c.anneeSortieFDC})</div><div class="detail-val n-fdc">${fmt(c.vtFDC)}</div><div class="detail-sub">×${p.multipleFDC} ${p.methodeSortieFDC==='ca_multiple'?'CA':p.methodeSortieFDC==='gop_multiple'?'GOP':'EBITDA'}</div></div>
     <div class="detail-card"><div class="detail-lbl">1ère tréso positive FDC</div><div class="detail-val ${c.firstPos&&c.firstPos<=p.annee+3?'n-pos':c.firstPos?'':'n-neg'}">${c.firstPos||'N/A'}</div><div class="detail-sub">Flux annuel net positif</div></div>`;
 
   const yrs = c.annees.slice(0,Math.min(8,N_YEARS));
-  document.getElementById('fdc-bp-years').textContent = `${yrs[0]}–${yrs[yrs.length-1]}`;
+  document.getElementById('fdc-bp-years').textContent = `${yrs[0]}–${yrs[yrs.length-1]} (sortie ${c.anneeSortieFDC})`;
   const bpRows = [
     {s:true,l:'Activité hôtelière'},
     {l:'CA Hébergement HT',k:'caH'},
@@ -1136,15 +1293,18 @@ function renderFDC(p, c){
   renderBPTable('fdc-bp-table', yrs, bpRows, c.bpFDC);
   renderDetteTable('fdc-dette-table', c.dFDC, p.annee);
 
+  // Flux FDC sur horizon réel de sortie
+  const nFDC = c.iSortieFDC + 1;
+  const mFDClbl = p.methodeSortieFDC==='ca_multiple'?'CA':p.methodeSortieFDC==='gop_multiple'?'GOP':'EBITDA';
   const fFDCrows = [
-    {l:'(−) Equity + CCA investis', data:[c.invFDC,...Array(N_YEARS).fill(0)]},
-    {l:'(+) EBITDA FDC', data:[0,...c.bpFDC.map(r=>r.ebitda)]},
-    {l:'(−) Remb. capital dette FF&E', data:[0,...c.bpFDC.map(r=>-r.remb)]},
-    {l:'(−) IS payé', data:[0,...c.bpFDC.map(r=>-r.is)]},
-    {l:'(+) Valeur terminale (×10 EBITDA)', data:[0,...Array(N_YEARS-1).fill(0),c.vtFDC]},
+    {l:'(−) Equity + CCA investis', data:[c.invFDC,...Array(nFDC).fill(0)]},
+    {l:'(+) EBITDA FDC', data:[0,...c.bpFDC.slice(0,nFDC).map(r=>r.ebitda)]},
+    {l:'(−) Remb. capital dette FF&E', data:[0,...c.bpFDC.slice(0,nFDC).map(r=>-r.remb)]},
+    {l:'(−) IS payé', data:[0,...c.bpFDC.slice(0,nFDC).map(r=>-r.is)]},
+    {l:'(+) VT année '+c.anneeSortieFDC+' (×'+p.multipleFDC+' '+mFDClbl+')', data:[0,...Array(nFDC-1).fill(0),c.vtFDC]},
     {l:'FLUX FDC TOTAL', data:c.fFDC, total:true},
   ];
-  renderFluxTable('fdc-flux-table', c.annees, fFDCrows);
+  renderFluxTable('fdc-flux-table', c.annees.slice(0,nFDC), fFDCrows);
 }
 
 function renderEquilibre(p, c){
@@ -1367,6 +1527,68 @@ function calcAnnuite(cap, taux, duree){
   return cap*r/(1-Math.pow(1+r,-duree));
 }
 
+
+function updateSortiePreview(){
+  if(!currentId) return;
+  const p = projects[currentId];
+  const anneeOuv = Math.round(parseFloat(document.getElementById('c-annee')?.value)||p.annee||2027);
+  const loyer0 = parseFloat(document.getElementById('c-loyer')?.value)||p.loyer||1100000;
+  const idx = (parseFloat(document.getElementById('c-idx-loyer')?.value)||p.idxLoyer||2)/100;
+  const vefa = (parseFloat(document.getElementById('c-vefa')?.value)||p.vefa||15000000)
+             + (parseFloat(document.getElementById('c-terrain')?.value)||p.terrain||1000000)
+             + (parseFloat(document.getElementById('c-frais-sci')?.value)||p.fraisSCI||960000);
+
+  // SCI
+  const anneeSCI = Math.round(parseFloat(document.getElementById('c-annee-sortie-sci')?.value)||2037);
+  const iSCI = Math.max(0, anneeSCI - anneeOuv);
+  const loyerSCI = loyer0 * Math.pow(1+idx, iSCI);
+  const methodeSCI = document.getElementById('c-methode-sortie-sci')?.value||'loyer_multiple';
+  const multipleL = parseFloat(document.getElementById('c-multiple-loyer-sci')?.value)||15;
+  const tauxCapi = (parseFloat(document.getElementById('c-taux-capi-sci')?.value)||5.5)/100;
+  const vtSCI = methodeSCI==='taux_capi' ? loyerSCI/tauxCapi : loyerSCI*multipleL;
+  // Toggle field visibility
+  const fa = document.getElementById('sci-sortie-field-a');
+  const fb = document.getElementById('sci-sortie-field-b');
+  if(fa) fa.style.display = methodeSCI==='taux_capi'?'none':'block';
+  if(fb) fb.style.display = methodeSCI==='taux_capi'?'block':'none';
+  // Preview
+  const sv2 = (id,v)=>{ const el=document.getElementById(id); if(el)el.textContent=v; };
+  sv2('prev-sci-annee', anneeSCI);
+  sv2('prev-sci-loyer', fmtC(loyerSCI));
+  sv2('prev-sci-valeur', fmtC(vtSCI));
+  sv2('prev-sci-duree', iSCI+' ans');
+
+  // Update label
+  const lbl = document.getElementById('c-sortie-sci-label-a');
+  if(lbl) lbl.textContent = 'Multiple de loyer (×)';
+
+  // FDC — need approximate EBITDA at exit year
+  const anneeFDC = Math.round(parseFloat(document.getElementById('c-annee-sortie-fdc')?.value)||2037);
+  const iFDC = Math.max(0, anneeFDC - anneeOuv);
+  const methodeFDC = document.getElementById('c-methode-sortie-fdc')?.value||'ebitda_multiple';
+  const multipleFDC = parseFloat(document.getElementById('c-multiple-fdc')?.value)||10;
+  // Update FDC label
+  const lblFDC = document.getElementById('c-sortie-fdc-label');
+  if(lblFDC){
+    if(methodeFDC==='ca_multiple') lblFDC.textContent='Multiple CA (×)';
+    else if(methodeFDC==='gop_multiple') lblFDC.textContent='Multiple GOP (×)';
+    else lblFDC.textContent='Multiple EBITDA (×)';
+  }
+  // Estimate base using cached calc if available
+  let fdcBase = 0, fdcBaseLabel = '--';
+  if(calcCache && calcCache.bpFDC && calcCache.bpFDC[iFDC]){
+    const row = calcCache.bpFDC[iFDC];
+    if(methodeFDC==='ca_multiple'){ fdcBase=row.ca; fdcBaseLabel='CA: '+fmtC(fdcBase); }
+    else if(methodeFDC==='gop_multiple'){ fdcBase=row.gop; fdcBaseLabel='GOP: '+fmtC(fdcBase); }
+    else { fdcBase=row.ebitda; fdcBaseLabel='EBITDA: '+fmtC(fdcBase); }
+  }
+  const vtFDCprev = fdcBase * multipleFDC;
+  sv2('prev-fdc-annee', anneeFDC);
+  sv2('prev-fdc-base', fdcBaseLabel);
+  sv2('prev-fdc-valeur', vtFDCprev>0 ? fmtC(vtFDCprev) : '--');
+  sv2('prev-fdc-duree', iFDC+' ans');
+}
+
 function updateTotaux(){
   // SCI emplois = Travaux (VEFA) + Terrain + Honoraires
   const vefa = gv('c-vefa'), terrain = gv('c-terrain'), honoraires = gv('c-frais-sci');
@@ -1447,6 +1669,12 @@ function loadConfigForm(){
   Object.entries(map).forEach(([k,v])=>{ const el=document.getElementById('c-'+k); if(el)el.value=v??''; });
   updateTotaux();
   buildRampTable();
+  // Set selects
+  const mSCI = document.getElementById('c-methode-sortie-sci');
+  if(mSCI) mSCI.value = p.methodeSortieSCI||'loyer_multiple';
+  const mFDC = document.getElementById('c-methode-sortie-fdc');
+  if(mFDC) mFDC.value = p.methodeSortieFDC||'ebitda_multiple';
+  updateSortiePreview();
 }
 
 function saveConfig(){
@@ -1467,6 +1695,14 @@ function saveConfig(){
   p.detteFDC=num('c-dette-fdc')||num('c-dette-fdc-b');
   p.tauxDetteFDC=num('c-taux-dette-fdc'); p.dureeFDC=num('c-duree-fdc');
   p.loyer=num('c-loyer');
+  p.anneeSortieSCI=num('c-annee-sortie-sci')||2037;
+  p.methodeSortieSCI=document.getElementById('c-methode-sortie-sci')?.value||'loyer_multiple';
+  p.multipleLoyer=num('c-multiple-loyer-sci')||15;
+  p.tauxCapiSCI=num('c-taux-capi-sci')||5.5;
+  p.anneeSortieFDC=num('c-annee-sortie-fdc')||2037;
+  p.methodeSortieFDC=document.getElementById('c-methode-sortie-fdc')?.value||'ebitda_multiple';
+  p.multipleFDC=num('c-multiple-fdc')||10;
+  p.tauxVAN=num('c-taux-van')||8;
   // Re-extend ramp arrays if needed
   while(p.rampTO.length<N_YEARS)p.rampTO.push(null);
   while(p.rampPM.length<N_YEARS)p.rampPM.push(null);
