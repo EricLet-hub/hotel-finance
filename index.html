@@ -279,10 +279,11 @@ hr.div{border:none;border-top:1px solid var(--border);margin:12px 0;}
       <span class="project-title-display" id="topnav-title">Aucun projet</span>
       <div class="topnav-right" id="nav-tabs" style="display:none">
         <div class="nav-tab active" onclick="showPage('dashboard')">Dashboard</div>
-        <div class="nav-tab" onclick="showPage('config')">Paramètres</div>
+        <div class="nav-tab" onclick="showPage('config')">Param&egrave;tres</div>
         <div class="nav-tab" onclick="showPage('sci')">SCI Murs</div>
         <div class="nav-tab" onclick="showPage('fdc')">FDC Exploitation</div>
-        <div class="nav-tab" onclick="showPage('equilibre')">Équilibre</div>
+        <div class="nav-tab" onclick="showPage('equilibre')">&Eacute;quilibre</div>
+        <div class="nav-tab" onclick="showPage('comparaison');renderComparaison();" style="color:var(--amber);">&#9654; Comparaison</div>
       </div>
     </div>
 
@@ -408,7 +409,7 @@ hr.div{border:none;border-top:1px solid var(--border);margin:12px 0;}
               <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
                 <div class="field"><label>Nom du projet</label><div class="input-wrap"><input type="text" id="c-nom" placeholder="Ex: H&ocirc;tel Lumi&egrave;re Lyon"></div></div>
                 <div class="field"><label>Ville</label><div class="input-wrap"><input type="text" id="c-ville" placeholder="Lyon"></div></div>
-                <div class="field"><label>Nb chambres</label><div class="input-wrap"><input type="number" id="c-chambres" value="85"><span class="unit">ch</span></div></div>
+                <div class="field"><label>Nb chambres</label><div class="input-wrap"><input type="number" id="c-chambres" value="85" oninput="syncPrixCh()"><span class="unit">ch</span></div></div>
                 <div class="field"><label>Ann&eacute;e ouverture</label><div class="input-wrap"><input type="number" id="c-annee" value="2027"></div></div>
                 <div class="field"><label>TO plateau (an 4+)</label><div class="input-wrap"><input type="number" id="c-to" value="68" step="0.5"><span class="unit">%</span></div></div>
                 <div class="field"><label>Prix Moyen HT plateau</label><div class="input-wrap"><input type="number" id="c-pm" value="190"><span class="unit">&euro;</span></div></div>
@@ -432,7 +433,14 @@ hr.div{border:none;border-top:1px solid var(--border);margin:12px 0;}
               </div>
               <div class="panel-body">
                 <div class="field-grid" style="gap:8px;">
-                  <div class="field"><label>Travaux &mdash; murs h&ocirc;tel (VEFA)</label><div class="input-wrap"><input type="number" id="c-vefa" value="15000000" step="100000" oninput="updateTotaux()"><span class="unit">&euro;</span></div></div>
+                  <div class="field"><label>Travaux &mdash; murs h&ocirc;tel (VEFA)</label>
+                    <div class="input-wrap"><input type="number" id="c-vefa" value="15000000" step="50000" oninput="onVefaTotal()"><span class="unit">&euro;</span></div>
+                  </div>
+                  <div class="field" style="background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.25);border-radius:3px;padding:8px 10px;">
+                    <label style="color:var(--gold);font-size:10px;">&#8644; Prix travaux / chambre <em style="color:var(--text-muted);font-weight:normal;">(modifie Travaux ci-dessus)</em></label>
+                    <div class="input-wrap"><input type="number" id="c-vefa-pch" placeholder="ex: 166 000" step="1000" oninput="onVefaPch()"><span class="unit">&euro;/ch</span></div>
+                    <div class="field-note">Travaux = prix/ch &times; nb chambres</div>
+                  </div>
                   <div class="field"><label>Terrain (hors VEFA)</label><div class="input-wrap"><input type="number" id="c-terrain" value="1000000" step="50000" oninput="updateTotaux()"><span class="unit">&euro;</span></div></div>
                   <div class="field"><label>Honoraires / frais acquisition</label><div class="input-wrap"><input type="number" id="c-frais-sci" value="960000" step="10000" oninput="updateTotaux()"><span class="unit">&euro;</span></div></div>
                 </div>
@@ -513,7 +521,14 @@ hr.div{border:none;border-top:1px solid var(--border);margin:12px 0;}
               </div>
               <div class="panel-body">
                 <div class="field-grid" style="gap:8px;">
-                  <div class="field"><label>FF&amp;E mobilier &amp; &eacute;quipements</label><div class="input-wrap"><input type="number" id="c-ffe" value="3000000" step="100000" oninput="updateTotaux()"><span class="unit">&euro;</span></div></div>
+                  <div class="field"><label>FF&amp;E mobilier &amp; &eacute;quipements</label>
+                    <div class="input-wrap"><input type="number" id="c-ffe" value="3000000" step="10000" oninput="onFfeTotal()"><span class="unit">&euro;</span></div>
+                  </div>
+                  <div class="field" style="background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.25);border-radius:3px;padding:8px 10px;">
+                    <label style="color:var(--fdc);font-size:10px;">&#8644; FF&amp;E / chambre <em style="color:var(--text-muted);font-weight:normal;">(modifie FF&amp;E ci-dessus)</em></label>
+                    <div class="input-wrap"><input type="number" id="c-ffe-pch" placeholder="ex: 12 000" step="500" oninput="onFfePch()"><span class="unit">&euro;/ch</span></div>
+                    <div class="field-note">FF&amp;E = prix/ch &times; nb chambres</div>
+                  </div>
                   <div class="field"><label>BFR initial</label><div class="input-wrap"><input type="number" id="c-bfr" value="150000" step="10000" oninput="updateTotaux()"><span class="unit">&euro;</span></div></div>
                   <div class="field"><label>Frais de constitution / divers</label><div class="input-wrap"><input type="number" id="c-frais-fdc" value="50000" step="5000" oninput="updateTotaux()"><span class="unit">&euro;</span></div></div>
                 </div>
@@ -1655,7 +1670,7 @@ function showPage(name){
   currentPage = name;
   if(name==='config'){
     loadConfigForm();
-    setTimeout(()=>{ updateTotaux(); updateSortiePreview(); }, 30);
+    setTimeout(()=>{ updateTotaux(); initPrixCh(); updateSortiePreview(); }, 30);
   }
 }
 
@@ -1820,6 +1835,8 @@ function loadConfigForm(){
     'nom':p.nom,'ville':p.ville,'chambres':p.chambres,'annee':p.annee,
     'to':p.to,'pm':p.pm,'inflation':p.inflation,'idx-loyer':p.idxLoyer,
     'vefa':p.vefa,'terrain':p.terrain,'frais-sci':p.fraisSCI,
+    'vefa-pch': p.chambres ? Math.round((p.vefa||0)/(p.chambres||1)) : '',
+    'ffe-pch':  p.chambres ? Math.round((p.ffe||0)/(p.chambres||1)) : '',
     'equity-sci':p.equitySCI,'cca-sci':p.ccaSCI,'taux-cca-sci':p.tauxCcaSCI,
     'dette-sci':p.detteSCI,'dette-sci-b':p.detteSCI,
     'taux-dette-sci':p.tauxDetteSCI,'duree-sci':p.dureeSCI,'cible-renta':p.cibleRenta,
@@ -1829,6 +1846,8 @@ function loadConfigForm(){
     'taux-dette-fdc':p.tauxDetteFDC,'duree-fdc':p.dureeFDC,'loyer':p.loyer
   };
   Object.entries(map).forEach(([k,v])=>{ const el=document.getElementById('c-'+k); if(el)el.value=v??''; });
+  // Sync prix/ch displays
+  setTimeout(initPrixCh, 10);
   updateTotaux();
   buildRampTable();
   // Set selects
@@ -1943,6 +1962,7 @@ function createProject(){
   setTimeout(()=>{
     loadConfigForm();
     updateTotaux();
+    initPrixCh();
     updateSortiePreview();
   }, 50);
 }
@@ -2085,6 +2105,190 @@ try {
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-empty').classList.add('active');
 }
+
+// ══════════════════════════════════════════════════════════════
+// PRIX PAR CHAMBRE — sync bidirectionnel VEFA & FF&E
+// ══════════════════════════════════════════════════════════════
+function getNbCh(){ return parseFloat(document.getElementById('c-chambres')?.value)||1; }
+function gField(id){ return parseFloat(document.getElementById(id)?.value)||0; }
+function sField(id,v){ const el=document.getElementById(id); if(el) el.value=v; }
+
+function onVefaTotal(){   // user changed total → update prix/ch
+  const tot=gField('c-vefa'), nb=getNbCh();
+  if(nb>0) sField('c-vefa-pch', Math.round(tot/nb));
+  updateTotaux();
+}
+function onVefaPch(){     // user changed prix/ch → update total
+  const pch=gField('c-vefa-pch'), nb=getNbCh();
+  if(pch>0 && nb>0){ sField('c-vefa', Math.round(pch*nb)); }
+  updateTotaux();
+}
+function onFfeTotal(){
+  const tot=gField('c-ffe'), nb=getNbCh();
+  if(nb>0) sField('c-ffe-pch', Math.round(tot/nb));
+  updateTotaux();
+}
+function onFfePch(){
+  const pch=gField('c-ffe-pch'), nb=getNbCh();
+  if(pch>0 && nb>0){ sField('c-ffe', Math.round(pch*nb)); }
+  updateTotaux();
+}
+function syncPrixCh(){    // called when nb chambres changes
+  const nb=getNbCh();
+  const vefaTot=gField('c-vefa'), ffeTot=gField('c-ffe');
+  if(nb>0){
+    sField('c-vefa-pch', Math.round(vefaTot/nb));
+    sField('c-ffe-pch',  Math.round(ffeTot/nb));
+  }
+  updateTotaux();
+}
+function initPrixCh(){    // called after loadConfigForm
+  const nb=getNbCh();
+  const vefaTot=gField('c-vefa'), ffeTot=gField('c-ffe');
+  if(nb>0){
+    sField('c-vefa-pch', Math.round(vefaTot/nb));
+    sField('c-ffe-pch',  Math.round(ffeTot/nb));
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+// COMPARAISON MULTI-PROJETS
+// ══════════════════════════════════════════════════════════════
+function renderComparaison(){
+  const projects = loadProjects();
+  const wrap = document.getElementById('comp-wrap');
+  if(!projects.length){
+    if(wrap) wrap.innerHTML='<p style="color:var(--text-muted);font-family:DM Sans,sans-serif;padding:20px;">Aucun projet. Créez des projets pour les comparer.</p>';
+    return;
+  }
+
+  const rows = projects.map(p=>{
+    const cv = computeAll(p);
+    const vefaT = (p.vefa||0)+(p.terrain||0)+(p.fraisSCI||0);
+    const fdcT  = (p.ffe||0)+(p.bfr||0)+(p.fraisFDC||0);
+    const invT  = vefaT + fdcT;
+    const equityT = (p.equitySCI||0)+(p.equityFDC||0);
+
+    // EBITDA croisière = an4 si dispo sinon dernier
+    const idxCrois = Math.min(3, cv.bpFDC.length-1);
+    const ebitda1  = cv.bpFDC[0]?.ebitda||0;
+    const ebitdaC  = cv.bpFDC[idxCrois]?.ebitda||0;
+    const caC      = cv.bpFDC[idxCrois]?.ca||0;
+    const ca1      = cv.bpFDC[0]?.ca||0;
+    const gop1     = cv.bpFDC[0]?.gop||0;
+
+    const roce     = invT>0  ? ebitdaC/invT  : 0;
+    const roceSCI  = vefaT>0 ? (p.loyer||0)/vefaT : 0;
+    const roceFDC  = fdcT>0  ? ebitdaC/fdcT  : 0;
+    const tauxCapi = vefaT>0 ? (p.loyer||0)/vefaT : 0;
+    const poidLoy  = ca1>0   ? (p.loyer||0)/ca1  : 0;
+    const revpar   = (p.to||0)/100*(p.pm||0);
+    const vefaPch  = (p.chambres||0)>0 ? Math.round((p.vefa||0)/(p.chambres||1)) : 0;
+
+    return {p,cv,vefaT,fdcT,invT,equityT,ebitda1,ebitdaC,caC,ca1,gop1,roce,roceSCI,roceFDC,tauxCapi,poidLoy,revpar,vefaPch};
+  });
+
+  // colour helpers
+  const colPct=(v,lo,hi)=>v<lo?'var(--red)':v<hi?'var(--amber)':'var(--green)';
+  const colN  =(v,lo,hi)=>v<lo?'var(--red)':v<hi?'var(--amber)':'var(--green)';
+
+  const cols=[
+    {h:'Projet / Ville',          td:r=>`<strong style="color:var(--text)">${r.p.nom}</strong><div style="font-size:9.5px;color:var(--text-muted);margin-top:2px;">${r.p.ville||''} &bull; ${r.p.chambres||0} ch &bull; ouv. ${r.p.annee||''}</div>`},
+    {h:'CA HT an\u202f1',         td:r=>`<span>${fmt(r.ca1)}</span>`},
+    {h:'TO plat.',                td:r=>`<span style="color:var(--fdc)">${fmtP(r.p.to/100)}</span>`},
+    {h:'PM HT plat.',             td:r=>`<span style="color:var(--fdc)">${fmt(r.p.pm)}</span>`},
+    {h:'RevPAR',                  td:r=>`${fmt(r.revpar)}`},
+    {h:'VEFA total',              td:r=>`${fmt(r.vefaT)}<div style="font-size:9.5px;color:var(--text-muted);">${fmt(r.vefaPch)}/ch</div>`},
+    {h:'Total FDC',               td:r=>`${fmt(r.fdcT)}`},
+    {h:'Equity Valotel',          td:r=>`<span style="color:var(--gold);font-weight:600">${fmt(r.equityT)}</span><div style="font-size:9.5px;color:var(--text-muted);">SCI ${fmt(r.p.equitySCI||0)} &bull; FDC ${fmt(r.p.equityFDC||0)}</div>`},
+    {h:'Loyer an\u202f1',         td:r=>`${fmt(r.p.loyer||0)}<div style="font-size:9.5px;color:${colPct(r.poidLoy,0,0.3)}">${fmtP(r.poidLoy)} du CA</div>`},
+    {h:'Taux capi Mur',           td:r=>`<span style="font-weight:600;color:${colPct(r.tauxCapi,.045,.065)}">${fmtP(r.tauxCapi,2)}</span>`},
+    {h:'ROCE global',             td:r=>`<span style="font-weight:600;color:${colPct(r.roce,.04,.08)}">${fmtP(r.roce,1)}</span>`},
+    {h:'ROCE Mur',                td:r=>`<span style="color:${colPct(r.roceSCI,.04,.065)}">${fmtP(r.roceSCI,1)}</span>`},
+    {h:'ROCE FDC',                td:r=>`<span style="color:${colPct(r.roceFDC,.06,.12)}">${fmtP(r.roceFDC,1)}</span>`},
+    {h:'TRI SCI',                 td:r=>{ const t=r.cv.triSCI; const ok=isFinite(t)&&t>0&&t<5; return `<span style="font-weight:600;color:${ok?colPct(t,.04,.08):'var(--text-muted)'}">${ok?fmtP(t,1):'N/A'}</span>`; }},
+    {h:'TRI FDC',                 td:r=>{ const t=r.cv.triFDC; const ok=isFinite(t)&&t>0&&t<5; return `<span style="font-weight:600;color:${ok?colPct(t,.06,.12):'var(--text-muted)'}">${ok?fmtP(t,1):'N/A'}</span>`; }},
+    {h:'EBITDA crois.',           td:r=>`${fmt(r.ebitdaC)}<div style="font-size:9.5px;color:var(--text-muted);">${r.caC>0?fmtP(r.ebitdaC/r.caC)+' CA':''}</div>`},
+    {h:'GOP an\u202f1',           td:r=>`${fmt(r.gop1)}<div style="font-size:9.5px;color:var(--text-muted);">${r.ca1>0?fmtP(r.gop1/r.ca1)+' CA':''}</div>`},
+  ];
+
+  const th = cols.map(cl=>`<th style="padding:6px 10px;text-align:left;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.2px;text-transform:uppercase;color:var(--text-muted);border-bottom:2px solid var(--border);white-space:nowrap;">${cl.h}</th>`).join('');
+  const trs = rows.map((r,i)=>{
+    const bg=i%2?'var(--bg3)':'var(--bg2)';
+    const tds=cols.map(cl=>`<td style="padding:7px 10px;border-bottom:1px solid var(--border);font-family:'DM Mono',monospace;font-size:11px;white-space:nowrap;vertical-align:top;">${cl.td(r)}</td>`).join('');
+    return `<tr style="background:${bg}">${tds}</tr>`;
+  }).join('');
+  if(wrap) wrap.innerHTML=`<table style="width:100%;border-collapse:collapse;font-size:11px;"><thead><tr>${th}</tr></thead><tbody>${trs}</tbody></table>`;
+
+  // ── TRI bar chart
+  const mxTRI=Math.max(...rows.flatMap(r=>{ const a=r.cv.triSCI,b=r.cv.triFDC; return [isFinite(a)&&a<5?a:0,isFinite(b)&&b<5?b:0]; }),0.15);
+  let triH='<div style="display:flex;flex-direction:column;gap:10px;">';
+  rows.forEach(r=>{
+    const ts=isFinite(r.cv.triSCI)&&r.cv.triSCI<5?r.cv.triSCI:0;
+    const tf=isFinite(r.cv.triFDC)&&r.cv.triFDC<5?r.cv.triFDC:0;
+    triH+=`<div>
+      <div style="font-size:10px;color:var(--text-dim);margin-bottom:4px;">${r.p.nom}</div>
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;">
+        <span style="font-size:9px;width:28px;color:var(--sci);">SCI</span>
+        <div style="flex:1;height:9px;background:var(--bg3);border-radius:1px;overflow:hidden;"><div style="width:${Math.min(100,ts/mxTRI*100).toFixed(1)}%;height:100%;background:var(--sci);"></div></div>
+        <span style="font-size:10px;color:var(--sci);width:38px;text-align:right;">${ts?fmtP(ts,1):'N/A'}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;">
+        <span style="font-size:9px;width:28px;color:var(--fdc);">FDC</span>
+        <div style="flex:1;height:9px;background:var(--bg3);border-radius:1px;overflow:hidden;"><div style="width:${Math.min(100,tf/mxTRI*100).toFixed(1)}%;height:100%;background:var(--fdc);"></div></div>
+        <span style="font-size:10px;color:var(--fdc);width:38px;text-align:right;">${tf?fmtP(tf,1):'N/A'}</span>
+      </div>
+    </div>`;
+  });
+  triH+='</div>';
+  const triEl=document.getElementById('comp-tri');
+  if(triEl) triEl.innerHTML=triH;
+
+  // ── Ops chart (TO / PM / RevPAR)
+  const mxRev=Math.max(...rows.map(r=>r.revpar),1);
+  let opsH='<div style="display:flex;flex-direction:column;gap:10px;">';
+  rows.forEach(r=>{
+    opsH+=`<div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+        <span style="font-size:10px;color:var(--text-dim);">${r.p.nom}</span>
+        <span style="font-size:9.5px;color:var(--text-muted);">TO ${fmtP(r.p.to/100,0)} &bull; PM ${fmt(r.p.pm)} &bull; RevPAR ${fmt(r.revpar)}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;">
+        <div style="flex:1;height:11px;background:var(--bg3);border-radius:1px;overflow:hidden;"><div style="width:${Math.min(100,r.revpar/mxRev*100).toFixed(1)}%;height:100%;background:linear-gradient(90deg,var(--sci) 0%,var(--fdc) 100%);"></div></div>
+        <span style="font-size:10px;color:var(--text);width:60px;text-align:right;">${fmt(r.revpar)}</span>
+      </div>
+    </div>`;
+  });
+  opsH+='</div>';
+  const opsEl=document.getElementById('comp-ops');
+  if(opsEl) opsEl.innerHTML=opsH;
+}
 </script>
 </body>
 </html>
+    <!-- ── PAGE COMPARAISON ── -->
+    <div id="page-comparaison" class="page" style="overflow-y:auto;padding:16px;max-width:1500px;margin:0 auto;">
+      <div class="sec-hdr" style="margin-bottom:16px;">
+        <span style="color:var(--amber);">&#9654;</span>&nbsp;Comparaison multi-projets &mdash; tableau de bord investisseur
+        <button onclick="renderComparaison()" style="margin-left:auto;padding:4px 12px;background:var(--bg3);border:1px solid var(--border);color:var(--text);font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;cursor:pointer;border-radius:2px;">&#8635;&nbsp;Actualiser</button>
+      </div>
+      <div id="comp-wrap" style="overflow-x:auto;"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px;">
+        <div class="panel">
+          <div class="panel-header" style="border-left:2px solid var(--sci);"><h3>TRI comparatif — SCI vs FDC</h3></div>
+          <div class="panel-body" id="comp-tri" style="padding:12px;"></div>
+        </div>
+        <div class="panel">
+          <div class="panel-header" style="border-left:2px solid var(--fdc);"><h3>Activit&eacute; — TO &bull; PM &bull; RevPAR</h3></div>
+          <div class="panel-body" id="comp-ops" style="padding:12px;"></div>
+        </div>
+      </div>
+      <div style="margin-top:10px;padding:8px 12px;background:var(--bg3);border-radius:3px;font-size:10px;color:var(--text-muted);font-family:'DM Mono',monospace;letter-spacing:0.5px;line-height:1.8;">
+        <strong>ROCE</strong> = EBITDA crois. / (VEFA total + FDC total) &nbsp;|&nbsp;
+        <strong>ROCE Mur</strong> = Loyer / VEFA total &nbsp;|&nbsp;
+        <strong>ROCE FDC</strong> = EBITDA crois. / Total FDC &nbsp;|&nbsp;
+        <strong>Taux capi</strong> = Loyer / VEFA &nbsp;|&nbsp;
+        <strong>TRI</strong> = taux rendement interne sur flux + valeur sortie
+      </div>
+    </div>
+  
