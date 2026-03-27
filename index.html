@@ -282,7 +282,7 @@ hr.div{border:none;border-top:1px solid var(--border);margin:12px 0;}
         <div class="nav-tab" onclick="showPage('config')">Param&egrave;tres</div>
         <div class="nav-tab" onclick="showPage('sci')">SCI Murs</div>
         <div class="nav-tab" onclick="showPage('fdc')">FDC Exploitation</div>
-        <div class="nav-tab" onclick="showPage('equilibre')">&Eacute;quilibre</div>
+        <div class="nav-tab" onclick="showPage('equilibre')">&#x2194; Back-solver</div>
         <div class="nav-tab" onclick="showPage('memo');renderMemo();" style="color:var(--sci);">&#x1F4CB; M&eacute;mo</div>
         <div class="nav-tab" onclick="showPage('comparaison');renderComparaison();" style="color:var(--amber);">&#9654; Comparaison</div>
       </div>
@@ -429,59 +429,128 @@ hr.div{border:none;border-top:1px solid var(--border);margin:12px 0;}
             <!-- SCI Emplois -->
             <div class="panel">
               <div class="panel-header" style="border-left:2px solid var(--sci);">
-                <span class="dot dot-sci"></span><h3>Emplois SCI</h3>
-                <span style="margin-left:auto;font-family:'DM Mono',monospace;font-size:9px;color:var(--text-muted);">Actif acquis</span>
+                <span class="dot dot-sci"></span><h3>Emplois SCI &mdash; <span id="sci-mode-label">Construction neuve</span></h3>
               </div>
               <div class="panel-body">
-                <div class="field-grid" style="gap:8px;">
-                  <div class="field"><label>Travaux &mdash; murs h&ocirc;tel (VEFA)</label>
-                    <div class="input-wrap"><input type="number" id="c-vefa" value="15000000" step="50000" oninput="onVefaTotal()"><span class="unit">&euro;</span></div>
+
+                <!-- ── SÉLECTEUR MODE EN PREMIER ── -->
+                <div style="margin-bottom:14px;padding:10px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:3px;">
+                  <label style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);display:block;margin-bottom:6px;">Mode d&rsquo;op&eacute;ration</label>
+                  <div style="display:flex;gap:8px;">
+                    <button id="btn-mode-neuf" onclick="setModeProjet('neuf')"
+                      style="flex:1;padding:7px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;border:1px solid var(--sci);border-radius:2px;cursor:pointer;transition:all .15s;background:var(--sci);color:#fff;">
+                      &#x1F3D7; Construction neuve
+                    </button>
+                    <button id="btn-mode-acquisition" onclick="setModeProjet('acquisition')"
+                      style="flex:1;padding:7px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;border:1px solid var(--border);border-radius:2px;cursor:pointer;transition:all .15s;background:var(--bg2);color:var(--text-muted);">
+                      &#x1F3E8; Acquisition + R&eacute;novation
+                    </button>
                   </div>
-                  <div class="field" style="background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.25);border-radius:3px;padding:8px 10px;">
-                    <label style="color:var(--gold);font-size:10px;">&#8644; Prix travaux / chambre <em style="color:var(--text-muted);font-weight:normal;">(modifie Travaux ci-dessus)</em></label>
+                  <input type="hidden" id="c-mode-projet" value="neuf">
+                </div>
+
+                <div class="field-grid" style="gap:8px;">
+
+                  <!-- ── CHAMPS MODE NEUF ── -->
+                  <div class="mode-neuf">
+                    <div class="field">
+                      <label>Travaux &mdash; murs h&ocirc;tel (VEFA)</label>
+                      <div class="input-wrap"><input type="number" id="c-vefa" value="15000000" step="50000" oninput="onVefaTotal()"><span class="unit">&euro;</span></div>
+                    </div>
+                  </div>
+                  <div class="mode-neuf" style="background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.25);border-radius:3px;padding:8px 10px;">
+                    <label style="color:var(--gold);font-size:10px;">&#8644; Prix travaux / chambre</label>
                     <div class="input-wrap"><input type="number" id="c-vefa-pch" placeholder="ex: 166 000" step="1000" oninput="onVefaPch()"><span class="unit">&euro;/ch</span></div>
                     <div class="field-note">Travaux = prix/ch &times; nb chambres</div>
                   </div>
-                  <div class="field"><label>Terrain (hors VEFA)</label><div class="input-wrap"><input type="number" id="c-terrain" value="1000000" step="50000" oninput="updateTotaux()"><span class="unit">&euro;</span></div></div>
-                  <!-- Mode projet -->
-                  <div class="field" style="grid-column:span 2;">
-                    <label>Mode d&rsquo;op&eacute;ration</label>
-                    <select id="c-mode-projet" onchange="toggleModeProjet();updateTotaux();" style="width:100%;padding:6px 8px;background:var(--bg3);border:1px solid var(--border);color:var(--text);font-family:'DM Mono',monospace;font-size:11px;border-radius:2px;">
-                      <option value="neuf">&#x1F3D7;&nbsp; Construction neuve (VEFA)</option>
-                      <option value="acquisition">&#x1F3E8;&nbsp; Acquisition existant + r&eacute;novation</option>
-                    </select>
+                  <div class="mode-neuf">
+                    <div class="field"><label>Terrain (hors VEFA)</label><div class="input-wrap"><input type="number" id="c-terrain" value="1000000" step="50000" oninput="updateTotaux()"><span class="unit">&euro;</span></div></div>
                   </div>
-                  <!-- Capex rénovation (mode acquisition seulement) -->
-                  <div class="field mode-acquisition" style="display:none;">
-                    <label>Capex r&eacute;novation <span style="color:var(--text-muted);font-size:9px;">(port&eacute; SCI)</span></label>
-                    <div class="input-wrap"><input type="number" id="c-capex-renovation" value="0" step="50000" oninput="updateTotaux()"><span class="unit">&euro;</span></div>
-                    <div class="field-note">Mise aux normes, repositionnement, restructuration</div>
+                  <div class="mode-neuf">
+                    <div class="field"><label>Honoraires MOE / notaire</label><div class="input-wrap"><input type="number" id="c-frais-sci" value="960000" step="10000" oninput="updateTotaux()"><span class="unit">&euro;</span></div></div>
                   </div>
-                  <div class="field mode-acquisition" style="display:none;">
-                    <label>Frais d&rsquo;acquisition <span style="color:var(--text-muted);font-size:9px;">(actes ~8%)</span></label>
-                    <div class="input-wrap"><input type="number" id="c-frais-acquisition" value="0" step="10000" oninput="updateTotaux()"><span class="unit">&euro;</span></div>
-                    <div class="field-note">Laiss&eacute; &agrave; 0 = calcul&eacute; &agrave; 8% du prix achat</div>
+
+                  <!-- ── CHAMPS MODE ACQUISITION ── -->
+                  <div class="mode-acquisition" style="display:none;grid-column:span 2;">
+                    <div class="field" style="background:rgba(41,182,246,.06);border:1px solid rgba(41,182,246,.2);border-radius:3px;padding:10px;">
+                      <label style="color:var(--sci);font-size:11px;font-weight:600;">Prix d&rsquo;acquisition global (murs + FDC)</label>
+                      <div class="input-wrap"><input type="number" id="c-prix-acq-global" value="0" step="100000" oninput="onPrixAcqChange()"><span class="unit">&euro;</span></div>
+                      <div class="field-note">Prix vendeur total &mdash; la ventilation murs/FDC sera calcul&eacute;e depuis l&rsquo;EBITDAR</div>
+                    </div>
                   </div>
-                  <!-- Budget initial (Mode C dépassement) -->
-                  <div class="field" style="grid-column:span 2;background:rgba(255,120,50,.06);border:1px solid rgba(255,120,50,.2);border-radius:3px;padding:8px 10px;">
-                    <label style="color:var(--amber);font-size:10px;">&#9888; Budget initial travaux <em style="color:var(--text-muted);font-weight:normal;">(pour alerte d&eacute;passement)</em></label>
+                  <div class="mode-acquisition" style="display:none;">
+                    <div class="field">
+                      <label>Capex r&eacute;novation <span style="color:var(--text-muted);font-size:9px;">(total)</span></label>
+                      <div class="input-wrap"><input type="number" id="c-capex-renovation" value="0" step="50000" oninput="onCapexChange()"><span class="unit">&euro;</span></div>
+                      <div class="field-note">Enveloppe travaux estimée (financ&eacute;e SCI + FDC)</div>
+                    </div>
+                  </div>
+                  <div class="mode-acquisition" style="display:none;" style="background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.25);border-radius:3px;padding:8px 10px;">
+                    <label style="color:var(--gold);font-size:10px;">Capex / chambre</label>
+                    <div class="input-wrap"><input type="number" id="c-capex-pch" placeholder="ex: 55 000" step="1000" oninput="onCapexPchChange()"><span class="unit">&euro;/ch</span></div>
+                    <div class="field-note">Capex = prix/ch &times; nb chambres</div>
+                  </div>
+                  <div class="mode-acquisition" style="display:none;">
+                    <div class="field">
+                      <label>Frais d&rsquo;acte <span style="color:var(--text-muted);font-size:9px;">(auto ~8% prix acq.)</span></label>
+                      <div class="input-wrap"><input type="number" id="c-frais-acquisition" value="0" step="10000" oninput="updateTotaux()"><span class="unit">&euro;</span></div>
+                      <div class="field-note">0 = calcul auto 8% du prix achat</div>
+                    </div>
+                  </div>
+                  <!-- Champs cachés pour compatibilité avec le moteur neuf -->
+                  <div style="display:none;">
+                    <input type="number" id="c-vefa-hidden" value="0">
+                    <input type="number" id="c-terrain" value="0">
+                    <input type="number" id="c-frais-sci" value="0">
+                  </div>
+
+                  <!-- ── VENTILATION SCI / FDC (mode acquisition) ── -->
+                  <div class="mode-acquisition" style="display:none;grid-column:span 2;">
+                    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:3px;padding:10px;">
+                      <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;">Ventilation SCI / FDC — depuis EBITDAR</div>
+                      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
+                        <div class="field">
+                          <label>Taux capi murs <span style="color:var(--text-muted);font-size:9px;">(loyer / valeur murs)</span></label>
+                          <div class="input-wrap"><input type="number" id="c-taux-capi-murs" value="6.5" step="0.1" oninput="onPrixAcqChange()"><span class="unit">%</span></div>
+                        </div>
+                        <div class="field">
+                          <label>Part EBITDAR vers loyer</label>
+                          <div class="input-wrap"><input type="number" id="c-pct-ebitdar-loyer" value="60" step="5" min="30" max="90" oninput="onPrixAcqChange()"><span class="unit">%</span></div>
+                          <div class="field-note">Loyer = X% × EBITDAR an plateau</div>
+                        </div>
+                      </div>
+                      <!-- Résultat ventilation -->
+                      <div id="ventilation-result" style="font-size:11px;line-height:1.9;"></div>
+                      <div style="margin-top:8px;">
+                        <label style="font-size:10px;color:var(--text-muted);">Valeur murs retenue (modifiable)</label>
+                        <div class="input-wrap" style="margin-top:4px;"><input type="number" id="c-valeur-murs-retenue" value="0" step="50000" oninput="onValeurMursManuelle()"><span class="unit">&euro;</span></div>
+                        <div class="field-note">Modifie la ventilation — le reste va au FDC</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Alerte dépassement budget -->
+                  <div style="grid-column:span 2;background:rgba(255,120,50,.06);border:1px solid rgba(255,120,50,.2);border-radius:3px;padding:8px 10px;">
+                    <label style="color:var(--amber);font-size:10px;">&#9888; Budget initial <em style="color:var(--text-muted);font-weight:normal;">(pour alerte d&eacute;passement)</em></label>
                     <div class="input-wrap"><input type="number" id="c-budget-initial-vefa" value="0" step="50000" oninput="updateDepassement()"><span class="unit">&euro;</span></div>
                     <div id="depassement-banner" style="display:none;margin-top:6px;padding:6px 10px;background:rgba(220,60,60,.1);border:1px solid var(--red);border-radius:2px;font-size:10px;color:var(--red);"></div>
                   </div>
-                  <div class="field"><label>Honoraires / frais acquisition</label><div class="input-wrap"><input type="number" id="c-frais-sci" value="960000" step="10000" oninput="updateTotaux()"><span class="unit">&euro;</span></div></div>
+
                 </div>
+
+                <!-- Totaux SCI -->
                 <div style="margin-top:10px;padding:8px 10px;background:var(--bg3);border-radius:3px;border:1px solid var(--border);">
                   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
-                    <span style="font-size:10px;color:var(--text-muted);">Total VEFA = Travaux + Terrain + Honoraires</span>
+                    <span style="font-size:10px;color:var(--text-muted);" id="c-total-empl-sci-label">Total emplois SCI (Travaux + Terrain + Honoraires)</span>
                     <span style="font-family:'DM Mono',monospace;font-size:13px;color:var(--text);font-weight:500;" id="c-total-empl-sci">--</span>
                   </div>
                   <div style="display:flex;justify-content:space-between;align-items:center;">
-                    <span style="font-size:10px;color:var(--text-muted);">Loyer cible (<span id="c-cible-pct-display">6,5</span>% &times; VEFA total)</span>
+                    <span style="font-size:10px;color:var(--text-muted);">Loyer cible (<span id="c-cible-pct-display">6,5</span>% &times; emplois SCI)</span>
                     <span style="font-family:'DM Mono',monospace;font-size:13px;color:var(--gold);font-weight:500;" id="c-loyer-cible-display">--</span>
                   </div>
                 </div>
                 <div style="margin-top:8px;">
-                  <div class="field"><label>Cible rentabilit&eacute; VEFA</label><div class="input-wrap"><input type="number" id="c-cible-renta" value="6.5" step="0.1" oninput="updateTotaux()"><span class="unit">%</span></div></div>
+                  <div class="field"><label>Taux cible loyer/VEFA</label><div class="input-wrap"><input type="number" id="c-cible-renta" value="6.5" step="0.1" oninput="updateTotaux()"><span class="unit">%</span></div></div>
                 </div>
               </div>
             </div>
@@ -615,6 +684,40 @@ hr.div{border:none;border-top:1px solid var(--border);margin:12px 0;}
             </div>
           </div>
         </div>
+        <!-- TABLE CAPITALISATION -->
+        <div style="margin-bottom:16px;">
+          <div class="panel">
+            <div class="panel-header" style="border-left:2px solid var(--gold);">
+              <span class="dot dot-gold"></span><h3>Table de capitalisation &mdash; R&eacute;partition entre associ&eacute;s</h3>
+            </div>
+            <div class="panel-body">
+              <div style="overflow-x:auto;">
+                <table style="width:100%;border-collapse:collapse;font-size:11px;font-family:'DM Mono',monospace;" id="capi-table">
+                  <thead>
+                    <tr style="border-bottom:2px solid var(--border);">
+                      <th style="padding:6px 8px;text-align:left;color:var(--text-muted);font-size:9px;letter-spacing:1px;text-transform:uppercase;">Associ&eacute;</th>
+                      <th style="padding:6px 8px;text-align:right;color:var(--sci);font-size:9px;letter-spacing:1px;text-transform:uppercase;">% SCI</th>
+                      <th style="padding:6px 8px;text-align:right;color:var(--sci);font-size:9px;letter-spacing:1px;text-transform:uppercase;">Equity SCI</th>
+                      <th style="padding:6px 8px;text-align:right;color:var(--sci);font-size:9px;letter-spacing:1px;text-transform:uppercase;">CCA SCI</th>
+                      <th style="padding:6px 8px;text-align:right;color:var(--fdc);font-size:9px;letter-spacing:1px;text-transform:uppercase;">% FDC</th>
+                      <th style="padding:6px 8px;text-align:right;color:var(--fdc);font-size:9px;letter-spacing:1px;text-transform:uppercase;">Equity FDC</th>
+                      <th style="padding:6px 8px;text-align:right;color:var(--fdc);font-size:9px;letter-spacing:1px;text-transform:uppercase;">CCA FDC</th>
+                      <th style="padding:6px 8px;text-align:right;color:var(--gold);font-size:9px;letter-spacing:1px;text-transform:uppercase;">Total apports</th>
+                    </tr>
+                  </thead>
+                  <tbody id="capi-body">
+                    <tr><td colspan="8" style="padding:12px;color:var(--text-muted);text-align:center;">Chargement...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div style="margin-top:8px;display:flex;gap:8px;">
+                <button onclick="addAssocieCapi()" style="padding:4px 12px;background:var(--bg3);border:1px solid var(--border);color:var(--text);font-family:'DM Mono',monospace;font-size:10px;cursor:pointer;border-radius:2px;">+ Associ&eacute;</button>
+                <button onclick="saveCapiTable()" style="padding:4px 12px;background:var(--gold);border:none;color:#1a1d2e;font-family:'DM Mono',monospace;font-size:10px;cursor:pointer;border-radius:2px;font-weight:600;">Enregistrer</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- CHARGES FDC VARIABILISÉES -->
         <div style="margin-bottom:16px;">
           <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--fdc);margin-bottom:8px;padding-left:2px;display:flex;align-items:center;gap:10px;">Charges d&apos;exploitation FDC &mdash; Taux param&eacute;trables <span style="flex:1;height:1px;background:rgba(201,168,76,0.2);"></span></div>
@@ -1187,15 +1290,26 @@ function defaultProject(nom, ville){
     tauxIS: 25,         // Impot sur les societes (%)
     // Mode projet
     modeProjet: 'neuf',        // 'neuf' | 'acquisition'
-    capexRenovation: 0,        // Capex rénovation (mode acquisition, porté par SCI)
-    fraisAcquisition: 0,       // Frais d'acte (~8% prix achat, calculé auto si 0)
-    prixDemandeGlobal: 0,      // Prix demandé (pour comparaison back-solver)
+    // Mode acquisition
+    prixAcqGlobal: 0,          // Prix vendeur global (murs+FDC)
+    capexRenovation: 0,        // Capex rénovation total
+    fraisAcquisition: 0,       // Frais d'acte (0 = auto 8%)
+    tauxCapiMurs: 6.5,         // Taux capi murs pour ventilation
+    pctEbitdarLoyer: 60,       // % EBITDAR → loyer supportable
+    valeurMursRetenue: 0,      // Valeur murs manuelle (0 = auto)
+    // Commun
+    capexFraisAcqHidden: 0,    // frais-sci en mode acq (calculés)
+    prixDemandeGlobal: 0,
     prixDemandeMurs: 0,
     prixDemandeFDC: 0,
-    budgetInitialVefa: 0,      // Budget initial travaux (pour alerte dépassement Mode C)
-    triCibleSCI: 8,            // TRI cible SCI (%) pour back-solver
-    triCibleFDC: 12,           // TRI cible FDC (%) pour back-solver
-    triMarche: 10,             // TRI marché global (%)
+    budgetInitialVefa: 0,
+    triCibleSCI: 8,
+    triCibleFDC: 12,
+    triMarche: 10,
+    // Table capitalisation (jusqu'à 4 associés)
+    associes: [
+      {nom:'Valotel', pctSCI:100, pctFDC:100},
+    ],
   };
 }
 
@@ -1296,18 +1410,30 @@ function computeAll(p, loyerOverride){
   const annees = Array.from({length:N_YEARS},(_,i)=>p.annee+i);
   const loyers = annees.map((_,i)=>loyer0*Math.pow(1+idx,i));
 
+  // ── Résoudre les coûts SCI selon le mode
+  let vefaMurs, terrainVal, fraisSCIval, capex, fraisAcq;
+  if((p.modeProjet||'neuf')==='acquisition'){
+    // En mode acquisition : vefa = valeur murs retenue (ventilée depuis prixAcqGlobal)
+    vefaMurs   = p.vefa||0;   // valeur murs (calculée par ventilation)
+    terrainVal = 0;
+    fraisSCIval= p.fraisSCI||0; // frais d'acte
+    capex      = p.capexRenovation||0;
+    fraisAcq   = 0;
+  } else {
+    vefaMurs   = p.vefa||0;
+    terrainVal = p.terrain||0;
+    fraisSCIval= p.fraisSCI||0;
+    capex      = p.capexRenovation||0;
+    fraisAcq   = p.fraisAcquisition||0;
+  }
+  const coutSCITotal = vefaMurs + terrainVal + fraisSCIval + capex + fraisAcq;
+
   // Dette SCI
   const dSCI = buildDette(p.detteSCI, p.tauxDetteSCI/100, p.dureeSCI);
   // Dette FDC
   const dFDC = buildDette(p.detteFDC, p.tauxDetteFDC/100, p.dureeFDC);
 
-  // En mode acquisition : vefa = prix acquisition murs (pas de terrain séparé)
-  // Le coût total SCI = p.vefa + p.terrain + p.fraisSCI + p.capexRenovation + p.fraisAcquisition
-  const capex = p.capexRenovation||0;
-  const fraisAcq = p.fraisAcquisition||0;
-  const coutSCITotal = (p.vefa||0) + (p.terrain||0) + (p.fraisSCI||0) + capex + fraisAcq;
-
-  const amortMurs = coutSCITotal/40;
+  const amortMurs = coutSCITotal/40;  // amortissement linéaire 40 ans
   const chargesFonc = coutSCITotal*0.01;
   const amortFFE = p.ffe/7;
   const intCCA_SCI = p.ccaSCI * p.tauxCcaSCI/100;
@@ -1398,7 +1524,7 @@ function computeAll(p, loyerOverride){
   let firstPos = null;
   for(let i=0;i<bpFDC.length;i++){ if(bpFDC[i].fluxTrso>0){firstPos=p.annee+i;break;} }
 
-  return {annees,loyers,bpSCI,bpFDC,dSCI,dFDC,
+  return {annees,loyers,bpSCI,bpFDC,dSCI,dFDC,coutSCITotal,vefaMurs,
     triSCI,vanSCI,invSCI,vtSCI,fSCI,
     triFDC,vanFDC,invFDC,vtFDC,fFDC,
     amortMurs,amortFFE,intCCA_SCI,intCCA_FDC,chargesFonc,
@@ -1938,9 +2064,20 @@ function updateSortiePreview(){
 
 function updateTotaux(){
   // SCI emplois = Travaux (VEFA) + Terrain + Honoraires
-  const vefa = gv('c-vefa'), terrain = gv('c-terrain'), honoraires = gv('c-frais-sci');
-  const capex = gv('c-capex-renovation'), fraisAcq = gv('c-frais-acquisition');
-  const eSCI = vefa + terrain + honoraires + capex + fraisAcq;
+  const mode = document.getElementById('c-mode-projet')?.value||'neuf';
+  let eSCI;
+  if(mode==='acquisition'){
+    const prixAcq = gv('c-prix-acq-global');
+    const capex   = gv('c-capex-renovation');
+    const fraisAcq = gv('c-frais-acquisition')||prixAcq*0.08;
+    // Valeur murs retenue (ou auto depuis ventilation si 0)
+    const valMurs = gv('c-valeur-murs-retenue')||0;
+    eSCI = (valMurs||prixAcq*0.7) + capex + fraisAcq; // approximation pour l'affichage
+  } else {
+    const vefa = gv('c-vefa'), terrain = gv('c-terrain'), honoraires = gv('c-frais-sci');
+    const capex = gv('c-capex-renovation'), fraisAcq = gv('c-frais-acquisition');
+    eSCI = vefa + terrain + honoraires + capex + fraisAcq;
+  }
   const rSCI = gv('c-equity-sci')+gv('c-cca-sci')+gv('c-dette-sci');
   const eqSCI = rSCI-eSCI;
   sv('c-total-empl-sci', fmtC(eSCI));
@@ -2028,8 +2165,12 @@ function loadConfigForm(){
     'equity-sci':p.equitySCI,'cca-sci':p.ccaSCI,'taux-cca-sci':p.tauxCcaSCI,
     'dette-sci':p.detteSCI,'dette-sci-b':p.detteSCI,
     'taux-dette-sci':p.tauxDetteSCI,'duree-sci':p.dureeSCI,'cible-renta':p.cibleRenta,
+    'prix-acq-global':p.prixAcqGlobal||0,
     'capex-renovation':p.capexRenovation||0,
     'frais-acquisition':p.fraisAcquisition||0,
+    'taux-capi-murs':p.tauxCapiMurs||6.5,
+    'pct-ebitdar-loyer':p.pctEbitdarLoyer||60,
+    'valeur-murs-retenue':p.valeurMursRetenue||0,
     'prix-demande-global':p.prixDemandeGlobal||0,
     'prix-demande-murs':p.prixDemandeMurs||0,
     'prix-demande-fdc':p.prixDemandeFDC||0,
@@ -2045,6 +2186,8 @@ function loadConfigForm(){
   Object.entries(map).forEach(([k,v])=>{ const el=document.getElementById('c-'+k); if(el)el.value=v??''; });
   // Sync prix/ch displays
   setTimeout(initPrixCh, 10);
+  setTimeout(renderCapiTable, 20);
+  setTimeout(toggleModeProjet, 5);
   updateTotaux();
   buildRampTable();
   // Set selects
@@ -2093,8 +2236,12 @@ function saveConfig(){
   p.multipleFDC=num('c-multiple-fdc')||10;
   p.tauxVAN=num('c-taux-van')||8;
   p.modeProjet=document.getElementById('c-mode-projet')?.value||'neuf';
+  p.prixAcqGlobal=num('c-prix-acq-global');
   p.capexRenovation=num('c-capex-renovation');
   p.fraisAcquisition=num('c-frais-acquisition');
+  p.tauxCapiMurs=num('c-taux-capi-murs')||6.5;
+  p.pctEbitdarLoyer=num('c-pct-ebitdar-loyer')||60;
+  p.valeurMursRetenue=num('c-valeur-murs-retenue');
   p.prixDemandeGlobal=num('c-prix-demande-global');
   p.prixDemandeMurs=num('c-prix-demande-murs');
   p.prixDemandeFDC=num('c-prix-demande-fdc');
@@ -2344,6 +2491,7 @@ function renderComparaison(){
     const ca1      = cv.bpFDC[0]?.ca||0;
     const gop1     = cv.bpFDC[0]?.gop||0;
 
+    const loyerType = vefaT*0.065;
     const roce     = invT>0  ? ebitdaC/invT  : 0;
     const roceSCI  = vefaT>0 ? (p.loyer||0)/vefaT : 0;
     const roceFDC  = fdcT>0  ? ebitdaC/fdcT  : 0;
@@ -2359,24 +2507,19 @@ function renderComparaison(){
   const colPct=(v,lo,hi)=>v<lo?'var(--red)':v<hi?'var(--amber)':'var(--green)';
   const colN  =(v,lo,hi)=>v<lo?'var(--red)':v<hi?'var(--amber)':'var(--green)';
 
+  // Loyer type = 6.5% × VEFA (si pas de loyer négocié, pour comparaison)
   const cols=[
-    {h:'Projet / Ville',          td:r=>`<strong style="color:var(--text)">${r.p.nom}</strong><div style="font-size:9.5px;color:var(--text-muted);margin-top:2px;">${r.p.ville||''} &bull; ${r.p.chambres||0} ch &bull; ouv. ${r.p.annee||''}</div>`},
-    {h:'CA HT an\u202f1',         td:r=>`<span>${fmt(r.ca1)}</span>`},
-    {h:'TO plat.',                td:r=>`<span style="color:var(--fdc)">${fmtP(r.p.to/100)}</span>`},
-    {h:'PM HT plat.',             td:r=>`<span style="color:var(--fdc)">${fmt(r.p.pm)}</span>`},
-    {h:'RevPAR',                  td:r=>`${fmt(r.revpar)}`},
-    {h:'VEFA total',              td:r=>`${fmt(r.vefaT)}<div style="font-size:9.5px;color:var(--text-muted);">${fmt(r.vefaPch)}/ch</div>`},
-    {h:'Total FDC',               td:r=>`${fmt(r.fdcT)}`},
-    {h:'Equity Valotel',          td:r=>`<span style="color:var(--gold);font-weight:600">${fmt(r.equityT)}</span><div style="font-size:9.5px;color:var(--text-muted);">SCI ${fmt(r.p.equitySCI||0)} &bull; FDC ${fmt(r.p.equityFDC||0)}</div>`},
-    {h:'Loyer an\u202f1',         td:r=>`${fmt(r.p.loyer||0)}<div style="font-size:9.5px;color:${colPct(r.poidLoy,0,0.3)}">${fmtP(r.poidLoy)} du CA</div>`},
-    {h:'Taux capi Mur',           td:r=>`<span style="font-weight:600;color:${colPct(r.tauxCapi,.045,.065)}">${fmtP(r.tauxCapi,2)}</span>`},
-    {h:'ROCE global',             td:r=>`<span style="font-weight:600;color:${colPct(r.roce,.04,.08)}">${fmtP(r.roce,1)}</span>`},
-    {h:'ROCE Mur',                td:r=>`<span style="color:${colPct(r.roceSCI,.04,.065)}">${fmtP(r.roceSCI,1)}</span>`},
-    {h:'ROCE FDC',                td:r=>`<span style="color:${colPct(r.roceFDC,.06,.12)}">${fmtP(r.roceFDC,1)}</span>`},
-    {h:'TRI SCI',                 td:r=>{ const t=r.cv.triSCI; const ok=isFinite(t)&&t>0&&t<5; return `<span style="font-weight:600;color:${ok?colPct(t,.04,.08):'var(--text-muted)'}">${ok?fmtP(t,1):'N/A'}</span>`; }},
-    {h:'TRI FDC',                 td:r=>{ const t=r.cv.triFDC; const ok=isFinite(t)&&t>0&&t<5; return `<span style="font-weight:600;color:${ok?colPct(t,.06,.12):'var(--text-muted)'}">${ok?fmtP(t,1):'N/A'}</span>`; }},
-    {h:'EBITDA crois.',           td:r=>`${fmt(r.ebitdaC)}<div style="font-size:9.5px;color:var(--text-muted);">${r.caC>0?fmtP(r.ebitdaC/r.caC)+' CA':''}</div>`},
-    {h:'GOP an\u202f1',           td:r=>`${fmt(r.gop1)}<div style="font-size:9.5px;color:var(--text-muted);">${r.ca1>0?fmtP(r.gop1/r.ca1)+' CA':''}</div>`},
+    {h:'Projet',          td:r=>`<strong style="color:var(--text)">${r.p.nom}</strong><div style="font-size:9.5px;color:var(--text-muted);margin-top:2px;">${r.p.ville||''} &bull; ${r.p.chambres||0} ch &bull; ${r.p.annee||''}</div><div style="font-size:9px;margin-top:2px;color:${r.p.modeProjet==='acquisition'?'var(--fdc)':'var(--sci)'};">${r.p.modeProjet==='acquisition'?'Acq.':'Neuf'}</div>`},
+    {h:'TO &bull; PM &bull; RevPAR', td:r=>`<span style="color:var(--fdc)">${fmtP(r.p.to/100,0)}</span> &bull; <span>${fmt(r.p.pm)}</span><div style="font-size:10px;color:var(--text-muted);">RevPAR ${fmt(r.revpar)}</div>`},
+    {h:'CA HT an 1',      td:r=>`${fmt(r.ca1)}<div style="font-size:9.5px;color:var(--text-muted);">EBITDA ${fmt(r.ebitdaC)} (an 4)</div>`},
+    {h:'Invest. total',        td:r=>`<strong>${fmt(r.invT)}</strong><div style="font-size:9.5px;color:var(--sci);">Murs ${fmt(r.vefaT)}</div><div style="font-size:9.5px;color:var(--fdc);">FDC ${fmt(r.fdcT)}</div><div style="font-size:9px;color:var(--text-muted);">${fmt(r.vefaPch)}/ch</div>`},
+    {h:'Apports Valotel',      td:r=>{ const av=getApportValotel(r.p); return `<span style="color:var(--gold);font-weight:700;">${fmt(av.total)}</span><div style="font-size:9.5px;color:var(--text-muted);">Eq. ${fmt(av.equity)} &bull; CCA ${fmt(av.cca)}</div>`; }},
+    {h:'Loyer an 1 &bull; type', td:r=>`${fmt(r.p.loyer||0)}<div style="font-size:9.5px;color:var(--gold);">Type 6,5% : ${fmt(r.vefaT*0.065)}</div><div style="font-size:9.5px;color:${colPct(r.poidLoy,0,0.3)}">${fmtP(r.poidLoy)} CA</div>`},
+    {h:'Taux capi Murs',   td:r=>`<span style="font-weight:600;color:${colPct(r.tauxCapi,.045,.065)}">${fmtP(r.tauxCapi,2)}</span><div style="font-size:9.5px;color:var(--text-muted);">cible ≥ 6,5%</div>`},
+    {h:'TRI SCI',               td:r=>{ const t=r.cv.triSCI; const ok=isFinite(t)&&t>0&&t<5; return `<span style="font-weight:700;font-size:14px;color:${ok?colPct(t,.05,.08):'var(--text-muted)'}">${ok?fmtP(t,1):'N/A'}</span>`; }},
+    {h:'TRI FDC',               td:r=>{ const t=r.cv.triFDC; const ok=isFinite(t)&&t>0&&t<5; return `<span style="font-weight:700;font-size:14px;color:${ok?colPct(t,.08,.12):'var(--text-muted)'}">${ok?fmtP(t,1):'N/A'}</span>`; }},
+    {h:'ROCE proj.',             td:r=>`<span style="color:${colPct(r.roce,.04,.08)}">${fmtP(r.roce,1)}</span><div style="font-size:9.5px;color:var(--text-muted);">EBITDA/Invest.</div>`},
+    {h:'Apports Valotel %', td:r=>{ const av=getApportValotel(r.p); const pct=r.invT>0?av.total/r.invT:0; return `${fmtP(pct,1)}<div style="font-size:9.5px;color:var(--text-muted);">${fmt(av.total)}</div>`; }},
   ];
 
   const th = cols.map(cl=>`<th style="padding:6px 10px;text-align:left;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.2px;text-transform:uppercase;color:var(--text-muted);border-bottom:2px solid var(--border);white-space:nowrap;">${cl.h}</th>`).join('');
@@ -2736,7 +2879,14 @@ function renderMemo(){
       ${(p.capexRenovation||0)>0?`<div style="${rowStyle}"><span style="${labelStyle}">dont capex rénovation</span><span style="${valStyle}">${fmt(p.capexRenovation)}</span></div>`:''}
       <div style="${rowStyle}"><span style="${labelStyle}">Total FDC</span><span style="${valStyle}">${fmt(fdcTotal)}</span></div>
       <div style="${rowStyle}"><span style="${labelStyle}">Investissement total</span><span style="${valStyle};font-weight:700;">${fmt(investTotal)}</span></div>
-      <div style="${rowStyle}"><span style="${labelStyle}">Equity total Valotel</span><span style="${valStyle};color:#c9a84c;font-weight:700;">${fmt(equityTotal)}</span></div>
+      <div style="${rowStyle}"><span style="${labelStyle}">Equity SCI</span><span style="${valStyle}">${fmt(p.equitySCI||0)}</span></div>
+      <div style="${rowStyle}"><span style="${labelStyle}">CCA SCI</span><span style="${valStyle}">${fmt(p.ccaSCI||0)}</span></div>
+      <div style="${rowStyle}"><span style="${labelStyle}">Equity FDC</span><span style="${valStyle}">${fmt(p.equityFDC||0)}</span></div>
+      <div style="${rowStyle}"><span style="${labelStyle}">CCA FDC</span><span style="${valStyle}">${fmt(p.ccaFDC||0)}</span></div>
+      <div style="border-bottom:1px solid #e8e4db;padding:7px 0;display:grid;grid-template-columns:180px 1fr;gap:8px;font-size:12px;background:#fffbf0;border-radius:2px;padding-left:4px;">
+        <span style="color:#888;font-size:11px;font-weight:600;">Total apports (Equity + CCA)</span>
+        <span style="font-weight:700;color:#c9a84c;font-size:13px;">${fmt(equityTotal+((p.ccaSCI||0)+(p.ccaFDC||0)))}</span>
+      </div>
       <div style="${rowStyle}"><span style="${labelStyle}">Loyer an 1</span><span style="${valStyle}">${fmt(p.loyer||0)} (${fmtP(renta,2)} VEFA / ${fmtP(poids)} CA)</span></div>
       <div style="${rowStyle}"><span style="${labelStyle}">Dette SCI</span><span style="${valStyle}">${fmt(p.detteSCI)} à ${p.tauxDetteSCI}% / ${p.dureeSCI} ans</span></div>
     </div>
@@ -2801,6 +2951,263 @@ function onFfeTotal(){ const tot=gField('c-ffe'),nb=getNbCh(); if(nb>0)sField('c
 function onFfePch(){ const pch=gField('c-ffe-pch'),nb=getNbCh(); if(pch>0&&nb>0)sField('c-ffe',Math.round(pch*nb)); updateTotaux(); }
 function syncPrixCh(){ const nb=getNbCh(); sField('c-vefa-pch',Math.round(gField('c-vefa')/nb)); sField('c-ffe-pch',Math.round(gField('c-ffe')/nb)); updateTotaux(); }
 function initPrixCh(){ const nb=getNbCh(); sField('c-vefa-pch',Math.round(gField('c-vefa')/nb)); sField('c-ffe-pch',Math.round(gField('c-ffe')/nb)); }
+
+// ══════════════════════════════════════════════════════════════
+// MODE PROJET — toggle interface
+// ══════════════════════════════════════════════════════════════
+function setModeProjet(mode){
+  document.getElementById('c-mode-projet').value = mode;
+  // Boutons
+  const btnNeuf = document.getElementById('btn-mode-neuf');
+  const btnAcq  = document.getElementById('btn-mode-acquisition');
+  if(btnNeuf){
+    btnNeuf.style.background   = mode==='neuf'?'var(--sci)':'var(--bg2)';
+    btnNeuf.style.color        = mode==='neuf'?'#fff':'var(--text-muted)';
+    btnNeuf.style.borderColor  = mode==='neuf'?'var(--sci)':'var(--border)';
+  }
+  if(btnAcq){
+    btnAcq.style.background  = mode==='acquisition'?'var(--fdc)':'var(--bg2)';
+    btnAcq.style.color       = mode==='acquisition'?'#fff':'var(--text-muted)';
+    btnAcq.style.borderColor = mode==='acquisition'?'var(--fdc)':'var(--border)';
+  }
+  // Champs
+  document.querySelectorAll('.mode-neuf').forEach(el=>{
+    el.style.display = mode==='neuf'?'':'none';
+  });
+  document.querySelectorAll('.mode-acquisition').forEach(el=>{
+    el.style.display = mode==='acquisition'?'':'none';
+  });
+  // Label
+  const lbl = document.getElementById('sci-mode-label');
+  if(lbl) lbl.textContent = mode==='neuf'?'Construction neuve':'Acquisition + Rénovation';
+  // Label emplois SCI
+  const lblEmpl = document.getElementById('c-total-empl-sci-label');
+  if(lblEmpl) lblEmpl.textContent = mode==='neuf'?
+    'Total emplois SCI (Travaux + Terrain + Honoraires)':
+    'Total emplois SCI (Valeur murs + Capex + Frais)';
+  updateTotaux();
+  if(mode==='acquisition') onPrixAcqChange();
+}
+
+function toggleModeProjet(){
+  const mode = document.getElementById('c-mode-projet')?.value||'neuf';
+  setModeProjet(mode);
+}
+
+// ══════════════════════════════════════════════════════════════
+// VENTILATION ACQUISITION : EBITDAR → loyer → valeur murs → FDC
+// ══════════════════════════════════════════════════════════════
+function computeVentilation(p){
+  // Utilise le BP FDC pour calculer l'EBITDAR plateau (an 4 ou dernier dispo)
+  // EBITDAR = GOP (avant loyer)
+  const pTemp = {...p, loyer:0}; // BP sans loyer pour avoir l'EBITDAR brut
+  let ebitdar = 0;
+  try {
+    const cTemp = computeAll(pTemp, 0);
+    const idx = Math.min(3, cTemp.bpFDC.length-1);
+    ebitdar = cTemp.bpFDC[idx]?.gop||0;  // GOP = EBITDAR (avant loyer)
+  } catch(e){ ebitdar = 0; }
+
+  const pctLoyer   = (p.pctEbitdarLoyer||60)/100;
+  const tauxCapi   = (p.tauxCapiMurs||6.5)/100;
+  const loyerSupportable = ebitdar * pctLoyer;
+  const valeurMursCalc   = tauxCapi>0 ? loyerSupportable/tauxCapi : 0;
+  const prixAcq    = p.prixAcqGlobal||0;
+  const capex      = p.capexRenovation||0;
+  const fraisAcqAuto = prixAcq*0.08; // 8% auto
+  const fraisAcq   = (p.fraisAcquisition||0)>0 ? p.fraisAcquisition : fraisAcqAuto;
+  const valeurFDCcalc = Math.max(0, prixAcq - valeurMursCalc);
+  const valeurMursRetenue = (p.valeurMursRetenue||0)>0 ? p.valeurMursRetenue : valeurMursCalc;
+  const valeurFDCretenue  = Math.max(0, prixAcq - valeurMursRetenue);
+
+  return {ebitdar, loyerSupportable, valeurMursCalc, valeurFDCcalc,
+          valeurMursRetenue, valeurFDCretenue, fraisAcq, capex,
+          prixAcq, tauxCapi, pctLoyer};
+}
+
+function onPrixAcqChange(){
+  if(!currentId) return;
+  saveConfigSilent();
+  const p = projects[currentId];
+  updateVentilationDisplay(p);
+  updateTotaux();
+}
+function onCapexChange(){
+  const nb = getNbCh();
+  const capex = gField('c-capex-renovation');
+  if(nb>0) sField('c-capex-pch', Math.round(capex/nb));
+  onPrixAcqChange();
+}
+function onCapexPchChange(){
+  const nb = getNbCh();
+  const pch = gField('c-capex-pch');
+  if(pch>0 && nb>0) sField('c-capex-renovation', Math.round(pch*nb));
+  onPrixAcqChange();
+}
+function onValeurMursManuelle(){
+  onPrixAcqChange();
+}
+
+function updateVentilationDisplay(p){
+  const v = computeVentilation(p);
+  const el = document.getElementById('ventilation-result');
+  if(!el) return;
+
+  const col = (val, thresh1, thresh2) =>
+    val>=thresh2?'var(--green)':val>=thresh1?'var(--amber)':'var(--red)';
+
+  const ebitdarPct = v.ebitdar>0 && (p.to||0)>0 ?
+    ` (${fmtP(v.ebitdar / (()=>{ try{const c=computeAll({...p,loyer:0},0);return c.bpFDC[Math.min(3,c.bpFDC.length-1)]?.ca||1;}catch(e){return 1;} })())})` : '';
+
+  el.innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:11px;">
+      <div style="padding:6px 8px;background:var(--bg2);border-radius:2px;">
+        <span style="color:var(--text-muted);">EBITDAR plateau${ebitdarPct}</span><br>
+        <strong style="color:var(--text);font-family:'DM Mono',monospace;">${fmt(v.ebitdar)}</strong>
+      </div>
+      <div style="padding:6px 8px;background:var(--bg2);border-radius:2px;">
+        <span style="color:var(--text-muted);">Loyer supportable (${p.pctEbitdarLoyer||60}%)</span><br>
+        <strong style="color:var(--gold);font-family:'DM Mono',monospace;">${fmt(v.loyerSupportable)}</strong>
+      </div>
+      <div style="padding:6px 8px;background:var(--bg2);border-radius:2px;">
+        <span style="color:var(--text-muted);">Valeur murs (loyer/${(p.tauxCapiMurs||6.5)}%)</span><br>
+        <strong style="color:var(--sci);font-family:'DM Mono',monospace;">${fmt(v.valeurMursCalc)}</strong>
+      </div>
+      <div style="padding:6px 8px;background:var(--bg2);border-radius:2px;">
+        <span style="color:var(--text-muted);">Valeur FDC implicite (solde)</span><br>
+        <strong style="color:var(--fdc);font-family:'DM Mono',monospace;">${fmt(v.valeurFDCcalc)}</strong>
+      </div>
+    </div>
+    <div style="margin-top:6px;font-size:10px;color:var(--text-muted);padding:4px 8px;border-left:2px solid var(--gold);">
+      Prix acq. ${fmt(v.prixAcq)} + Capex ${fmt(v.capex)} + Frais ${fmt(v.fraisAcq)} = Coût total ${fmt(v.prixAcq+v.capex+v.fraisAcq)}
+    </div>`;
+
+  // Mettre à jour p.vefa et p.fraisSCI pour le moteur
+  if(currentId && projects[currentId]){
+    const pp = projects[currentId];
+    pp.vefa      = v.valeurMursRetenue;
+    pp.terrain   = 0;
+    pp.fraisSCI  = v.fraisAcq;
+    // FDC : valeur FDC retenue → mise à jour ffe pour le moteur
+    // On garde ffe tel quel (l'exploitant met ses propres fonds)
+    // mais on met le prix FDC dans prixDemandeFDC pour le back-solver
+    pp.prixDemandeFDC = v.valeurFDCretenue;
+    pp.prixDemandeMurs = v.valeurMursRetenue;
+  }
+}
+
+// Sauvegarde silencieuse (sans renderAll)
+function saveConfigSilent(){
+  if(!currentId) return;
+  const p = projects[currentId];
+  const num = id=>{ const el=document.getElementById(id); return el?(parseFloat(el.value)||0):0; };
+  const str = id=>{ const el=document.getElementById(id); return el?(el.value||''):''; };
+  p.modeProjet = document.getElementById('c-mode-projet')?.value||'neuf';
+  p.prixAcqGlobal = num('c-prix-acq-global');
+  p.capexRenovation = num('c-capex-renovation');
+  p.fraisAcquisition = num('c-frais-acquisition');
+  p.tauxCapiMurs = num('c-taux-capi-murs')||6.5;
+  p.pctEbitdarLoyer = num('c-pct-ebitdar-loyer')||60;
+  p.valeurMursRetenue = num('c-valeur-murs-retenue');
+  p.chambres = num('c-chambres');
+  p.annee = Math.round(num('c-annee'));
+  p.to = num('c-to'); p.pm = num('c-pm');
+  p.inflation = num('c-inflation');
+  // Charges pour calcul EBITDAR
+  p.tauxFB = num('c-taux-fb')||30;
+  p.tauxSalaires = num('c-taux-salaires')||30;
+  p.tauxFranchise = num('c-taux-franchise')||8;
+  p.tauxCommAgence = num('c-taux-comm-agence')||6;
+  p.tauxEnergie = num('c-taux-energie')||1.3;
+  p.tauxHonoraires = num('c-taux-honoraires')||4.5;
+  p.tauxHolding = num('c-taux-holding')||4;
+  p.tauxAutres = num('c-taux-autres')||9;
+  saveStore();
+}
+
+// ══════════════════════════════════════════════════════════════
+// TABLE DE CAPITALISATION
+// ══════════════════════════════════════════════════════════════
+function renderCapiTable(){
+  if(!currentId) return;
+  const p = projects[currentId];
+  if(!p.associes || !p.associes.length){
+    p.associes = [{nom:'Valotel', pctSCI:100, pctFDC:100}];
+  }
+  const equitySCI = p.equitySCI||0, ccaSCI = p.ccaSCI||0;
+  const equityFDC = p.equityFDC||0, ccaFDC = p.ccaFDC||0;
+
+  let html = '';
+  p.associes.forEach((a,i)=>{
+    const eSCI = equitySCI*(a.pctSCI||0)/100;
+    const cSCI = ccaSCI*(a.pctSCI||0)/100;
+    const eFDC = equityFDC*(a.pctFDC||0)/100;
+    const cFDC = ccaFDC*(a.pctFDC||0)/100;
+    const total= eSCI+cSCI+eFDC+cFDC;
+    const bg = i===0?'background:rgba(201,168,76,.05);':'';
+    html+=`<tr style="border-bottom:1px solid var(--border);${bg}">
+      <td style="padding:6px 8px;"><input type="text" value="${a.nom||''}" data-i="${i}" data-f="nom"
+        onchange="onCapiEdit(this)" style="background:transparent;border:none;color:var(--text);font-family:'DM Mono',monospace;font-size:11px;width:100%;"></td>
+      <td style="padding:4px 8px;text-align:right;"><input type="number" value="${a.pctSCI||0}" data-i="${i}" data-f="pctSCI"
+        onchange="onCapiEdit(this)" style="width:50px;background:var(--bg3);border:1px solid var(--border);color:var(--sci);font-family:'DM Mono',monospace;font-size:11px;text-align:right;padding:2px 4px;">%</td>
+      <td style="padding:4px 8px;text-align:right;color:var(--sci);">${fmt(eSCI)}</td>
+      <td style="padding:4px 8px;text-align:right;color:var(--sci);">${fmt(cSCI)}</td>
+      <td style="padding:4px 8px;text-align:right;"><input type="number" value="${a.pctFDC||0}" data-i="${i}" data-f="pctFDC"
+        onchange="onCapiEdit(this)" style="width:50px;background:var(--bg3);border:1px solid var(--border);color:var(--fdc);font-family:'DM Mono',monospace;font-size:11px;text-align:right;padding:2px 4px;">%</td>
+      <td style="padding:4px 8px;text-align:right;color:var(--fdc);">${fmt(eFDC)}</td>
+      <td style="padding:4px 8px;text-align:right;color:var(--fdc);">${fmt(cFDC)}</td>
+      <td style="padding:4px 8px;text-align:right;color:var(--gold);font-weight:600;">${fmt(total)}</td>
+    </tr>`;
+  });
+  // Totaux
+  const totSCI=equitySCI+ccaSCI, totFDC=equityFDC+ccaFDC;
+  html+=`<tr style="border-top:2px solid var(--border);font-weight:700;">
+    <td style="padding:6px 8px;color:var(--text-muted);font-size:10px;">TOTAL</td>
+    <td style="padding:6px 8px;text-align:right;color:var(--sci);">100%</td>
+    <td style="padding:6px 8px;text-align:right;color:var(--sci);">${fmt(equitySCI)}</td>
+    <td style="padding:6px 8px;text-align:right;color:var(--sci);">${fmt(ccaSCI)}</td>
+    <td style="padding:6px 8px;text-align:right;color:var(--fdc);">100%</td>
+    <td style="padding:6px 8px;text-align:right;color:var(--fdc);">${fmt(equityFDC)}</td>
+    <td style="padding:6px 8px;text-align:right;color:var(--fdc);">${fmt(ccaFDC)}</td>
+    <td style="padding:6px 8px;text-align:right;color:var(--gold);font-weight:700;">${fmt(totSCI+totFDC)}</td>
+  </tr>`;
+  const body = document.getElementById('capi-body');
+  if(body) body.innerHTML=html;
+}
+
+function onCapiEdit(el){
+  if(!currentId) return;
+  const p = projects[currentId];
+  const i = parseInt(el.dataset.i);
+  const f = el.dataset.f;
+  if(f==='nom') p.associes[i].nom = el.value;
+  else p.associes[i][f] = parseFloat(el.value)||0;
+  renderCapiTable();
+}
+
+function addAssocieCapi(){
+  if(!currentId) return;
+  const p = projects[currentId];
+  if(!p.associes) p.associes=[];
+  p.associes.push({nom:'Associé '+(p.associes.length+1), pctSCI:0, pctFDC:0});
+  renderCapiTable();
+}
+
+function saveCapiTable(){
+  if(!currentId) return;
+  saveStore();
+}
+
+// Apport Valotel = apports du premier associé (index 0)
+function getApportValotel(p){
+  const a = (p.associes||[])[0];
+  if(!a) return {equity:0,cca:0,total:0};
+  const eSCI = (p.equitySCI||0)*(a.pctSCI||0)/100;
+  const cSCI = (p.ccaSCI||0)*(a.pctSCI||0)/100;
+  const eFDC = (p.equityFDC||0)*(a.pctFDC||0)/100;
+  const cFDC = (p.ccaFDC||0)*(a.pctFDC||0)/100;
+  return {equity:eSCI+eFDC, cca:cSCI+cFDC, total:eSCI+cSCI+eFDC+cFDC, nom:a.nom||'Valotel'};
+}
 </script>
 </body>
 </html>
