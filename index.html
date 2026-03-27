@@ -437,7 +437,7 @@ select:focus { outline: none; }
   flex-shrink: 0;
   background: var(--bg2);
   border-right: 1px solid var(--border);
-  display: none;
+  display: flex;
   flex-direction: column;
   overflow-y: auto;
 }
@@ -497,17 +497,11 @@ select:focus { outline: none; }
 
 <!-- ── TOPBAR ── -->
 <div id="topbar">
-  <div class="logo">Analyse hôtelière</div>
+  <div class="logo" style="color:var(--gold);font-size:11px;letter-spacing:2px;">Analyse hôtelière</div>
   <div id="project-selector">
     <span id="project-name-display" style="color:var(--text3);font-size:11px;">Aucun projet</span>
   </div>
-  <div style="display:flex;gap:6px;align-items:center;">
-    <button class="topbar-btn" onclick="triggerImport()">↑ Importer</button>
-    <button class="topbar-btn" onclick="exportProject()">↓ Exporter</button>
-    <button class="topbar-btn" onclick="duplicateProject()">⎘ Dupliquer</button>
-    <button class="topbar-btn gold" onclick="openNewModal()">+ Nouveau projet</button>
-    <input type="file" id="import-input" accept=".json" style="display:none" onchange="importProject(event)">
-  </div>
+  <input type="file" id="import-input" accept=".json" style="display:none" onchange="importProject(event)">
 </div>
 
 
@@ -519,8 +513,11 @@ select:focus { outline: none; }
   <div id="sidebar">
     <div id="sidebar-header">Projets</div>
     <div id="project-list" style="flex:1;padding:6px;"></div>
-    <div style="padding:8px;border-top:1px solid var(--border);flex-shrink:0;">
-      <button class="topbar-btn" style="width:100%;text-align:center;" onclick="openNewModal()">+ Nouveau</button>
+    <div style="padding:8px;border-top:1px solid var(--border);flex-shrink:0;display:flex;flex-direction:column;gap:5px;">
+      <button class="topbar-btn gold" style="width:100%;text-align:center;font-weight:600;" onclick="openNewModal()">+ Nouveau projet</button>
+      <button class="topbar-btn" style="width:100%;text-align:center;" onclick="triggerImport()">↑ Importer</button>
+      <button class="topbar-btn" style="width:100%;text-align:center;" onclick="exportProject()">↓ Exporter</button>
+      <button class="topbar-btn" style="width:100%;text-align:center;" onclick="duplicateProject()">⎘ Dupliquer</button>
     </div>
   </div>
 
@@ -537,10 +534,7 @@ select:focus { outline: none; }
 <!-- ════════════════════════════════════════════════════════
      PAGE VIDE
 ════════════════════════════════════════════════════════ -->
-<div class="page active" id="page-empty">
-  <div class="tagline" style="font-size:14px;letter-spacing:3px;">Analyse financière hôtelière</div>
-  <button class="topbar-btn gold" style="padding:10px 28px;font-size:11px;" onclick="openNewModal()">+ Créer un premier projet</button>
-</div>
+<div class="page active" id="page-empty"></div>
 
 <!-- ════════════════════════════════════════════════════════
      PAGE OPPORTUNITÉ
@@ -2053,7 +2047,6 @@ function openProject(id){
   currentId=id;
   const p=projects[id];
   // Afficher sidebar + tabs + masquer page-empty
-  document.getElementById('sidebar').style.display='flex';
   document.getElementById('tabs').style.display='block';
   // Nom dans topbar
   const el=document.getElementById('project-name-display');
@@ -2091,7 +2084,6 @@ function deleteProject(id){
   if(ids.length>0){ openProject(ids[ids.length-1]); }
   else {
     currentId=null;
-    document.getElementById('sidebar').style.display='none';
     document.getElementById('tabs').style.display='none';
     document.getElementById('project-name-display').textContent='Aucun projet';
     document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
