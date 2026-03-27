@@ -291,13 +291,45 @@ input[type=text]:focus{outline:none;border-color:var(--border2);}
               <div class="field"><label>% EBITDAR → loyer</label><div class="iw"><input type="number" id="p-pct-ebitdar" value="60" step="5" min="30" max="90" oninput="autoSave();updateVentilation()"><span class="unit">%</span></div></div>
             </div>
             <!-- Résultat ventilation -->
-            <div class="vbox" id="p-venti" style="margin-bottom:10px;">
-              <div class="vbox-item"><div class="vl">EBITDAR plateau</div><div class="vv" id="vt-ebitdar">—</div></div>
-              <div class="vbox-item"><div class="vl">Loyer supportable</div><div class="vv" style="color:var(--gold);" id="vt-loyer">—</div></div>
-              <div class="vbox-item"><div class="vl">Valeur murs</div><div class="vv" style="color:var(--sci);" id="vt-murs">—</div></div>
-              <div class="vbox-item"><div class="vl">Valeur FDC</div><div class="vv" style="color:var(--fdc);" id="vt-fdc">—</div></div>
+            <!-- Zone résultat ventilation -->
+            <div id="p-venti" style="margin-bottom:10px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:10px;">
+              <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-bottom:8px;">Calcul de ventilation — deux approches</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px;">
+
+                <!-- Approche 1 : depuis l'EBITDAR du FDC -->
+                <div style="padding:8px;background:var(--bg2);border-radius:var(--r);border-left:2px solid var(--fdc);">
+                  <div style="font-size:9px;color:var(--fdc);margin-bottom:4px;letter-spacing:1px;">① EBITDAR FDC → loyer</div>
+                  <div style="font-size:9px;color:var(--text3);margin-bottom:2px;">EBITDAR plateau (GOP)</div>
+                  <div style="font-size:12px;font-weight:600;margin-bottom:6px;" id="vt-ebitdar">—</div>
+                  <div style="font-size:9px;color:var(--text3);margin-bottom:2px;">Loyer supportable FDC (<span id="vt-pct-ebitdar">60</span>%)</div>
+                  <div style="font-size:14px;font-weight:700;color:var(--fdc);" id="vt-loyer-ebitdar">—</div>
+                </div>
+
+                <!-- Approche 2 : depuis le taux capi des murs -->
+                <div style="padding:8px;background:var(--bg2);border-radius:var(--r);border-left:2px solid var(--sci);">
+                  <div style="font-size:9px;color:var(--sci);margin-bottom:4px;letter-spacing:1px;">② Valeur murs → loyer capi</div>
+                  <div style="font-size:9px;color:var(--text3);margin-bottom:2px;">Valeur murs (prix acq. − FDC)</div>
+                  <div style="font-size:12px;font-weight:600;margin-bottom:6px;" id="vt-murs">—</div>
+                  <div style="font-size:9px;color:var(--text3);margin-bottom:2px;">Loyer capi (<span id="vt-taux-capi">6,5</span>% × murs)</div>
+                  <div style="font-size:14px;font-weight:700;color:var(--sci);" id="vt-loyer-capi">—</div>
+                </div>
+
+                <!-- Loyer retenu + valeur FDC -->
+                <div style="padding:8px;background:rgba(201,168,76,.06);border-radius:var(--r);border-left:2px solid var(--gold);">
+                  <div style="font-size:9px;color:var(--gold);margin-bottom:4px;letter-spacing:1px;">③ Loyer retenu (compromis)</div>
+                  <div style="font-size:9px;color:var(--text3);margin-bottom:2px;">Loyer négocié</div>
+                  <div style="font-size:14px;font-weight:700;color:var(--gold);" id="vt-loyer-retenu">—</div>
+                  <div style="font-size:9px;color:var(--text3);margin-top:6px;margin-bottom:2px;">Valeur FDC implicite (prix − murs)</div>
+                  <div style="font-size:12px;font-weight:600;color:var(--fdc);" id="vt-fdc">—</div>
+                </div>
+
+              </div>
+              <div style="font-size:9px;color:var(--text3);padding:4px 0;border-top:1px solid var(--border);">
+                Prix acq. <strong id="vt-prix-acq">—</strong> + Capex <strong id="vt-capex">—</strong> + Frais acte <strong id="vt-frais">—</strong> = Coût total <strong id="vt-cout-total">—</strong>
+              </div>
             </div>
-            <div class="field"><label>Valeur murs retenue (0 = auto)</label><div class="iw"><input type="number" id="p-valeur-murs" value="0" step="50000" oninput="autoSave()"><span class="unit">€</span></div></div>
+            <div id="vt-alerte" style="display:none;margin-bottom:8px;padding:6px 10px;background:rgba(224,144,64,.1);border:1px solid rgba(224,144,64,.3);border-radius:var(--r);font-size:10px;color:var(--amber);"></div>
+            <div class="field"><label>Valeur murs retenue (0 = auto depuis EBITDAR)</label><div class="iw"><input type="number" id="p-valeur-murs" value="0" step="50000" oninput="autoSave()"><span class="unit">€</span></div></div>
           </div>
         </div>
       </div>
@@ -327,7 +359,7 @@ input[type=text]:focus{outline:none;border-color:var(--border2);}
 
       <!-- FDC Emplois & Ressources -->
       <div class="card">
-        <div class="card-hdr"><span class="fdc">▪</span> FDC Exploitation — Emplois &amp; Ressources</div>
+        <div class="card-hdr"><span class="fdc">▪</span> FDC Exploitation — Emplois</div>
         <div class="card-body">
           <div class="g4" style="gap:10px;margin-bottom:10px;">
             <div class="field"><label>FF&amp;E équipements</label><div class="iw"><input type="number" id="p-ffe" value="3000000" step="50000" oninput="autoSave();syncPch()"><span class="unit">€</span></div></div>
@@ -335,7 +367,13 @@ input[type=text]:focus{outline:none;border-color:var(--border2);}
             <div class="field"><label>BFR initial</label><div class="iw"><input type="number" id="p-bfr" value="150000" step="10000" oninput="autoSave()"><span class="unit">€</span></div></div>
             <div class="field"><label>Frais constitution</label><div class="iw"><input type="number" id="p-frais-fdc" value="50000" step="5000" oninput="autoSave()"><span class="unit">€</span></div></div>
           </div>
-          <div class="sep"></div>
+        </div>
+      </div>
+
+      <!-- FDC Ressources -->
+      <div class="card">
+        <div class="card-hdr"><span class="fdc">▪</span> FDC Exploitation — Ressources &amp; Financement</div>
+        <div class="card-body">
           <div class="g4" style="gap:10px;">
             <div class="field"><label>Equity FDC</label><div class="iw"><input type="number" id="p-equity-fdc" value="500000" step="50000" oninput="autoSave()"><span class="unit">€</span></div></div>
             <div class="field"><label>CCA FDC</label><div class="iw"><input type="number" id="p-cca-fdc" value="1200000" step="50000" oninput="autoSave()"><span class="unit">€</span></div></div>
@@ -806,26 +844,75 @@ function autoSave(){
 }
 
 function applyVentilation(p){
+  // ── Calcul EBITDAR FDC (GOP plateau, loyer=0)
   let ebitdar=0;
   try{
     const pT={...p,loyer:0,modeProjet:'neuf',vefa:0,terrain:0,fraisSCI:0,capexRenovation:0};
     const cT=computeAll(pT,0);
     ebitdar=cT.bpFDC[Math.min(3,cT.bpFDC.length-1)]?.gop||0;
   }catch(e){}
-  const pct=(p.pctEbitdarLoyer||60)/100;
-  const tCapi=(p.tauxCapiMurs||6.5)/100;
-  const loyerSup=ebitdar*pct;
-  const valMursCalc=tCapi>0?loyerSup/tCapi:0;
-  const prixAcq=p.prixAcqGlobal||0;
-  const fraisAuto=prixAcq*0.08;
-  const fraisAcq=(p.fraisAcquisition||0)>0?p.fraisAcquisition:fraisAuto;
-  const valMurs=(p.valeurMursRetenue||0)>0?p.valeurMursRetenue:valMursCalc;
-  const valFDC=Math.max(0,prixAcq-valMurs);
-  p.vefa=valMurs; p.terrain=0; p.fraisSCI=fraisAcq;
-  // Afficher ventilation
-  setEl('vt-ebitdar',fmt(ebitdar));setEl('vt-loyer',fmt(loyerSup));
-  setEl('vt-murs',fmt(valMurs));setEl('vt-fdc',fmt(valFDC));
-  return {ebitdar,loyerSup,valMursCalc,valMurs,valFDC,fraisAcq};
+
+  const pct    = (p.pctEbitdarLoyer||60)/100;
+  const tCapi  = (p.tauxCapiMurs||6.5)/100;
+  const prixAcq= p.prixAcqGlobal||0;
+  const capex  = p.capexRenovation||0;
+  const fraisAuto = prixAcq*0.08;
+  const fraisAcq  = (p.fraisAcquisition||0)>0 ? p.fraisAcquisition : fraisAuto;
+
+  // ── Approche ① : depuis EBITDAR FDC
+  // Loyer que le FDC peut supporter = pct × EBITDAR
+  const loyerEbitdar = ebitdar*pct;
+
+  // ── Approche ② : depuis valeur des murs (taux capi)
+  // On estime la valeur des murs : si valeur retenue manuelle → utiliser
+  // Sinon on part du loyer EBITDAR pour déduire la valeur des murs
+  const valMursDepuisEbitdar = tCapi>0 ? loyerEbitdar/tCapi : 0;
+  // Valeur FDC = prix acq - valeur murs
+  const valFDCdepuisEbitdar = Math.max(0, prixAcq - valMursDepuisEbitdar);
+
+  // Loyer capi = tCapi × valeur murs retenue
+  const valMursRetenue = (p.valeurMursRetenue||0)>0 ? p.valeurMursRetenue : valMursDepuisEbitdar;
+  const loyerCapi = valMursRetenue * tCapi;
+
+  // Valeur FDC implicite
+  const valFDC = Math.max(0, prixAcq - valMursRetenue);
+
+  // ── Loyer retenu = loyer actuel du projet (p.loyer)
+  // Si p.loyer = 0 ou non défini, proposer la moyenne des deux approches
+  const loyerRetenu = (p.loyer||0)>0 ? p.loyer : Math.round((loyerEbitdar+loyerCapi)/2/1000)*1000;
+
+  // Mettre à jour p pour le moteur
+  p.vefa = valMursRetenue; p.terrain=0; p.fraisSCI=fraisAcq;
+
+  // ── Affichage
+  const show=(id,v)=>{ const e=document.getElementById(id); if(e) e.textContent=v; };
+  show('vt-ebitdar',  fmt(ebitdar));
+  show('vt-pct-ebitdar', p.pctEbitdarLoyer||60);
+  show('vt-loyer-ebitdar', fmt(loyerEbitdar));
+  show('vt-murs',     fmt(valMursRetenue));
+  show('vt-taux-capi',(p.tauxCapiMurs||6.5).toString().replace('.',','));
+  show('vt-loyer-capi', fmt(loyerCapi));
+  show('vt-loyer-retenu', fmt(loyerRetenu));
+  show('vt-fdc',      fmt(valFDC));
+  show('vt-prix-acq', fmt(prixAcq));
+  show('vt-capex',    fmt(capex));
+  show('vt-frais',    fmt(fraisAcq));
+  show('vt-cout-total', fmt(prixAcq+capex+fraisAcq));
+
+  // Alerte si les deux approches divergent
+  const ecart = Math.abs(loyerEbitdar-loyerCapi);
+  const ecartPct = loyerEbitdar>0 ? ecart/loyerEbitdar : 0;
+  const alertEl = document.getElementById('vt-alerte');
+  if(alertEl){
+    if(ecartPct>0.15){
+      alertEl.style.display='block';
+      alertEl.textContent = `⚠ Écart ${fmtP(ecartPct)} entre les deux approches — loyer à négocier entre ${fmt(Math.min(loyerEbitdar,loyerCapi))} et ${fmt(Math.max(loyerEbitdar,loyerCapi))}`;
+    } else {
+      alertEl.style.display='none';
+    }
+  }
+
+  return {ebitdar,loyerEbitdar,loyerCapi,loyerRetenu,valMursDepuisEbitdar,valMursRetenue,valFDC,fraisAcq,prixAcq,capex};
 }
 
 function updateVentilation(){
