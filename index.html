@@ -42,6 +42,7 @@ body {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  height: 100vh;
 }
 
 /* ── TOPBAR ──────────────────────────────────────────────── */
@@ -430,6 +431,32 @@ select:focus { outline: none; }
   #memo-print { background: white; color: #1a1a2e; }
 }
 
+/* ── SIDEBAR PROJETS ─────────────────────────────────────── */
+#sidebar {
+  width: 200px;
+  flex-shrink: 0;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: none;
+  flex-direction: column;
+  overflow-y: auto;
+}
+#sidebar-header {
+  padding: 10px 12px;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text3);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+#content-area {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
 /* ── SCROLLBAR ───────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: var(--bg2); }
@@ -470,7 +497,7 @@ select:focus { outline: none; }
 
 <!-- ── TOPBAR ── -->
 <div id="topbar">
-  <div class="logo">VALOTEL</div>
+  <div class="logo">Analyse hôtelière</div>
   <div id="project-selector">
     <span id="project-name-display" style="color:var(--text3);font-size:11px;">Aucun projet</span>
   </div>
@@ -483,6 +510,22 @@ select:focus { outline: none; }
   </div>
 </div>
 
+
+
+<!-- ── APP ── -->
+<div id="app" style="flex:1;overflow:hidden;display:flex;flex-direction:row;">
+
+  <!-- SIDEBAR PROJETS -->
+  <div id="sidebar">
+    <div id="sidebar-header">Projets</div>
+    <div id="project-list" style="flex:1;padding:6px;"></div>
+    <div style="padding:8px;border-top:1px solid var(--border);flex-shrink:0;">
+      <button class="topbar-btn" style="width:100%;text-align:center;" onclick="openNewModal()">+ Nouveau</button>
+    </div>
+  </div>
+
+  <!-- ZONE PRINCIPALE (tabs + pages) -->
+  <div id="content-area">
 <!-- ── TABS ── -->
 <div id="tabs">
   <span class="tab active" onclick="showTab('opportunite')"><span class="icon">◎</span> Opportunité</span>
@@ -491,16 +534,11 @@ select:focus { outline: none; }
   <span class="tab" onclick="showTab('memo')"><span class="icon">📋</span> Mémo</span>
   <span class="tab" onclick="showTab('comparaison')"><span class="icon">⇄</span> Comparaison</span>
 </div>
-
-<!-- ── APP ── -->
-<div id="app">
-
 <!-- ════════════════════════════════════════════════════════
      PAGE VIDE
 ════════════════════════════════════════════════════════ -->
 <div class="page active" id="page-empty">
-  <div class="logo-big">VALOTEL</div>
-  <div class="tagline">Analyse financière hôtelière</div>
+  <div class="tagline" style="font-size:14px;letter-spacing:3px;">Analyse financière hôtelière</div>
   <button class="topbar-btn gold" style="padding:10px 28px;font-size:11px;" onclick="openNewModal()">+ Créer un premier projet</button>
 </div>
 
@@ -970,6 +1008,7 @@ select:focus { outline: none; }
   </div>
 </div>
 
+  </div><!-- /content-area -->
 </div><!-- /app -->
 
 <!-- ── MODAL NOUVEAU PROJET ── -->
@@ -1906,6 +1945,8 @@ function updateEquilibres(p){
 function showTab(name){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  // S'assurer que page-empty est masquée si un projet est ouvert
+  if(currentId) { const pe=document.getElementById('page-empty'); if(pe) pe.classList.remove('active'); }
   const page=document.getElementById('page-'+name);
   if(page) page.classList.add('active');
   document.querySelectorAll('.tab').forEach(t=>{
@@ -2004,21 +2045,59 @@ function createProject(){
   projects[p.id]=p; saveStore();
   closeModal();
   openProject(p.id);
-  showTab('parametres');
+  renderProjectList();
+  showTab('opportunite');
 }
 
 function openProject(id){
   currentId=id;
   const p=projects[id];
+  // Afficher sidebar + tabs + masquer page-empty
+  document.getElementById('sidebar').style.display='flex';
   document.getElementById('tabs').style.display='block';
-  document.getElementById('page-empty').classList.remove('active');
   // Nom dans topbar
   const el=document.getElementById('project-name-display');
   const parts=(p.nom||'Projet').split(' ');
   el.innerHTML=parts.slice(0,-1).join(' ')+(parts.length>1?' ':'')+`<em>${parts[parts.length-1]}</em>`;
+  renderProjectList();
   loadOppForm();
   renderAll();
   showTab('opportunite');
+}
+
+function renderProjectList(){
+  const list=document.getElementById('project-list');
+  if(!list) return;
+  const ids=Object.keys(projects);
+  if(!ids.length){ list.innerHTML='<div style="padding:10px;font-size:10px;color:var(--text3);">Aucun projet</div>'; return; }
+  list.innerHTML=ids.map(id=>{
+    const p=projects[id];
+    const active=id===currentId?'active':'';
+    return `<div class="proj-item ${active}" onclick="openProject('${id}')">
+      <div>
+        <div class="pname">${p.nom||'Projet'}</div>
+        <div class="pmeta">${p.ville||'—'} · ${p.chambres||'—'}ch · ${p.annee||'—'}</div>
+      </div>
+      <span class="pdel" onclick="event.stopPropagation();deleteProject('${id}')">✕</span>
+    </div>`;
+  }).join('');
+}
+
+function deleteProject(id){
+  if(!confirm('Supprimer ce projet ?')) return;
+  delete projects[id];
+  saveStore();
+  const ids=Object.keys(projects);
+  if(ids.length>0){ openProject(ids[ids.length-1]); }
+  else {
+    currentId=null;
+    document.getElementById('sidebar').style.display='none';
+    document.getElementById('tabs').style.display='none';
+    document.getElementById('project-name-display').textContent='Aucun projet';
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    document.getElementById('page-empty').classList.add('active');
+    renderProjectList();
+  }
 }
 
 function exportProject(){
@@ -2074,9 +2153,9 @@ document.getElementById('modal-new').addEventListener('click',e=>{ if(e.target==
 // INIT
 // ══════════════════════════════════════════════════════════════
 projects = loadStore();
-const ids = Object.keys(projects);
-if(ids.length>0){
-  try { openProject(ids[ids.length-1]); }
+const _ids = Object.keys(projects);
+if(_ids.length>0){
+  try { openProject(_ids[_ids.length-1]); }
   catch(e){ projects={}; saveStore(); }
 }
 </script>
