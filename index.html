@@ -522,7 +522,7 @@ select:focus { outline: none; }
   </div>
 
   <!-- ZONE PRINCIPALE (tabs + pages) -->
-  <div id="content-area">
+  <div id="content-area" style="flex:1;overflow:hidden;display:flex;flex-direction:column;">
 <!-- ── TABS ── -->
 <div id="tabs">
   <span class="tab active" onclick="showTab('opportunite')"><span class="icon">◎</span> Opportunité</span>
@@ -534,7 +534,7 @@ select:focus { outline: none; }
 <!-- ════════════════════════════════════════════════════════
      PAGE VIDE
 ════════════════════════════════════════════════════════ -->
-<div class="page active" id="page-empty"></div>
+<div id="page-empty" style="display:flex;flex:1;align-items:center;justify-content:center;"></div>
 
 <!-- ════════════════════════════════════════════════════════
      PAGE OPPORTUNITÉ
@@ -662,8 +662,29 @@ select:focus { outline: none; }
   <!-- Colonne droite : résultats temps réel -->
   <div style="flex:1;overflow-y:auto;padding:16px 20px 40px;" id="opp-right">
 
-    <!-- Verdict -->
-    <div id="opp-verdict" style="margin-bottom:16px;"></div>
+    <!-- Verdict global + SCI + FDC -->
+    <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px;margin-bottom:16px;">
+      <!-- GO global -->
+      <div id="opp-verdict"></div>
+      <!-- GO SCI -->
+      <div id="verdict-sci" style="padding:12px 14px;border-radius:3px;border:1px solid var(--border);background:var(--bg2);">
+        <div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:4px;">SCI Murs</div>
+        <div style="display:flex;align-items:baseline;gap:8px;">
+          <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;" id="verdict-sci-tri">—</div>
+          <div style="font-size:10px;" id="verdict-sci-badge"></div>
+        </div>
+        <div style="font-size:9px;color:var(--text3);margin-top:2px;" id="verdict-sci-detail">TRI sur equity+CCA SCI</div>
+      </div>
+      <!-- GO FDC -->
+      <div id="verdict-fdc" style="padding:12px 14px;border-radius:3px;border:1px solid var(--border);background:var(--bg2);">
+        <div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:4px;">FDC Exploitation</div>
+        <div style="display:flex;align-items:baseline;gap:8px;">
+          <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;" id="verdict-fdc-tri">—</div>
+          <div style="font-size:10px;" id="verdict-fdc-badge"></div>
+        </div>
+        <div style="font-size:9px;color:var(--text3);margin-top:2px;" id="verdict-fdc-detail">TRI sur equity+CCA FDC</div>
+      </div>
+    </div>
 
     <!-- KPIs -->
     <div class="g4" style="margin-bottom:16px;" id="opp-kpis">
@@ -1433,14 +1454,57 @@ function renderOpportunite(p, c){
   setEl('ok-poids', fmtP(poids), poids<0.35?'var(--green)':poids<0.42?'var(--amber)':'var(--red)');
   setEl('ok-ebitda4', `EBITDA cr. ${fmt(ebitda4)}`);
 
-  // Verdict
+  // ── Verdicts
+
+  // GO SCI : TRI SCI vs cible
   const triSCIok = isFinite(c.triSCI) && c.triSCI>=(p.triCibleSCI||8)/100;
+  const sciCol = triSCIok ? 'var(--green)' : isFinite(c.triSCI)&&c.triSCI>0 ? 'var(--amber)' : 'var(--red)';
+  setEl('verdict-sci-tri', fmtTRI(c.triSCI), sciCol);
+  setEl('verdict-sci-badge', triSCIok ? '✓ GO' : '⚠ sous cible', sciCol);
+  setEl('verdict-sci-detail', `cible ${p.triCibleSCI||8}% — invest. ${fmt(Math.abs(c.invSCI))}`);
+  document.getElementById('verdict-sci').style.borderColor = triSCIok ? 'rgba(82,214,138,.3)' : 'rgba(224,82,82,.2)';
+  document.getElementById('verdict-sci').style.background = triSCIok ? 'rgba(82,214,138,.06)' : 'var(--bg2)';
+
+  // GO FDC : TRI FDC vs cible
   const triFDCok = isFinite(c.triFDC) && c.triFDC>=(p.triCibleFDC||12)/100;
+  const fdcCol = triFDCok ? 'var(--green)' : isFinite(c.triFDC)&&c.triFDC>0 ? 'var(--amber)' : 'var(--red)';
+  setEl('verdict-fdc-tri', fmtTRI(c.triFDC), fdcCol);
+  setEl('verdict-fdc-badge', triFDCok ? '✓ GO' : '⚠ sous cible', fdcCol);
+  setEl('verdict-fdc-detail', `cible ${p.triCibleFDC||12}% — invest. ${fmt(Math.abs(c.invFDC))}`);
+  document.getElementById('verdict-fdc').style.borderColor = triFDCok ? 'rgba(82,214,138,.3)' : 'rgba(224,82,82,.2)';
+  document.getElementById('verdict-fdc').style.background = triFDCok ? 'rgba(82,214,138,.06)' : 'var(--bg2)';
+
+  // GO GLOBAL : basé sur le projet consolidé
+  // = somme des flux SCI + FDC sur les deux horizons
+  // Simplifié : les deux TRI sont au-dessus des cibles = GO global
+  // Sinon : on compare au prix demandé si renseigné
+  const pdMursG = p.prixDemandeMurs||0, pdFDCG = p.prixDemandeFDC||0;
+  const hasPrixDem = pdMursG>0 || pdFDCG>0;
   let vClass, vIcon, vText, vDetail;
-  if(triSCIok && triFDCok){ vClass='go'; vIcon='✓'; vText='GO'; vDetail=`TRI SCI ${fmtTRI(c.triSCI)} ≥ ${p.triCibleSCI||8}% — TRI FDC ${fmtTRI(c.triFDC)} ≥ ${p.triCibleFDC||12}%`; }
-  else if(triSCIok||triFDCok){ vClass='neg'; vIcon='⚠'; vText='À NÉGOCIER'; vDetail=(!triSCIok?`TRI SCI ${fmtTRI(c.triSCI)} < cible ${p.triCibleSCI||8}% `:'')+(!triFDCok?`TRI FDC ${fmtTRI(c.triFDC)} < cible ${p.triCibleFDC||12}%`:''); }
-  else { vClass='non'; vIcon='✗'; vText='NON aux conditions actuelles'; vDetail=`TRI SCI ${fmtTRI(c.triSCI)} et FDC ${fmtTRI(c.triFDC)} sous les cibles`; }
-  setHtml('opp-verdict', `<div class="verdict ${vClass}"><div class="verdict-icon">${vIcon}</div><div><div class="verdict-text">${vText}</div><div class="verdict-detail">${vDetail}</div></div></div>`);
+  if(triSCIok && triFDCok){
+    if(hasPrixDem){
+      // Vérifier si le prix demandé est sous le prix max
+      const bsSCIg = backSolveParam(p,'vefa',(p.triCibleSCI||8)/100,'sci');
+      const bsFDCg = backSolveParam(p,'ffe',(p.triCibleFDC||12)/100,'fdc');
+      const pMaxSCIg = bsSCIg!=null ? bsSCIg+(p.terrain||0)+(p.fraisSCI||0)+(p.capexRenovation||0) : null;
+      const pMaxFDCg = bsFDCg!=null ? bsFDCg+(p.bfr||0)+(p.fraisFDC||0) : null;
+      const mursOK = !pdMursG || (pMaxSCIg!=null && pMaxSCIg >= pdMursG);
+      const fdcOK  = !pdFDCG  || (pMaxFDCg!=null && pMaxFDCg  >= pdFDCG);
+      if(mursOK && fdcOK){ vClass='go'; vIcon='✓'; vText='GO — prix acceptable'; vDetail=`TRI SCI ${fmtTRI(c.triSCI)} / FDC ${fmtTRI(c.triFDC)} au-dessus des cibles au prix demandé`; }
+      else { vClass='neg'; vIcon='⚠'; vText='NÉGOCIER le prix'; vDetail=`${!mursOK?'Prix murs trop élevé de '+fmt(pdMursG-(pMaxSCIg||0))+'. ':''} ${!fdcOK?'Prix FDC trop élevé de '+fmt(pdFDCG-(pMaxFDCg||0))+'.':''}`; }
+    } else {
+      vClass='go'; vIcon='✓'; vText='GO — aux paramètres actuels';
+      vDetail=`TRI SCI ${fmtTRI(c.triSCI)} ≥ ${p.triCibleSCI||8}% — TRI FDC ${fmtTRI(c.triFDC)} ≥ ${p.triCibleFDC||12}%`;
+    }
+  } else if(triSCIok||triFDCok){
+    vClass='neg'; vIcon='⚠'; vText='À NÉGOCIER';
+    vDetail=(!triSCIok?`TRI SCI ${fmtTRI(c.triSCI)} < cible — ajuster loyer ou prix murs. `:'')
+           +(!triFDCok?`TRI FDC ${fmtTRI(c.triFDC)} < cible — ajuster loyer ou prix FDC.`:'');
+  } else {
+    vClass='non'; vIcon='✗'; vText='NON aux conditions actuelles';
+    vDetail=`TRI SCI ${fmtTRI(c.triSCI)} et FDC ${fmtTRI(c.triFDC)} sous les cibles`;
+  }
+  setHtml('opp-verdict', `<div class="verdict ${vClass}" style="height:100%;"><div class="verdict-icon" style="font-size:22px;">${vIcon}</div><div><div class="verdict-text">${vText}</div><div class="verdict-detail">${vDetail}</div></div></div>`);
 
   // Back-solver
   const triSCIcib = (p.triCibleSCI||8)/100;
@@ -1939,8 +2003,8 @@ function updateEquilibres(p){
 function showTab(name){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  // S'assurer que page-empty est masquée si un projet est ouvert
-  if(currentId) { const pe=document.getElementById('page-empty'); if(pe) pe.classList.remove('active'); }
+  // Masquer page-empty
+  const pe=document.getElementById('page-empty'); if(pe) pe.style.display='none';
   const page=document.getElementById('page-'+name);
   if(page) page.classList.add('active');
   document.querySelectorAll('.tab').forEach(t=>{
@@ -2087,7 +2151,7 @@ function deleteProject(id){
     document.getElementById('tabs').style.display='none';
     document.getElementById('project-name-display').textContent='Aucun projet';
     document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-    document.getElementById('page-empty').classList.add('active');
+    const _pe=document.getElementById('page-empty'); if(_pe) _pe.style.display='flex';
     renderProjectList();
   }
 }
