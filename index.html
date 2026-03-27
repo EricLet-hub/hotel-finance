@@ -8,13 +8,13 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
-  --bg:#0f1117; --bg2:#161920; --bg3:#1e2230; --bg4:#252a3a;
-  --border:#2e3448; --border2:#3a4060;
-  --text:#e8eaf0; --text2:#9aa0b8; --text3:#5a6080;
-  --gold:#c9a84c; --gold2:#e8c96c; --gold-bg:rgba(201,168,76,.10);
-  --sci:#4a9eff; --sci-bg:rgba(74,158,255,.10);
-  --fdc:#52d68a; --fdc-bg:rgba(82,214,138,.10);
-  --red:#e05252; --amber:#e09040; --green:#52d68a;
+  --bg:#f4f5f7; --bg2:#ffffff; --bg3:#f0f1f4; --bg4:#e4e6ed;
+  --border:#d0d4e0; --border2:#b0b8cc;
+  --text:#1a1d2e; --text2:#4a5070; --text3:#8890a8;
+  --gold:#b8922a; --gold2:#d4a830; --gold-bg:rgba(184,146,42,.10);
+  --sci:#1a6ed4; --sci-bg:rgba(26,110,212,.08);
+  --fdc:#1a9a5c; --fdc-bg:rgba(26,154,92,.08);
+  --red:#cc3333; --amber:#c07000; --green:#1a9a5c;
   --r:3px;
 }
 html,body{height:100%;overflow:hidden;}
@@ -129,7 +129,7 @@ input[type=text]:focus{outline:none;border-color:var(--border2);}
 .tbl th:first-child{text-align:left;}
 .tbl td{padding:4px 8px;text-align:right;border-bottom:1px solid rgba(46,52,72,.5);color:var(--text2);white-space:nowrap;}
 .tbl td:first-child{text-align:left;color:var(--text);}
-.tbl tr.tsec td{color:var(--text3);font-size:9px;letter-spacing:1px;text-transform:uppercase;padding-top:8px;background:var(--bg3);}
+.tbl tr.tsec td{color:var(--text3);font-size:9px;letter-spacing:1px;text-transform:uppercase;padding-top:8px;background:var(--bg4);}
 .tbl tr.ttot td{font-weight:600;color:var(--text);border-top:1px solid var(--border);}
 .tbl tr.tloyer td{color:var(--gold);}
 .tbl .pos{color:var(--green)!important;}
@@ -187,8 +187,8 @@ input[type=text]:focus{outline:none;border-color:var(--border2);}
   .page{display:block!important;overflow:visible!important;}
   .page:not(#page-memo){display:none!important;}
 }
-::-webkit-scrollbar{width:4px;height:4px;}
-::-webkit-scrollbar-track{background:var(--bg2);}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:var(--bg3);}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
 </style>
 </head>
@@ -339,9 +339,8 @@ input[type=text]:focus{outline:none;border-color:var(--border2);}
         <div class="card-hdr"><span class="sci">▪</span> SCI Murs — Ressources &amp; Financement</div>
         <div class="card-body">
           <div class="g4" style="gap:10px;margin-bottom:10px;">
-            <div class="field"><label>Loyer an 1 HT ★</label><div class="iw loyer"><input type="number" id="p-loyer" value="1100000" step="10000" oninput="autoSave()"><span class="unit">€/an</span></div><span class="note">Variable centrale SCI/FDC</span></div>
-            <div class="field"><label>Taux cible loyer/coût</label><div class="iw"><input type="number" id="p-cible-renta" value="6.5" step="0.1" oninput="autoSave()"><span class="unit">%</span></div></div>
-            <div class="equil-box span2"><div class="el">Loyer cible (taux × coût SCI)</div><div class="ev" id="p-loyer-cible">—</div></div>
+            <div class="field"><label>Taux cible loyer/coût SCI</label><div class="iw"><input type="number" id="p-cible-renta" value="6.5" step="0.1" oninput="autoSave()"><span class="unit">%</span></div></div>
+            <div class="equil-box span3" style="grid-column:span 3;"><div class="el">Loyer cible théorique (taux × coût SCI) — à comparer avec le loyer négocié dans Résultats</div><div class="ev" id="p-loyer-cible">—</div></div>
           </div>
           <div class="sep"></div>
           <div class="g4" style="gap:10px;">
