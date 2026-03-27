@@ -268,163 +268,167 @@ input[type=text]:focus{outline:none;border-color:var(--border2);}
 
       <!-- SCI Emplois -->
       <div class="card">
-        <div class="card-hdr"><span class="sci">▪</span> SCI Murs — Emplois</div>
-        <div class="card-body">
-          <!-- Neuf -->
-          <div id="sci-neuf">
-            <div class="g3" style="gap:10px;margin-bottom:10px;">
-              <div class="field"><label>Travaux VEFA</label><div class="iw"><input type="number" id="p-vefa" value="15000000" step="100000" oninput="autoSave();syncPch()"><span class="unit">€</span></div></div>
-              <div class="field"><label>Prix/ch <span style="color:var(--text3);">⇄</span></label><div class="iw"><input type="number" id="p-vefa-pch" step="5000" oninput="pchToTotal('vefa')"><span class="unit">€/ch</span></div></div>
-              <div class="field"><label>Terrain</label><div class="iw"><input type="number" id="p-terrain" value="1000000" step="50000" oninput="autoSave()"><span class="unit">€</span></div></div>
-              <div class="field"><label>Honoraires MOE</label><div class="iw"><input type="number" id="p-frais-sci" value="960000" step="10000" oninput="autoSave()"><span class="unit">€</span></div></div>
-              <div class="field"><label>Capex complémentaire</label><div class="iw"><input type="number" id="p-capex" value="0" step="50000" oninput="autoSave()"><span class="unit">€</span></div><span class="note">Équipements hors FF&E</span></div>
-            </div>
+        <div class="card-hdr" style="display:flex;align-items:center;justify-content:space-between;">
+          <span><span class="sci">▪</span> SCI Murs</span>
+          <div class="mode-toggle" style="width:320px;">
+            <button class="mode-btn on-neuf" id="btn-neuf" onclick="setMode('neuf')">🏗 Construction neuve</button>
+            <button class="mode-btn" id="btn-acq" onclick="setMode('acquisition')">🏨 Acquisition</button>
           </div>
-          <!-- Acquisition -->
-          <div id="sci-acq" style="display:none;">
+        </div>
+        <div class="card-body">
+
+          <!-- Mode acquisition : ventilation -->
+          <div id="sci-acq" style="display:none;margin-bottom:12px;">
             <div class="g3" style="gap:10px;margin-bottom:10px;">
               <div class="field span2"><label>Prix d'acquisition global (murs + FDC)</label><div class="iw"><input type="number" id="p-prix-acq" value="0" step="100000" oninput="autoSave();updateVentilation()"><span class="unit">€</span></div><span class="note">La ventilation murs/FDC est calculée depuis l'EBITDAR</span></div>
               <div class="field"><label>Capex rénovation</label><div class="iw"><input type="number" id="p-capex-acq" value="0" step="50000" oninput="autoSave();syncPch();updateVentilation()"><span class="unit">€</span></div></div>
-              <div class="field"><label>Capex/ch <span style="color:var(--text3);">⇄</span></label><div class="iw"><input type="number" id="p-capex-pch" step="5000" oninput="pchToTotal('capex')"><span class="unit">€/ch</span></div></div>
+              <div class="field"><label>Capex/ch ⇄</label><div class="iw"><input type="number" id="p-capex-pch" step="5000" oninput="pchToTotal('capex')"><span class="unit">€/ch</span></div></div>
               <div class="field"><label>Frais d'acte</label><div class="iw"><input type="number" id="p-frais-acq" value="0" step="10000" oninput="autoSave()"><span class="unit">€</span></div><span class="note">0 = auto 8%</span></div>
               <div class="field"><label>Taux capi murs</label><div class="iw"><input type="number" id="p-taux-capi-murs" value="6.5" step="0.1" oninput="autoSave();updateVentilation()"><span class="unit">%</span></div></div>
-              <div class="field"><label>% EBITDAR → loyer</label><div class="iw"><input type="number" id="p-pct-ebitdar" value="60" step="5" min="30" max="90" oninput="autoSave();updateVentilation()"><span class="unit">%</span></div></div>
+              <div class="field"><label>% EBITDAR → loyer</label><div class="iw"><input type="number" id="p-pct-ebitdar" value="60" step="5" oninput="autoSave();updateVentilation()"><span class="unit">%</span></div></div>
             </div>
-            <!-- Résultat ventilation -->
-            <!-- Zone résultat ventilation -->
-            <div id="p-venti" style="margin-bottom:10px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:10px;">
-              <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-bottom:8px;">Calcul de ventilation — deux approches</div>
-              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px;">
-
-                <!-- Approche 1 : depuis l'EBITDAR du FDC -->
-                <div style="padding:8px;background:var(--bg2);border-radius:var(--r);border-left:2px solid var(--fdc);">
-                  <div style="font-size:9px;color:var(--fdc);margin-bottom:4px;letter-spacing:1px;">① EBITDAR FDC → loyer</div>
-                  <div style="font-size:9px;color:var(--text3);margin-bottom:2px;">EBITDAR plateau (GOP)</div>
-                  <div style="font-size:12px;font-weight:600;margin-bottom:6px;" id="vt-ebitdar">—</div>
-                  <div style="font-size:9px;color:var(--text3);margin-bottom:2px;">Loyer supportable FDC (<span id="vt-pct-ebitdar">60</span>%)</div>
-                  <div style="font-size:14px;font-weight:700;color:var(--fdc);" id="vt-loyer-ebitdar">—</div>
-                </div>
-
-                <!-- Approche 2 : depuis le taux capi des murs -->
-                <div style="padding:8px;background:var(--bg2);border-radius:var(--r);border-left:2px solid var(--sci);">
-                  <div style="font-size:9px;color:var(--sci);margin-bottom:4px;letter-spacing:1px;">② Valeur murs → loyer capi</div>
-                  <div style="font-size:9px;color:var(--text3);margin-bottom:2px;">Valeur murs (prix acq. − FDC)</div>
-                  <div style="font-size:12px;font-weight:600;margin-bottom:6px;" id="vt-murs">—</div>
-                  <div style="font-size:9px;color:var(--text3);margin-bottom:2px;">Loyer capi (<span id="vt-taux-capi">6,5</span>% × murs)</div>
-                  <div style="font-size:14px;font-weight:700;color:var(--sci);" id="vt-loyer-capi">—</div>
-                </div>
-
-                <!-- Loyer retenu + valeur FDC -->
-                <div style="padding:8px;background:rgba(201,168,76,.06);border-radius:var(--r);border-left:2px solid var(--gold);">
-                  <div style="font-size:9px;color:var(--gold);margin-bottom:4px;letter-spacing:1px;">③ Loyer retenu (compromis)</div>
-                  <div style="font-size:9px;color:var(--text3);margin-bottom:2px;">Loyer négocié</div>
-                  <div style="font-size:14px;font-weight:700;color:var(--gold);" id="vt-loyer-retenu">—</div>
-                  <div style="font-size:9px;color:var(--text3);margin-top:6px;margin-bottom:2px;">Valeur FDC implicite (prix − murs)</div>
-                  <div style="font-size:12px;font-weight:600;color:var(--fdc);" id="vt-fdc">—</div>
-                </div>
-
-              </div>
-              <div style="font-size:9px;color:var(--text3);padding:4px 0;border-top:1px solid var(--border);">
-                Prix acq. <strong id="vt-prix-acq">—</strong> + Capex <strong id="vt-capex">—</strong> + Frais acte <strong id="vt-frais">—</strong> = Coût total <strong id="vt-cout-total">—</strong>
-              </div>
+            <div class="vbox" id="p-venti" style="margin-bottom:10px;">
+              <div class="vbox-item"><div class="vl">EBITDAR plateau</div><div class="vv" id="vt-ebitdar">—</div></div>
+              <div class="vbox-item"><div class="vl">Loyer supportable</div><div class="vv" style="color:var(--gold);" id="vt-loyer">—</div></div>
+              <div class="vbox-item"><div class="vl">Valeur murs</div><div class="vv" style="color:var(--sci);" id="vt-murs">—</div></div>
+              <div class="vbox-item"><div class="vl">Valeur FDC</div><div class="vv" style="color:var(--fdc);" id="vt-fdc">—</div></div>
             </div>
-            <div id="vt-alerte" style="display:none;margin-bottom:8px;padding:6px 10px;background:rgba(224,144,64,.1);border:1px solid rgba(224,144,64,.3);border-radius:var(--r);font-size:10px;color:var(--amber);"></div>
-            <div class="field"><label>Valeur murs retenue (0 = auto depuis EBITDAR)</label><div class="iw"><input type="number" id="p-valeur-murs" value="0" step="50000" oninput="autoSave()"><span class="unit">€</span></div></div>
-          <!-- Total Total Emplois SCI -->
-          <div style="margin-top:10px;padding:10px 14px;background:var(--bg3);border-radius:3px;border-left:3px solid var(--sci);border:1px solid var(--border);border-left:3px solid var(--sci);">
-            <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-bottom:3px;">Total Emplois SCI</div>
-            <div style="font-size:24px;font-weight:700;font-family:'Syne',sans-serif;color:var(--sci);" id="p-total-empl-sci">—</div>
-            <div style="font-size:10px;color:var(--text3);margin-top:2px;" id="p-total-empl-sci-pch"></div>
+            <div class="field"><label>Valeur murs retenue (0 = auto)</label><div class="iw"><input type="number" id="p-valeur-murs" value="0" step="50000" oninput="autoSave()"><span class="unit">€</span></div></div>
+            <div style="height:10px;"></div>
           </div>
-        </div>
-      </div>
 
-      <!-- SCI Ressources -->
-      <div class="card">
-        <div class="card-hdr"><span class="sci">▪</span> SCI Murs — Ressources &amp; Financement</div>
-        <div class="card-body">
-          <!-- Loyer cible 6.5% — lecture seule, réglable dans Résultats -->
-          <div style="margin-bottom:10px;padding:8px 12px;background:rgba(184,146,42,.08);border-radius:3px;border:1px solid rgba(184,146,42,.25);display:flex;align-items:center;gap:12px;">
+          <!-- Loyer de référence -->
+          <div style="margin-bottom:12px;padding:8px 12px;background:rgba(184,146,42,.08);border-radius:3px;border:1px solid rgba(184,146,42,.25);display:flex;align-items:center;gap:12px;">
             <div style="flex:1;">
-              <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:2px;">Loyer de référence (6,5% × emplois SCI)</div>
-              <div style="font-size:18px;font-weight:700;font-family:'Syne',sans-serif;color:var(--gold);" id="p-loyer-cible">—</div>
+              <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:2px;">Loyer de référence (taux cible × emplois SCI)</div>
+              <div style="font-size:20px;font-weight:700;font-family:'Syne',sans-serif;color:var(--gold);" id="p-loyer-cible">—</div>
             </div>
-            <div style="font-size:10px;color:var(--text3);text-align:right;">Taux cible&nbsp;<input type="number" id="p-cible-renta" value="6.5" step="0.1" oninput="autoSave()" style="width:44px;background:var(--bg3);border:1px solid var(--border);border-radius:2px;color:var(--text);font-family:'DM Mono',monospace;font-size:11px;padding:3px 5px;text-align:center;">&nbsp;%<br><span style="font-size:9px;">Ajustable dans Résultats</span></div>
-          </div>
-          <div class="sep"></div>
-          <div class="g4" style="gap:10px;">
-            <div class="field"><label>Equity SCI</label><div class="iw"><input type="number" id="p-equity-sci" value="2000000" step="50000" oninput="autoSave()"><span class="unit">€</span></div></div>
-            <div class="field"><label>CCA SCI</label><div class="iw"><input type="number" id="p-cca-sci" value="6000000" step="100000" oninput="autoSave()"><span class="unit">€</span></div></div>
-            <div class="field"><label>Taux CCA SCI</label><div class="iw"><input type="number" id="p-taux-cca-sci" value="4.0" step="0.1" oninput="autoSave()"><span class="unit">%</span></div></div>
-            <div class="field"><label>Dette murs</label><div class="iw"><input type="number" id="p-dette-sci" value="9000000" step="100000" oninput="autoSave()"><span class="unit">€</span></div></div>
-            <div class="field"><label>Taux dette</label><div class="iw"><input type="number" id="p-taux-dette-sci" value="4.0" step="0.1" oninput="autoSave()"><span class="unit">%</span></div></div>
-            <div class="field"><label>Durée</label><div class="iw"><input type="number" id="p-duree-sci" value="15" step="1" min="5" max="30" oninput="autoSave()"><span class="unit">ans</span></div></div>
-            <div class="field"><label>Taxe foncière</label><div class="iw"><input type="number" id="p-taux-tf" value="0.8" step="0.1" oninput="autoSave()"><span class="unit">% coût</span></div><span class="note">Défaut 0,8%</span></div>
-          </div>
-          <!-- Total Ressources SCI + Équilibre -->
-          <div style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-            <div style="padding:10px 14px;background:var(--bg3);border-radius:3px;border-left:3px solid var(--sci);border:1px solid var(--border);border-left:3px solid var(--sci);">
-              <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-bottom:3px;">Total Ressources SCI</div>
-              <div style="font-size:24px;font-weight:700;font-family:'Syne',sans-serif;color:var(--sci);" id="p-total-res-sci">—</div>
-              <div style="font-size:10px;color:var(--text3);margin-top:2px;">Equity + CCA + Dette</div>
-            </div>
-            <div style="padding:10px 14px;border-radius:3px;border:1px solid var(--border);" id="p-equil-sci-box">
-              <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-bottom:3px;">Équilibre SCI</div>
-              <div style="font-size:24px;font-weight:700;font-family:'Syne',sans-serif;" id="p-equil-sci">—</div>
-              <div style="font-size:10px;color:var(--text3);margin-top:2px;">Ressources − Emplois</div>
+            <div style="font-size:10px;color:var(--text3);display:flex;align-items:center;gap:6px;">
+              Taux&nbsp;<input type="number" id="p-cible-renta" value="6.5" step="0.1" oninput="autoSave()" style="width:44px;background:var(--bg3);border:1px solid var(--border);border-radius:2px;color:var(--text);font-family:'DM Mono',monospace;font-size:11px;padding:3px 5px;text-align:center;">&nbsp;% — ajustable dans Résultats
             </div>
           </div>
+
+          <!-- 3 sous-cadres : Emplois / Ressources / Dette -->
+          <div class="g3" style="gap:10px;">
+
+            <!-- EMPLOIS -->
+            <div style="border:1px solid var(--border);border-radius:3px;overflow:hidden;">
+              <div style="padding:7px 10px;background:var(--bg3);border-bottom:1px solid var(--border);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--sci);">Emplois</div>
+              <div style="padding:10px;">
+                <!-- Total en haut -->
+                <div style="margin-bottom:10px;padding:8px 10px;background:var(--sci-bg);border-radius:3px;border-left:3px solid var(--sci);">
+                  <div style="font-size:9px;color:var(--text3);margin-bottom:2px;">Total Emplois SCI</div>
+                  <div style="font-size:20px;font-weight:700;font-family:'Syne',sans-serif;color:var(--sci);" id="p-total-empl-sci">—</div>
+                  <div style="font-size:9px;color:var(--text3);" id="p-total-empl-sci-pch">—</div>
+                </div>
+                <!-- Champs -->
+                <div id="sci-neuf" style="display:flex;flex-direction:column;gap:8px;">
+                  <div class="field"><label>Travaux VEFA</label><div class="iw"><input type="number" id="p-vefa" value="15000000" step="100000" oninput="autoSave();syncPch()"><span class="unit">€</span></div></div>
+                  <div class="field"><label>Prix/ch ⇄</label><div class="iw"><input type="number" id="p-vefa-pch" step="5000" oninput="pchToTotal('vefa')"><span class="unit">€/ch</span></div></div>
+                  <div class="field"><label>Terrain</label><div class="iw"><input type="number" id="p-terrain" value="1000000" step="50000" oninput="autoSave()"><span class="unit">€</span></div></div>
+                  <div class="field"><label>Honoraires MOE</label><div class="iw"><input type="number" id="p-frais-sci" value="960000" step="10000" oninput="autoSave()"><span class="unit">€</span></div></div>
+                  <div class="field"><label>Capex complémentaire</label><div class="iw"><input type="number" id="p-capex" value="0" step="50000" oninput="autoSave()"><span class="unit">€</span></div></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- RESSOURCES -->
+            <div style="border:1px solid var(--border);border-radius:3px;overflow:hidden;">
+              <div style="padding:7px 10px;background:var(--bg3);border-bottom:1px solid var(--border);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--sci);">Ressources</div>
+              <div style="padding:10px;">
+                <div style="margin-bottom:10px;padding:8px 10px;background:var(--sci-bg);border-radius:3px;border-left:3px solid var(--sci);">
+                  <div style="font-size:9px;color:var(--text3);margin-bottom:2px;">Total Ressources SCI</div>
+                  <div style="font-size:20px;font-weight:700;font-family:'Syne',sans-serif;color:var(--sci);" id="p-total-res-sci">—</div>
+                  <div style="font-size:9px;color:var(--text3);">Equity + CCA + Dette</div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:8px;">
+                  <div class="field"><label>Equity SCI</label><div class="iw"><input type="number" id="p-equity-sci" value="2000000" step="50000" oninput="autoSave()"><span class="unit">€</span></div></div>
+                  <div class="field"><label>CCA SCI</label><div class="iw"><input type="number" id="p-cca-sci" value="6000000" step="100000" oninput="autoSave()"><span class="unit">€</span></div></div>
+                  <div class="field"><label>Taux CCA</label><div class="iw"><input type="number" id="p-taux-cca-sci" value="4.0" step="0.1" oninput="autoSave()"><span class="unit">%</span></div></div>
+                  <!-- Équilibre -->
+                  <div style="padding:8px 10px;border-radius:3px;border:1px solid var(--border);" id="p-equil-sci-box">
+                    <div style="font-size:9px;color:var(--text3);margin-bottom:2px;">Équilibre</div>
+                    <div style="font-size:18px;font-weight:700;font-family:'Syne',sans-serif;" id="p-equil-sci">—</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- DETTE -->
+            <div style="border:1px solid var(--border);border-radius:3px;overflow:hidden;">
+              <div style="padding:7px 10px;background:var(--bg3);border-bottom:1px solid var(--border);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--sci);">Dette bancaire</div>
+              <div style="padding:10px;display:flex;flex-direction:column;gap:8px;">
+                <div class="field"><label>Montant</label><div class="iw"><input type="number" id="p-dette-sci" value="9000000" step="100000" oninput="autoSave()"><span class="unit">€</span></div></div>
+                <div class="field"><label>Taux</label><div class="iw"><input type="number" id="p-taux-dette-sci" value="4.0" step="0.1" oninput="autoSave()"><span class="unit">%</span></div></div>
+                <div class="field"><label>Durée</label><div class="iw"><input type="number" id="p-duree-sci" value="15" step="1" min="5" max="30" oninput="autoSave()"><span class="unit">ans</span></div></div>
+                <div class="field"><label>Taxe foncière</label><div class="iw"><input type="number" id="p-taux-tf" value="0.8" step="0.1" oninput="autoSave()"><span class="unit">% coût</span></div><span class="note">Défaut 0,8%</span></div>
+              </div>
+            </div>
+
+          </div><!-- /g3 SCI -->
         </div>
       </div>
 
-      <!-- FDC Emplois & Ressources -->
-      <div class="card">
-        <div class="card-hdr"><span class="fdc">▪</span> FDC Exploitation — Emplois</div>
+<div class="card">
+        <div class="card-hdr"><span class="fdc">▪</span> FDC Exploitation</div>
         <div class="card-body">
-          <div class="g4" style="gap:10px;margin-bottom:10px;">
-            <div class="field"><label>FF&amp;E équipements</label><div class="iw"><input type="number" id="p-ffe" value="3000000" step="50000" oninput="autoSave();syncPch()"><span class="unit">€</span></div></div>
-            <div class="field"><label>FF&amp;E/ch <span style="color:var(--text3);">⇄</span></label><div class="iw"><input type="number" id="p-ffe-pch" step="1000" oninput="pchToTotal('ffe')"><span class="unit">€/ch</span></div></div>
-            <div class="field"><label>BFR initial</label><div class="iw"><input type="number" id="p-bfr" value="150000" step="10000" oninput="autoSave()"><span class="unit">€</span></div></div>
-            <div class="field"><label>Frais constitution</label><div class="iw"><input type="number" id="p-frais-fdc" value="50000" step="5000" oninput="autoSave()"><span class="unit">€</span></div></div>
-          <!-- Total Total Emplois FDC -->
-          <div style="margin-top:10px;padding:10px 14px;background:var(--bg3);border-radius:3px;border-left:3px solid var(--fdc);border:1px solid var(--border);border-left:3px solid var(--fdc);">
-            <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-bottom:3px;">Total Emplois FDC</div>
-            <div style="font-size:24px;font-weight:700;font-family:'Syne',sans-serif;color:var(--fdc);" id="p-total-empl-fdc">—</div>
-            <div style="font-size:10px;color:var(--text3);margin-top:2px;" id="p-total-empl-fdc-pch"></div>
-          </div>
+          <div class="g3" style="gap:10px;">
+
+            <!-- EMPLOIS FDC -->
+            <div style="border:1px solid var(--border);border-radius:3px;overflow:hidden;">
+              <div style="padding:7px 10px;background:var(--bg3);border-bottom:1px solid var(--border);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--fdc);">Emplois</div>
+              <div style="padding:10px;">
+                <div style="margin-bottom:10px;padding:8px 10px;background:var(--fdc-bg);border-radius:3px;border-left:3px solid var(--fdc);">
+                  <div style="font-size:9px;color:var(--text3);margin-bottom:2px;">Total Emplois FDC</div>
+                  <div style="font-size:20px;font-weight:700;font-family:'Syne',sans-serif;color:var(--fdc);" id="p-total-empl-fdc">—</div>
+                  <div style="font-size:9px;color:var(--text3);" id="p-total-empl-fdc-pch">—</div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:8px;">
+                  <div class="field"><label>FF&amp;E équipements</label><div class="iw"><input type="number" id="p-ffe" value="3000000" step="50000" oninput="autoSave();syncPch()"><span class="unit">€</span></div></div>
+                  <div class="field"><label>FF&amp;E/ch ⇄</label><div class="iw"><input type="number" id="p-ffe-pch" step="1000" oninput="pchToTotal('ffe')"><span class="unit">€/ch</span></div></div>
+                  <div class="field"><label>BFR initial</label><div class="iw"><input type="number" id="p-bfr" value="150000" step="10000" oninput="autoSave()"><span class="unit">€</span></div></div>
+                  <div class="field"><label>Frais constitution</label><div class="iw"><input type="number" id="p-frais-fdc" value="50000" step="5000" oninput="autoSave()"><span class="unit">€</span></div></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- RESSOURCES FDC -->
+            <div style="border:1px solid var(--border);border-radius:3px;overflow:hidden;">
+              <div style="padding:7px 10px;background:var(--bg3);border-bottom:1px solid var(--border);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--fdc);">Ressources</div>
+              <div style="padding:10px;">
+                <div style="margin-bottom:10px;padding:8px 10px;background:var(--fdc-bg);border-radius:3px;border-left:3px solid var(--fdc);">
+                  <div style="font-size:9px;color:var(--text3);margin-bottom:2px;">Total Ressources FDC</div>
+                  <div style="font-size:20px;font-weight:700;font-family:'Syne',sans-serif;color:var(--fdc);" id="p-total-res-fdc">—</div>
+                  <div style="font-size:9px;color:var(--text3);">Equity + CCA + Dette</div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:8px;">
+                  <div class="field"><label>Equity FDC</label><div class="iw"><input type="number" id="p-equity-fdc" value="500000" step="50000" oninput="autoSave()"><span class="unit">€</span></div></div>
+                  <div class="field"><label>CCA FDC</label><div class="iw"><input type="number" id="p-cca-fdc" value="1200000" step="50000" oninput="autoSave()"><span class="unit">€</span></div></div>
+                  <div class="field"><label>Taux CCA</label><div class="iw"><input type="number" id="p-taux-cca-fdc" value="4.0" step="0.1" oninput="autoSave()"><span class="unit">%</span></div></div>
+                  <div style="padding:8px 10px;border-radius:3px;border:1px solid var(--border);" id="p-equil-fdc-box">
+                    <div style="font-size:9px;color:var(--text3);margin-bottom:2px;">Équilibre</div>
+                    <div style="font-size:18px;font-weight:700;font-family:'Syne',sans-serif;" id="p-equil-fdc">—</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- DETTE FDC -->
+            <div style="border:1px solid var(--border);border-radius:3px;overflow:hidden;">
+              <div style="padding:7px 10px;background:var(--bg3);border-bottom:1px solid var(--border);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--fdc);">Dette bancaire</div>
+              <div style="padding:10px;display:flex;flex-direction:column;gap:8px;">
+                <div class="field"><label>Montant</label><div class="iw"><input type="number" id="p-dette-fdc" value="1500000" step="50000" oninput="autoSave()"><span class="unit">€</span></div></div>
+                <div class="field"><label>Taux</label><div class="iw"><input type="number" id="p-taux-dette-fdc" value="4.5" step="0.1" oninput="autoSave()"><span class="unit">%</span></div></div>
+                <div class="field"><label>Durée</label><div class="iw"><input type="number" id="p-duree-fdc" value="7" step="1" min="3" max="15" oninput="autoSave()"><span class="unit">ans</span></div></div>
+                <div class="field"><label>IS</label><div class="iw"><input type="number" id="p-taux-is" value="25" step="1" oninput="autoSave()"><span class="unit">%</span></div></div>
+              </div>
+            </div>
+
+          </div><!-- /g3 FDC -->
         </div>
       </div>
 
-      <!-- FDC Ressources -->
-      <div class="card">
-        <div class="card-hdr"><span class="fdc">▪</span> FDC Exploitation — Ressources &amp; Financement</div>
-        <div class="card-body">
-          <div class="g4" style="gap:10px;">
-            <div class="field"><label>Equity FDC</label><div class="iw"><input type="number" id="p-equity-fdc" value="500000" step="50000" oninput="autoSave()"><span class="unit">€</span></div></div>
-            <div class="field"><label>CCA FDC</label><div class="iw"><input type="number" id="p-cca-fdc" value="1200000" step="50000" oninput="autoSave()"><span class="unit">€</span></div></div>
-            <div class="field"><label>Taux CCA FDC</label><div class="iw"><input type="number" id="p-taux-cca-fdc" value="4.0" step="0.1" oninput="autoSave()"><span class="unit">%</span></div></div>
-            <div class="field"><label>Dette FF&amp;E</label><div class="iw"><input type="number" id="p-dette-fdc" value="1500000" step="50000" oninput="autoSave()"><span class="unit">€</span></div></div>
-            <div class="field"><label>Taux dette</label><div class="iw"><input type="number" id="p-taux-dette-fdc" value="4.5" step="0.1" oninput="autoSave()"><span class="unit">%</span></div></div>
-            <div class="field"><label>Durée</label><div class="iw"><input type="number" id="p-duree-fdc" value="7" step="1" min="3" max="15" oninput="autoSave()"><span class="unit">ans</span></div></div>
-            <div class="field"><label>IS</label><div class="iw"><input type="number" id="p-taux-is" value="25" step="1" oninput="autoSave()"><span class="unit">%</span></div></div>
-          </div>
-          <!-- Total Ressources FDC + Équilibre -->
-          <div style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-            <div style="padding:10px 14px;background:var(--bg3);border-radius:3px;border-left:3px solid var(--fdc);border:1px solid var(--border);border-left:3px solid var(--fdc);">
-              <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-bottom:3px;">Total Ressources FDC</div>
-              <div style="font-size:24px;font-weight:700;font-family:'Syne',sans-serif;color:var(--fdc);" id="p-total-res-fdc">—</div>
-              <div style="font-size:10px;color:var(--text3);margin-top:2px;">Equity + CCA + Dette</div>
-            </div>
-            <div style="padding:10px 14px;border-radius:3px;border:1px solid var(--border);" id="p-equil-fdc-box">
-              <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-bottom:3px;">Équilibre FDC</div>
-              <div style="font-size:24px;font-weight:700;font-family:'Syne',sans-serif;" id="p-equil-fdc">—</div>
-              <div style="font-size:10px;color:var(--text3);margin-top:2px;">Ressources − Emplois</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Capitalisations SCI + FDC -->
+<!-- Capitalisations SCI + FDC -->
       <div class="card">
         <div class="card-hdr"><span class="gold">▪</span> Tables de capitalisation</div>
         <div class="card-body">
