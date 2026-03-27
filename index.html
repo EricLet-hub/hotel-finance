@@ -1157,23 +1157,7 @@ function updateSliderRange(p,c){
   const ebitdar = c.bpFDC[Math.min(3,c.bpFDC.length-1)]?.gop || 0;
   const loyerMaxFDC = ebitdar * 0.65;
 
-  // ── Repère 3 : Loyer optimal IS
-  // On cherche le loyer qui maximise le TRI global via l'effet IS
-  // Approche : scan de 20 valeurs entre loyerCapi×0.3 et loyerMaxFDC×1.1
-  let loyerOptIS = loyerCapi;
-  try {
-    let bestTRI = -Infinity;
-    const step = Math.max(10000, Math.round((loyerMaxFDC * 1.1 - loyerCapi * 0.3) / 20 / 10000) * 10000);
-    for(let l = Math.round(loyerCapi * 0.3 / 10000) * 10000;
-            l <= Math.round(loyerMaxFDC * 1.1 / 10000) * 10000;
-            l += step){
-      const cc = computeAll(p, l);
-      if(isFinite(cc.triGlobal) && cc.triGlobal > bestTRI){
-        bestTRI = cc.triGlobal;
-        loyerOptIS = l;
-      }
-    }
-  } catch(e){}
+  // Repère 3 supprimé (loyer optimal IS)
 
   // Plage slider : de 30% du loyerCapi à 120% du loyerMaxFDC (avec marge)
   const mn = Math.max(50000, Math.round(loyerCapi * 0.3 / 10000) * 10000);
@@ -1197,8 +1181,7 @@ function updateSliderRange(p,c){
     };
     markers.innerHTML =
       mkr(loyerCapi,   'var(--sci)',  '①') +
-      mkr(loyerMaxFDC, 'var(--fdc)', '②') +
-      mkr(loyerOptIS,  'var(--gold)','③');
+      mkr(loyerMaxFDC, 'var(--fdc)', '②');
   }
 
   // ── Légende sous le slider
@@ -1228,27 +1211,20 @@ function updateSliderRange(p,c){
 
     legend.innerHTML = `
       <!-- 3 repères en cartes -->
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
 
-        <div style="padding:10px 12px;border-radius:3px;border:1px solid var(--border);border-top:3px solid var(--sci);background:var(--bg2);">
+        <div style="padding:10px 14px;border-radius:3px;border:1px solid var(--border);border-top:3px solid var(--sci);background:var(--bg2);">
           <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--sci);margin-bottom:4px;">① Loyer capi murs</div>
-          <div style="font-size:20px;font-weight:700;font-family:'Syne',sans-serif;color:var(--sci);">${fmtK(loyerCapi)}</div>
-          <div style="font-size:10px;color:var(--text3);margin-top:3px;">${fmtP((p.cibleRenta||6.5)/100,1)} × coût SCI ${fmtK(c.coutSCI||0)}</div>
+          <div style="font-size:22px;font-weight:700;font-family:'Syne',sans-serif;color:var(--sci);">${fmt(loyerCapi)}</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:3px;">${fmtP((p.cibleRenta||6.5)/100,1)} × coût SCI (${fmt(c.coutSCI||0)})</div>
           <div style="font-size:10px;color:var(--text2);margin-top:4px;">Ce que les murs <em>méritent</em></div>
         </div>
 
-        <div style="padding:10px 12px;border-radius:3px;border:1px solid var(--border);border-top:3px solid var(--fdc);background:var(--bg2);">
+        <div style="padding:10px 14px;border-radius:3px;border:1px solid var(--border);border-top:3px solid var(--fdc);background:var(--bg2);">
           <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--fdc);margin-bottom:4px;">② Max FDC supportable</div>
-          <div style="font-size:20px;font-weight:700;font-family:'Syne',sans-serif;color:var(--fdc);">${fmtK(loyerMaxFDC)}</div>
-          <div style="font-size:10px;color:var(--text3);margin-top:3px;">65% × EBITDAR ${fmtK(ebitdar)}</div>
+          <div style="font-size:22px;font-weight:700;font-family:'Syne',sans-serif;color:var(--fdc);">${fmt(loyerMaxFDC)}</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:3px;">65% × EBITDAR (${fmt(ebitdar)})</div>
           <div style="font-size:10px;color:var(--text2);margin-top:4px;">Ce que le FDC <em>peut payer</em></div>
-        </div>
-
-        <div style="padding:10px 12px;border-radius:3px;border:1px solid var(--border);border-top:3px solid var(--gold);background:var(--bg2);">
-          <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:4px;">③ Optimal IS</div>
-          <div style="font-size:20px;font-weight:700;font-family:'Syne',sans-serif;color:var(--gold);">${fmtK(loyerOptIS)}</div>
-          <div style="font-size:10px;color:var(--text3);margin-top:3px;">Maximise TRI global (économie IS)</div>
-          <div style="font-size:10px;color:var(--text2);margin-top:4px;">Ce qui optimise le <em>groupe</em></div>
         </div>
 
       </div>
