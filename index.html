@@ -347,7 +347,24 @@ input[type=text]:focus{outline:none;border-color:var(--border2);}
             <div class="field"><label>Equity SCI</label><div class="iw"><input type="number" id="p-equity-sci" value="2000000" step="50000" oninput="autoSave()"><span class="unit">€</span></div></div>
             <div class="field"><label>CCA SCI</label><div class="iw"><input type="number" id="p-cca-sci" value="6000000" step="100000" oninput="autoSave()"><span class="unit">€</span></div></div>
             <div class="field"><label>Taux CCA SCI</label><div class="iw"><input type="number" id="p-taux-cca-sci" value="4.0" step="0.1" oninput="autoSave()"><span class="unit">%</span></div></div>
-            <div class="equil-box"><div class="el">Équilibre SCI</div><div class="ev" id="p-equil-sci">—</div></div>
+            <!-- Totaux SCI en grand -->
+            <div style="grid-column:span 4;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:4px;">
+              <div style="padding:10px 14px;background:var(--bg3);border-radius:3px;border:1px solid var(--border);">
+                <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-bottom:4px;">Total Emplois SCI</div>
+                <div style="font-size:22px;font-weight:700;font-family:'Syne',sans-serif;color:var(--sci);" id="p-total-empl-sci">—</div>
+                <div style="font-size:9px;color:var(--text3);margin-top:2px;" id="p-total-empl-sci-pch">—</div>
+              </div>
+              <div style="padding:10px 14px;background:var(--bg3);border-radius:3px;border:1px solid var(--border);">
+                <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-bottom:4px;">Total Ressources SCI</div>
+                <div style="font-size:22px;font-weight:700;font-family:'Syne',sans-serif;color:var(--sci);" id="p-total-res-sci">—</div>
+                <div style="font-size:9px;color:var(--text3);margin-top:2px;">Equity + CCA + Dette</div>
+              </div>
+              <div style="padding:10px 14px;border-radius:3px;border:1px solid var(--border);" id="p-equil-sci-box">
+                <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-bottom:4px;">Équilibre SCI</div>
+                <div style="font-size:22px;font-weight:700;font-family:'Syne',sans-serif;" id="p-equil-sci">—</div>
+                <div style="font-size:9px;color:var(--text3);margin-top:2px;">Ressources − Emplois</div>
+              </div>
+            </div>
             <div class="field"><label>Dette murs</label><div class="iw"><input type="number" id="p-dette-sci" value="9000000" step="100000" oninput="autoSave()"><span class="unit">€</span></div></div>
             <div class="field"><label>Taux dette</label><div class="iw"><input type="number" id="p-taux-dette-sci" value="4.0" step="0.1" oninput="autoSave()"><span class="unit">%</span></div></div>
             <div class="field"><label>Durée</label><div class="iw"><input type="number" id="p-duree-sci" value="15" step="1" min="5" max="30" oninput="autoSave()"><span class="unit">ans</span></div></div>
@@ -377,7 +394,24 @@ input[type=text]:focus{outline:none;border-color:var(--border2);}
             <div class="field"><label>Equity FDC</label><div class="iw"><input type="number" id="p-equity-fdc" value="500000" step="50000" oninput="autoSave()"><span class="unit">€</span></div></div>
             <div class="field"><label>CCA FDC</label><div class="iw"><input type="number" id="p-cca-fdc" value="1200000" step="50000" oninput="autoSave()"><span class="unit">€</span></div></div>
             <div class="field"><label>Taux CCA FDC</label><div class="iw"><input type="number" id="p-taux-cca-fdc" value="4.0" step="0.1" oninput="autoSave()"><span class="unit">%</span></div></div>
-            <div class="equil-box"><div class="el">Équilibre FDC</div><div class="ev" id="p-equil-fdc">—</div></div>
+            <!-- Totaux FDC en grand -->
+            <div style="grid-column:span 4;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:4px;">
+              <div style="padding:10px 14px;background:var(--bg3);border-radius:3px;border:1px solid var(--border);">
+                <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-bottom:4px;">Total Emplois FDC</div>
+                <div style="font-size:22px;font-weight:700;font-family:'Syne',sans-serif;color:var(--fdc);" id="p-total-empl-fdc">—</div>
+                <div style="font-size:9px;color:var(--text3);margin-top:2px;" id="p-total-empl-fdc-pch">—</div>
+              </div>
+              <div style="padding:10px 14px;background:var(--bg3);border-radius:3px;border:1px solid var(--border);">
+                <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-bottom:4px;">Total Ressources FDC</div>
+                <div style="font-size:22px;font-weight:700;font-family:'Syne',sans-serif;color:var(--fdc);" id="p-total-res-fdc">—</div>
+                <div style="font-size:9px;color:var(--text3);margin-top:2px;">Equity + CCA + Dette</div>
+              </div>
+              <div style="padding:10px 14px;border-radius:3px;border:1px solid var(--border);" id="p-equil-fdc-box">
+                <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-bottom:4px;">Équilibre FDC</div>
+                <div style="font-size:22px;font-weight:700;font-family:'Syne',sans-serif;" id="p-equil-fdc">—</div>
+                <div style="font-size:9px;color:var(--text3);margin-top:2px;">Ressources − Emplois</div>
+              </div>
+            </div>
             <div class="field"><label>Dette FF&amp;E</label><div class="iw"><input type="number" id="p-dette-fdc" value="1500000" step="50000" oninput="autoSave()"><span class="unit">€</span></div></div>
             <div class="field"><label>Taux dette</label><div class="iw"><input type="number" id="p-taux-dette-fdc" value="4.5" step="0.1" oninput="autoSave()"><span class="unit">%</span></div></div>
             <div class="field"><label>Durée</label><div class="iw"><input type="number" id="p-duree-fdc" value="7" step="1" min="3" max="15" oninput="autoSave()"><span class="unit">ans</span></div></div>
@@ -481,12 +515,15 @@ input[type=text]:focus{outline:none;border-color:var(--border2);}
             <div class="equil-box"><div class="el">Taux capi murs</div><div class="ev" id="r-taux-capi">—</div></div>
           </div>
           <!-- Slider avec 3 repères -->
-          <div style="position:relative;padding-bottom:28px;margin-top:6px;">
-            <!-- Barre des marqueurs (positionnée absolument sous le slider) -->
-            <div id="r-slider-markers" style="position:absolute;top:22px;left:0;right:0;height:20px;pointer-events:none;"></div>
-            <input type="range" id="r-loyer-slider" min="100000" max="3000000" step="10000" oninput="onLoyerSlider()" style="position:relative;z-index:1;width:100%;">
-            <!-- Légende des 3 repères -->
-            <div id="r-slider-legend" style="margin-top:10px;"></div>
+          <div style="margin-top:8px;">
+            <!-- Slider + marqueurs dans une zone à hauteur fixe -->
+            <div style="position:relative;height:44px;">
+              <input type="range" id="r-loyer-slider" min="100000" max="3000000" step="10000" oninput="onLoyerSlider()" style="position:absolute;top:0;left:0;right:0;width:100%;z-index:2;">
+              <!-- Repères verticaux sous la barre -->
+              <div id="r-slider-markers" style="position:absolute;top:18px;left:0;right:0;height:26px;pointer-events:none;z-index:1;"></div>
+            </div>
+            <!-- Cartes séparées, hors du bloc positionné -->
+            <div id="r-slider-legend" style="margin-top:14px;"></div>
           </div>
         </div>
       </div>
@@ -1155,17 +1192,19 @@ function updateSliderRange(p,c){
   const pct = v => Math.max(0, Math.min(100, (v - mn) / (mx - mn) * 100));
   const markers = document.getElementById('r-slider-markers');
   if(markers){
-    const mkr = (val, color, label) => {
+    const mkr = (val, color, num) => {
       const left = pct(val);
-      return `<div style="position:absolute;left:${left}%;transform:translateX(-50%);top:0;">
-        <div style="width:2px;height:14px;background:${color};margin:0 auto;border-radius:1px;opacity:.8;"></div>
-        <div style="position:absolute;top:16px;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:8px;color:${color};font-weight:600;">${fmtK(val)}</div>
+      return `<div style="position:absolute;left:${left}%;transform:translateX(-50%);top:0;text-align:center;">
+        <div style="width:2px;height:10px;background:${color};margin:0 auto;border-radius:1px;opacity:.9;"></div>
+        <div style="font-size:9px;color:${color};font-weight:700;margin-top:1px;white-space:nowrap;">
+          ${num}
+        </div>
       </div>`;
     };
     markers.innerHTML =
-      mkr(loyerCapi,   'var(--sci)',   'capi') +
-      mkr(loyerMaxFDC, 'var(--fdc)',   'max FDC') +
-      mkr(loyerOptIS,  'var(--gold)',  'opt IS');
+      mkr(loyerCapi,   'var(--sci)',  '①') +
+      mkr(loyerMaxFDC, 'var(--fdc)', '②') +
+      mkr(loyerOptIS,  'var(--gold)','③');
   }
 
   // ── Légende sous le slider
@@ -1247,18 +1286,40 @@ function updateLoyerCible(p){
 // ÉQUILIBRES
 // ══════════════════════════════════════════════════════════════
 function updateEquilibres(p){
+  const nb = p.chambres||1;
   const isAcq=(p.modeProjet||'neuf')==='acquisition';
-  const coutSCI=isAcq?(p.vefa||0)+(p.fraisSCI||0)+(p.capexRenovation||0)
-                     :(p.vefa||0)+(p.terrain||0)+(p.fraisSCI||0)+(p.capexRenovation||0);
-  const resSCI=(p.equitySCI||0)+(p.ccaSCI||0)+(p.detteSCI||0);
-  const e1=resSCI-coutSCI;
-  const el1=document.getElementById('p-equil-sci');
-  if(el1){el1.textContent=fmt(e1);el1.style.color=e1>=0?'var(--green)':'var(--red)';}
-  const coutFDC=(p.ffe||0)+(p.bfr||0)+(p.fraisFDC||0);
-  const resFDC=(p.equityFDC||0)+(p.ccaFDC||0)+(p.detteFDC||0);
-  const e2=resFDC-coutFDC;
-  const el2=document.getElementById('p-equil-fdc');
-  if(el2){el2.textContent=fmt(e2);el2.style.color=e2>=0?'var(--green)':'var(--red)';}
+
+  // ── SCI
+  const coutSCI = isAcq
+    ? (p.vefa||0)+(p.fraisSCI||0)+(p.capexRenovation||0)
+    : (p.vefa||0)+(p.terrain||0)+(p.fraisSCI||0)+(p.capexRenovation||0);
+  const resSCI = (p.equitySCI||0)+(p.ccaSCI||0)+(p.detteSCI||0);
+  const e1 = resSCI-coutSCI;
+  const col1 = e1>=0?'var(--green)':'var(--red)';
+  const bg1  = e1>=0?'rgba(26,154,92,.07)':'rgba(204,51,51,.07)';
+
+  setEl('p-total-empl-sci', fmt(coutSCI));
+  setEl('p-total-empl-sci-pch', nb>0?fmt(Math.round(coutSCI/nb))+'/ch':'');
+  setEl('p-total-res-sci', fmt(resSCI));
+  const es = document.getElementById('p-equil-sci');
+  if(es){ es.textContent=fmt(e1); es.style.color=col1; }
+  const esb = document.getElementById('p-equil-sci-box');
+  if(esb) esb.style.background=bg1;
+
+  // ── FDC
+  const coutFDC = (p.ffe||0)+(p.bfr||0)+(p.fraisFDC||0);
+  const resFDC  = (p.equityFDC||0)+(p.ccaFDC||0)+(p.detteFDC||0);
+  const e2 = resFDC-coutFDC;
+  const col2 = e2>=0?'var(--green)':'var(--red)';
+  const bg2  = e2>=0?'rgba(26,154,92,.07)':'rgba(204,51,51,.07)';
+
+  setEl('p-total-empl-fdc', fmt(coutFDC));
+  setEl('p-total-empl-fdc-pch', nb>0?fmt(Math.round(coutFDC/nb))+'/ch':'');
+  setEl('p-total-res-fdc', fmt(resFDC));
+  const ef = document.getElementById('p-equil-fdc');
+  if(ef){ ef.textContent=fmt(e2); ef.style.color=col2; }
+  const efb = document.getElementById('p-equil-fdc-box');
+  if(efb) efb.style.background=bg2;
 }
 
 // ══════════════════════════════════════════════════════════════
