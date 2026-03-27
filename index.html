@@ -704,14 +704,76 @@ function computeAll(p, loyerOverride){
   fFDC.push((bpFDC[iFDC]?.fluxTrso||0)+vtFDC);
   const triFDC=calcTRI(fFDC),vanFDC=calcVAN(fFDC,tauxVAN);
 
-  // TRI Global consolidé : flux SCI + flux FDC
-  const invGlobal = invSCI + invFDC;
-  const nMax = Math.max(fSCI.length, fFDC.length);
-  const fGlobal = Array(nMax).fill(0);
-  fSCI.forEach((v,i)=>{ fGlobal[i]=(fGlobal[i]||0)+v; });
-  fFDC.forEach((v,i)=>{ fGlobal[i]=(fGlobal[i]||0)+v; });
-  const triGlobal = calcTRI(fGlobal);
-  const vanGlobal = calcVAN(fGlobal, tauxVAN);
+  // ── TRI Global consolidé
+  // Le loyer est un transfert interne SCI↔FDC : il s'annule dans la consolidation.
+  // On calcule donc les flux globaux SANS le loyer :
+  //   Investissement total = equity+CCA SCI + equity+CCA FDC
+  //   Flux annuels = flux tréso FDC AVANT loyer (= EBITDA - remb dette FDC - IS FDC)
+  //                + flux tréso SCI AVANT loyer = - remb dette SCI
+  //   Valeur terminale = vtSCI + vtFDC (les deux valeurs de sortie)
+  const invGlobal = invSCI + invFDC;  // -(equity+CCA SCI + equity+CCA FDC)
+
+  // Horizon = le plus long des deux sorties
+  const iMax = Math.max(iSCI, iFDC);
+
+  // Flux annuels consolidés :
+  //   SCI  : CF SCI = loyer - charges SCI + amortMurs - remb dette SCI
+  //          → CF SCI SANS loyer = CF SCI - loyer = -charges SCI + amortMurs - remb
+  //   FDC  : CF FDC = EBITDA - remb FDC - IS = (GOP - loyer) - remb - IS
+  //          → CF FDC SANS loyer = GOP - remb FDC - IS
+  //   Consolidé = (CF SCI - loyer) + (CF FDC + loyer) = CF SCI + CF FDC
+  //   → La somme annule bien le loyer ! Le problème est dans les valeurs terminales.
+  //
+  // VALEUR TERMINALE :
+  //   vtSCI dépend du loyer (multiple ou capi du loyer)
+  //   vtFDC dépend de l'EBITDA (qui dépend du loyer)
+  //   → Pour la VT globale, on utilise la somme vtSCI + vtFDC
+  //     mais vtSCI est calculée SUR le loyer (lequel est interne)
+  //
+  // SOLUTION PROPRE : recalculer vtSCI depuis le taux capi appliqué au REVENU BRUT
+  // c'est-à-dire depuis le CA consolidé, pas depuis le loyer.
+  // En pratique : vtGlobal = vtSCI_neutre + vtFDC_neutre
+  //   vtSCI_neutre = valeur des murs indépendante du loyer = coutSCI × (1 + appréciatio)
+  //                → approximation : coutSCI × multiple neutre (ex: 1.0-1.2)
+  //                → OU : utiliser vtSCI tel quel car vendeur externe voit le loyer
+  //
+  // DÉCISION PRAGMATIQUE :
+  // Les flux annuels s'annulent correctement (CF SCI + CF FDC = flux opérationnel net).
+  // Le problème restant est la VT : on recalcule une VT globale neutre =
+  //   VT murs calculée depuis un loyer "normalisé" = taux capi × coût SCI
+  //   + VT FDC calculée depuis EBITDA à loyer normalisé
+  const loyerNorme = coutSCI * ((p.cibleRenta||6.5)/100);  // loyer à 6,5% = loyer "neutre"
+  const bpSCI_norme = bpSCI.map((r,i)=>({...r, cfSCI: r.cfSCI - r.loyer + loyerNorme*Math.pow(1+idx,i)}));
+  const bpFDC_norme = bpFDC.map((r,i)=>({...r, fluxTrso: r.fluxTrso + r.loyer - loyerNorme*Math.pow(1+idx,i)}));
+
+  // VT globale avec loyer normalisé
+  const loyerSortieNorme = loyerNorme * Math.pow(1+idx, iSCI);
+  const vtSCI_norme = (p.methodeSortieSCI||'loyer_multiple')==='taux_capi'
+    ? loyerSortieNorme / ((p.tauxCapiSCI||5.5)/100)
+    : loyerSortieNorme * (p.multipleLoyer||15);
+
+  const fdcSortieNorme = bpFDC_norme[iFDC];
+  const mFDCn = p.methodeSortieFDC||'ebitda_multiple';
+  const vtFDCbase_norme = mFDCn==='ca_multiple'?fdcSortieNorme?.ca||0:mFDCn==='gop_multiple'?fdcSortieNorme?.gop||0:fdcSortieNorme?.ebitda||0;
+  const vtFDC_norme = vtFDCbase_norme * (p.multipleFDC||10);
+
+  // Flux globaux consolidés (loyer interne annulé)
+  const fGlobal = [invGlobal];
+  for(let i=0; i<iMax; i++){
+    const cfS = i<bpSCI_norme.length ? bpSCI_norme[i].cfSCI : 0;
+    const cfF = i<bpFDC_norme.length ? bpFDC_norme[i].fluxTrso : 0;
+    fGlobal.push(cfS + cfF);
+  }
+  // Ajouter VT à l'année de sortie de chaque entité
+  // Mais on a un seul vecteur — on met les VT aux bons index
+  const fGlobalVT = [...fGlobal];
+  if(iSCI < fGlobalVT.length) fGlobalVT[iSCI] = (fGlobalVT[iSCI]||0) + vtSCI_norme;
+  else fGlobalVT.push(vtSCI_norme);
+  if(iFDC < fGlobalVT.length) fGlobalVT[iFDC] = (fGlobalVT[iFDC]||0) + vtFDC_norme;
+  else fGlobalVT.push(vtFDC_norme);
+
+  const triGlobal = calcTRI(fGlobalVT);
+  const vanGlobal = calcVAN(fGlobalVT, tauxVAN);
 
   // ROCE
   const fdcTotal=(p.ffe||0)+(p.bfr||0)+(p.fraisFDC||0);
