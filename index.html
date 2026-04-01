@@ -351,13 +351,21 @@ input[type=text]:focus{outline:none;border-color:var(--border2);}
 
           </div><!-- /g2 SCI -->
 
-          <!-- Loyer de référence — discret, en bas -->
-          <div style="margin-top:10px;padding:6px 12px;background:var(--bg3);border-radius:3px;border:1px solid var(--border);display:flex;align-items:center;gap:10px;">
-            <span style="font-size:9px;color:var(--text3);">Loyer de référence SCI</span>
-            <span style="font-size:13px;font-weight:600;color:var(--gold);" id="p-loyer-cible">—</span>
-            <span style="font-size:9px;color:var(--text3);">= taux</span>
-            <input type="number" id="p-cible-renta" value="6.5" step="0.1" oninput="autoSave()" style="width:40px;background:var(--bg2);border:1px solid var(--border);border-radius:2px;color:var(--text);font-family:'DM Mono',monospace;font-size:11px;padding:2px 5px;text-align:center;">
-            <span style="font-size:9px;color:var(--text3);">% × emplois — ajustable dans Résultats ↗</span>
+          <!-- Loyer — champ modifiable + indicateur 6,5% -->
+          <div style="margin-top:10px;padding:10px 12px;background:rgba(184,146,42,.07);border-radius:3px;border:1px solid rgba(184,146,42,.25);display:flex;align-items:center;gap:12px;">
+            <div style="flex:1;">
+              <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:4px;">Loyer annuel HT ★</div>
+              <div class="iw loyer" style="max-width:200px;">
+                <input type="number" id="p-loyer" step="10000" oninput="autoSave()" style="background:rgba(184,146,42,.07);">
+                <span class="unit" style="background:rgba(184,146,42,.15);color:var(--gold);">€/an</span>
+              </div>
+              <div style="font-size:9px;color:var(--text3);margin-top:3px;">Variable centrale SCI ↔ FDC</div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:9px;color:var(--text3);margin-bottom:2px;">Référence 6,5% × emplois SCI</div>
+              <div style="font-size:14px;font-weight:600;color:var(--gold);" id="p-loyer-cible">—</div>
+              <div style="font-size:9px;color:var(--text3);margin-top:4px;">Taux <input type="number" id="p-cible-renta" value="6.5" step="0.1" oninput="autoSave()" style="width:38px;background:var(--bg3);border:1px solid var(--border);border-radius:2px;color:var(--text);font-family:'DM Mono',monospace;font-size:10px;padding:2px 4px;text-align:center;"> %</div>
+            </div>
           </div>
 
         </div>
@@ -505,7 +513,8 @@ input[type=text]:focus{outline:none;border-color:var(--border2);}
           <div class="g4" style="gap:10px;margin-bottom:10px;">
             <div class="field"><label>Loyer an 1 HT</label><div class="iw loyer"><input type="number" id="r-loyer" step="10000" oninput="onRLoyer()"><span class="unit">€/an</span></div></div>
             <div class="equil-box"><div class="el">Cible 6,5% × coût SCI</div><div class="ev gold" id="r-loyer-cible" style="color:var(--gold);">—</div></div>
-            <div class="equil-box"><div class="el">Poids loyer / CA an 1</div><div class="ev" id="r-poids-loyer">—</div></div>
+            <div class="equil-box"><div class="el">Loyer / CA an 1</div><div class="ev" id="r-poids-loyer">—</div></div>
+            <div class="equil-box"><div class="el">Loyer / EBITDAR FDC</div><div class="ev" id="r-poids-ebitdar">—</div></div>
             <div class="equil-box"><div class="el">Taux capi murs</div><div class="ev" id="r-taux-capi">—</div></div>
           </div>
           <!-- Slider avec 3 repères -->
@@ -1067,6 +1076,10 @@ function renderResultats(p,c){
   updateLoyerCible(p);
   const poids=c.bpFDC[0]?.ca>0?c.loyer0/c.bpFDC[0].ca:0;
   setEl('r-poids-loyer',fmtP(poids),poids<0.35?'var(--green)':poids<0.42?'var(--amber)':'var(--red)');
+  // Loyer / EBITDAR FDC (EBITDAR = GOP = CA - charges hors loyer)
+  const ebitdar0 = c.bpFDC[0]?.gop||0;  // GOP plateau an1 = EBITDAR
+  const poidsEbitdar = ebitdar0>0 ? c.loyer0/ebitdar0 : 0;
+  setEl('r-poids-ebitdar', fmtP(poidsEbitdar), poidsEbitdar<0.60?'var(--green)':poidsEbitdar<0.70?'var(--amber)':'var(--red)');
   setEl('r-taux-capi',fmtP(c.roceMurs,2),G(c.roceMurs,0.045,0.065));
 
   // BP SCI
