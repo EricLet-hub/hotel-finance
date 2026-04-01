@@ -127,6 +127,9 @@ input[type=text]:focus{outline:none;border-color:var(--border2);}
 .tbl{width:100%;border-collapse:collapse;font-size:11px;}
 .tbl th{padding:5px 8px;text-align:right;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--text3);border-bottom:1px solid var(--border);white-space:nowrap;font-weight:400;}
 .tbl th:first-child{text-align:left;}
+#comp-wrap .tbl th{border-right:1px solid var(--border2);}
+#comp-wrap .tbl td{border-right:1px solid var(--border);}
+#comp-wrap .tbl th:last-child,#comp-wrap .tbl td:last-child{border-right:none;}
 .tbl td{padding:4px 8px;text-align:right;border-bottom:1px solid rgba(46,52,72,.5);color:var(--text2);white-space:nowrap;}
 .tbl td:first-child{text-align:left;color:var(--text);}
 .tbl tr.tsec td{color:var(--text3);font-size:9px;letter-spacing:1px;text-transform:uppercase;padding-top:8px;background:var(--bg4);}
@@ -477,22 +480,13 @@ input[type=text]:focus{outline:none;border-color:var(--border2);}
         <div class="kpi fdc"><div class="klabel">ROCE FDC</div><div class="kvalue" id="r-roce-fdc">—</div><div class="ksub">EBITDA croisière / Coût FDC</div></div>
       </div>
 
-      <!-- Verdicts SCI + FDC -->
-      <div class="g2" style="gap:10px;margin-bottom:14px;">
-        <div id="r-verdict-sci"></div>
-        <div id="r-verdict-fdc"></div>
-      </div>
-
       <!-- Loyer -->
       <div class="card" style="margin-bottom:14px;">
         <div class="card-hdr"><span class="gold">★</span> Loyer — variable centrale</div>
         <div class="card-body">
-          <div class="g4" style="gap:10px;margin-bottom:10px;">
+          <div class="g2" style="gap:10px;margin-bottom:10px;max-width:500px;">
             <div class="field"><label>Loyer an 1 HT <span style="font-size:9px;color:var(--text3);">(CA SCI / charge FDC)</span></label><div class="iw loyer"><input type="number" id="r-loyer" step="10000" oninput="onRLoyer()"><span class="unit">€/an</span></div></div>
             <div class="equil-box"><div class="el">Cible 6,5% × coût SCI</div><div class="ev gold" id="r-loyer-cible" style="color:var(--gold);">—</div></div>
-            <div class="equil-box"><div class="el">Loyer / CA an 1</div><div class="ev" id="r-poids-loyer">—</div></div>
-            <div class="equil-box"><div class="el">Loyer / EBITDAR FDC</div><div class="ev" id="r-poids-ebitdar">—</div></div>
-            <div class="equil-box"><div class="el">Taux capi murs</div><div class="ev" id="r-taux-capi">—</div></div>
           </div>
           <!-- Slider avec 3 repères -->
           <div style="margin-top:8px;">
@@ -1565,7 +1559,7 @@ function renderComparaison(){
       <td>${fmtP(invest>0?r.av.total/invest:0,1)}</td>
     </tr>`;
   }).join('');
-  wrap.innerHTML=`<div style="overflow-x:auto;"><table class="tbl" style="min-width:1100px;"><thead>${th}</thead><tbody>${trs}</tbody></table></div>`;
+  wrap.innerHTML=`<div style="overflow-x:auto;"><table class="tbl" style="min-width:1100px;border-collapse:collapse;"><thead>${th}</thead><tbody>${trs}</tbody></table></div>`;
 }
 
 // ══════════════════════════════════════════════════════════════
