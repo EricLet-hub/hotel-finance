@@ -351,12 +351,10 @@ input[type=text]:focus{outline:none;border-color:var(--border2);}
 
           </div><!-- /g2 SCI -->
 
-          <!-- Loyer : rappel informatif uniquement — se paramètre dans Résultats -->
-          <div style="margin-top:8px;padding:6px 10px;background:var(--bg3);border-radius:3px;border:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
-            <span style="font-size:9px;color:var(--text3);">Loyer (CA du BP SCI = charge FDC) — paramétrable dans <strong style="color:var(--gold);">Résultats ↗</strong></span>
-            <span style="font-size:9px;color:var(--text3);">Référence 6,5% × emplois : <strong style="color:var(--gold);" id="p-loyer-cible">—</strong>
-              &nbsp;·&nbsp; taux <input type="number" id="p-cible-renta" value="6.5" step="0.1" oninput="autoSave()" style="width:36px;background:var(--bg2);border:1px solid var(--border);border-radius:2px;color:var(--text);font-family:'DM Mono',monospace;font-size:10px;padding:1px 4px;text-align:center;">%
-            </span>
+          <!-- p-loyer-cible et p-cible-renta cachés — utilisés par updateEquilibres -->
+          <div style="display:none;">
+            <span id="p-loyer-cible"></span>
+            <input type="number" id="p-cible-renta" value="6.5" step="0.1" oninput="autoSave()">
           </div>
 
         </div>
