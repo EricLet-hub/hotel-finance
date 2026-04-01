@@ -1257,39 +1257,42 @@ function updateLoyerCible(p){
 // ══════════════════════════════════════════════════════════════
 function updateEquilibres(p){
   const nb = p.chambres||1;
-  const isAcq=(p.modeProjet||'neuf')==='acquisition';
+  const isAcq = (p.modeProjet||'neuf')==='acquisition';
 
-  // ── SCI
-  const coutSCI = isAcq
-    ? (p.vefa||0)+(p.fraisSCI||0)+(p.capexRenovation||0)
-    : (p.vefa||0)+(p.terrain||0)+(p.fraisSCI||0)+(p.capexRenovation||0);
-  const resSCI = (p.equitySCI||0)+(p.ccaSCI||0)+(p.detteSCI||0);
-  const e1 = resSCI-coutSCI;
-  const col1 = e1>=0?'var(--green)':'var(--red)';
-  const bg1  = e1>=0?'rgba(26,154,92,.07)':'rgba(204,51,51,.07)';
+  // ── SCI : même formule que computeAll
+  // Mode neuf    : vefa + terrain + fraisSCI + capex
+  // Mode acq     : vefa (= valeur murs) + fraisSCI (= frais acte) + capex
+  // terrainV = 0 en mode acquisition (déjà inclus dans valeur murs)
+  const terrainSCI = isAcq ? 0 : (p.terrain||0);
+  const coutSCI = (p.vefa||0) + terrainSCI + (p.fraisSCI||0) + (p.capexRenovation||0);
+  const resSCI  = (p.equitySCI||0) + (p.ccaSCI||0) + (p.detteSCI||0);
+  const e1 = resSCI - coutSCI;
 
   setEl('p-total-empl-sci', fmt(coutSCI));
-  setEl('p-total-empl-sci-pch', nb>0?fmt(Math.round(coutSCI/nb))+'/ch':'');
+  setEl('p-total-empl-sci-pch', nb>0 ? fmt(Math.round(coutSCI/nb))+'/ch' : '');
   setEl('p-total-res-sci', fmt(resSCI));
   const es = document.getElementById('p-equil-sci');
-  if(es){ es.textContent=fmt(e1); es.style.color=col1; }
+  if(es){ es.textContent=fmt(e1); es.style.color=e1>=0?'var(--green)':'var(--red)'; }
   const esb = document.getElementById('p-equil-sci-box');
-  if(esb) esb.style.background=bg1;
+  if(esb) esb.style.background=e1>=0?'rgba(26,154,92,.07)':'rgba(204,51,51,.07)';
 
   // ── FDC
-  const coutFDC = (p.ffe||0)+(p.bfr||0)+(p.fraisFDC||0);
-  const resFDC  = (p.equityFDC||0)+(p.ccaFDC||0)+(p.detteFDC||0);
-  const e2 = resFDC-coutFDC;
-  const col2 = e2>=0?'var(--green)':'var(--red)';
-  const bg2  = e2>=0?'rgba(26,154,92,.07)':'rgba(204,51,51,.07)';
+  const coutFDC = (p.ffe||0) + (p.bfr||0) + (p.fraisFDC||0);
+  const resFDC  = (p.equityFDC||0) + (p.ccaFDC||0) + (p.detteFDC||0);
+  const e2 = resFDC - coutFDC;
 
   setEl('p-total-empl-fdc', fmt(coutFDC));
-  setEl('p-total-empl-fdc-pch', nb>0?fmt(Math.round(coutFDC/nb))+'/ch':'');
+  setEl('p-total-empl-fdc-pch', nb>0 ? fmt(Math.round(coutFDC/nb))+'/ch' : '');
   setEl('p-total-res-fdc', fmt(resFDC));
   const ef = document.getElementById('p-equil-fdc');
-  if(ef){ ef.textContent=fmt(e2); ef.style.color=col2; }
+  if(ef){ ef.textContent=fmt(e2); ef.style.color=e2>=0?'var(--green)':'var(--red)'; }
   const efb = document.getElementById('p-equil-fdc-box');
-  if(efb) efb.style.background=bg2;
+  if(efb) efb.style.background=e2>=0?'rgba(26,154,92,.07)':'rgba(204,51,51,.07)';
+
+  // ── Loyer cible = taux × coutSCI (cohérent avec computeAll)
+  const loyCible = coutSCI * ((p.cibleRenta||6.5)/100);
+  const elLC = document.getElementById('p-loyer-cible');
+  if(elLC) elLC.textContent = fmt(loyCible);
 }
 
 // ══════════════════════════════════════════════════════════════
