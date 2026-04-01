@@ -299,19 +299,10 @@ input[type=text]:focus{outline:none;border-color:var(--border2);}
                   <div class="field"><label>Capex complémentaire</label><div class="iw"><input type="number" id="p-capex" value="0" step="50000" oninput="autoSave()"><span class="unit">€</span></div></div>
                 </div>
                 <div id="sci-acq" style="display:none;flex-direction:column;gap:8px;">
-                  <div class="field"><label>Prix acquisition global</label><div class="iw"><input type="number" id="p-prix-acq" value="0" step="100000" oninput="autoSave();updateVentilation()"><span class="unit">€</span></div><span class="note">Murs + FDC</span></div>
-                  <div class="field"><label>Capex rénovation</label><div class="iw"><input type="number" id="p-capex-acq" value="0" step="50000" oninput="autoSave();syncPch();updateVentilation()"><span class="unit">€</span></div></div>
+                  <div class="field"><label>Prix acquisition murs</label><div class="iw"><input type="number" id="p-prix-acq" value="0" step="100000" oninput="autoSave()"><span class="unit">€</span></div></div>
+                  <div class="field"><label>Capex rénovation</label><div class="iw"><input type="number" id="p-capex-acq" value="0" step="50000" oninput="autoSave();syncPch()"><span class="unit">€</span></div></div>
                   <div class="field"><label>Capex/ch ⇄</label><div class="iw"><input type="number" id="p-capex-pch" step="5000" oninput="pchToTotal('capex')"><span class="unit">€/ch</span></div></div>
-                  <div class="field"><label>Frais d'acte</label><div class="iw"><input type="number" id="p-frais-acq" value="0" step="10000" oninput="autoSave()"><span class="unit">€</span></div><span class="note">0 = auto 8%</span></div>
-                  <div class="field"><label>Taux capi murs</label><div class="iw"><input type="number" id="p-taux-capi-murs" value="6.5" step="0.1" oninput="autoSave();updateVentilation()"><span class="unit">%</span></div></div>
-                  <div class="field"><label>% EBITDAR → loyer</label><div class="iw"><input type="number" id="p-pct-ebitdar" value="60" step="5" oninput="autoSave();updateVentilation()"><span class="unit">%</span></div></div>
-                  <div style="padding:8px;background:var(--bg3);border-radius:3px;border:1px solid var(--border);font-size:10px;display:flex;flex-direction:column;gap:4px;">
-                    <div style="display:flex;justify-content:space-between;"><span style="color:var(--text3);">EBITDAR</span><span id="vt-ebitdar">—</span></div>
-                    <div style="display:flex;justify-content:space-between;"><span style="color:var(--gold);">Loyer supportable</span><span style="color:var(--gold);font-weight:600;" id="vt-loyer">—</span></div>
-                    <div style="display:flex;justify-content:space-between;"><span style="color:var(--sci);">Valeur murs</span><span style="color:var(--sci);font-weight:600;" id="vt-murs">—</span></div>
-                    <div style="display:flex;justify-content:space-between;"><span style="color:var(--fdc);">Valeur FDC</span><span style="color:var(--fdc);font-weight:600;" id="vt-fdc">—</span></div>
-                  </div>
-                  <div class="field"><label>Valeur murs retenue (0 = auto)</label><div class="iw"><input type="number" id="p-valeur-murs" value="0" step="50000" oninput="autoSave()"><span class="unit">€</span></div></div>
+                  <div class="field"><label>Honoraires &amp; autres</label><div class="iw"><input type="number" id="p-frais-acq" value="0" step="10000" oninput="autoSave()"><span class="unit">€</span></div></div>
                 </div>
               </div>
             </div>
@@ -332,7 +323,6 @@ input[type=text]:focus{outline:none;border-color:var(--border2);}
                 <div class="field"><label>Dette bancaire</label><div class="iw"><input type="number" id="p-dette-sci" value="9000000" step="100000" oninput="autoSave()"><span class="unit">€</span></div></div>
                 <div class="field"><label>Taux dette</label><div class="iw"><input type="number" id="p-taux-dette-sci" value="4.0" step="0.1" oninput="autoSave()"><span class="unit">%</span></div></div>
                 <div class="field"><label>Durée</label><div class="iw"><input type="number" id="p-duree-sci" value="15" step="1" min="5" max="30" oninput="autoSave()"><span class="unit">ans</span></div></div>
-                <div class="field"><label>Taxe foncière</label><div class="iw"><input type="number" id="p-taux-tf" value="0.8" step="0.1" oninput="autoSave()"><span class="unit">% coût</span></div><span class="note">Défaut 0,8%</span></div>
                 <div style="padding:8px 10px;border-radius:3px;border:1px solid var(--border);" id="p-equil-sci-box">
                   <div style="font-size:9px;color:var(--text3);margin-bottom:2px;">Équilibre (Ressources − Emplois)</div>
                   <div style="font-size:18px;font-weight:700;font-family:'Syne',sans-serif;" id="p-equil-sci">—</div>
@@ -438,8 +428,15 @@ input[type=text]:focus{outline:none;border-color:var(--border2);}
               <div class="field"><label>Autres charges</label><div class="iw"><input type="number" id="p-autres" value="9" step="0.5" oninput="autoSave()"><span class="unit">%</span></div></div>
             </div>
           </div>
+          <!-- Taxe foncière SCI -->
+          <div class="acc-hdr" onclick="toggleAcc('taxe')"><span class="acc-arrow">▶</span> Paramètres SCI — Taxe foncière</div>
+          <div class="acc-body" id="acc-taxe">
+            <div class="g4" style="gap:10px;padding-bottom:12px;">
+              <div class="field"><label>Taxe foncière</label><div class="iw"><input type="number" id="p-taux-tf" value="0.8" step="0.1" oninput="autoSave()"><span class="unit">% coût SCI</span></div><span class="note">Charge BP SCI — défaut 0,8%</span></div>
+            </div>
+          </div>
           <!-- Montée en charge -->
-          <div class="acc-hdr" onclick="toggleAcc('ramp')"><span class="acc-arrow">▶</span> Montée en charge — Overrides TO et PM</div>
+          <div class="acc-hdr" onclick="toggleAcc('ramp')">'<span class="acc-arrow">▶</span> Montée en charge — Overrides TO et PM</div>
           <div class="acc-body" id="acc-ramp">
             <div style="overflow-x:auto;padding-bottom:12px;"><table class="tbl" id="ramp-table" style="min-width:700px;"></table></div>
             <button class="btn" onclick="resetRamp()" style="margin-bottom:8px;">↺ Réinitialiser auto</button>
