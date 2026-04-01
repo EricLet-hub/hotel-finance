@@ -1224,18 +1224,7 @@ function updateSliderRange(p,c){
 
       </div>
 
-      <!-- Loyer actuel + statut -->
-      <div style="padding:10px 14px;border-radius:3px;background:${statutBg};border:1px solid ${statutCol};display:flex;align-items:flex-start;gap:12px;">
-        <div style="font-size:20px;color:${statutCol};flex-shrink:0;">${statutIcon}</div>
-        <div style="flex:1;">
-          <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:3px;">
-            <span style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--text3);">Loyer retenu</span>
-            <span style="font-size:18px;font-weight:700;font-family:'Syne',sans-serif;color:${statutCol};">${fmt(loyerActuel)}</span>
-            <span style="font-size:10px;color:var(--text3);">${fmtP(loyerActuel/(ebitdar||1),1)} EBITDAR · ${fmtP(loyerActuel/((c.bpFDC||[{}])[0]?.ca||1),1)} CA</span>
-          </div>
-          <div style="font-size:11px;color:var(--text2);">${statut}</div>
-        </div>
-      </div>`;
+      `;
   }
 }
 
