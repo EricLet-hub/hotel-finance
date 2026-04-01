@@ -1252,13 +1252,17 @@ function updateEquilibres(p){
   const nb = p.chambres||1;
   const isAcq = (p.modeProjet||'neuf')==='acquisition';
 
+  // Lecture directe depuis le DOM pour garantir la cohérence avec ce qui est affiché
+  // (évite le décalage si autoSave() n'a pas encore propagé les valeurs dans p)
+  const nv = (id, def=0) => { const e=document.getElementById(id); return e ? (parseFloat(e.value)||def) : def; };
+
   // ── SCI : même formule que computeAll
   // Mode neuf    : vefa + terrain + fraisSCI + capex
   // Mode acq     : vefa (= valeur murs) + fraisSCI (= frais acte) + capex
   // terrainV = 0 en mode acquisition (déjà inclus dans valeur murs)
   const terrainSCI = isAcq ? 0 : (p.terrain||0);
   const coutSCI = (p.vefa||0) + terrainSCI + (p.fraisSCI||0) + (p.capexRenovation||0);
-  const resSCI  = (p.equitySCI||0) + (p.ccaSCI||0) + (p.detteSCI||0);
+  const resSCI  = nv('p-equity-sci') + nv('p-cca-sci') + nv('p-dette-sci');
   const e1 = resSCI - coutSCI;
 
   setEl('p-total-empl-sci', fmt(coutSCI));
@@ -1271,7 +1275,7 @@ function updateEquilibres(p){
 
   // ── FDC
   const coutFDC = (p.ffe||0) + (p.bfr||0) + (p.fraisFDC||0);
-  const resFDC  = (p.equityFDC||0) + (p.ccaFDC||0) + (p.detteFDC||0);
+  const resFDC  = nv('p-equity-fdc') + nv('p-cca-fdc') + nv('p-dette-fdc');
   const e2 = resFDC - coutFDC;
 
   setEl('p-total-empl-fdc', fmt(coutFDC));
