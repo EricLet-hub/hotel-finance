@@ -967,7 +967,12 @@ function applyVentilation(p){
   const loyerRetenu = (p.loyer||0)>0 ? p.loyer : Math.round((loyerEbitdar+loyerCapi)/2/1000)*1000;
 
   // Mettre à jour p pour le moteur
-  p.vefa = valMursRetenue; p.terrain=0; p.fraisSCI=fraisAcq;
+  // Si prix acq = 0, on ne touche pas p.vefa pour ne pas polluer les emplois avec une valeur calculée
+  if(prixAcq > 0){
+    p.vefa = valMursRetenue; p.terrain=0; p.fraisSCI=fraisAcq;
+  } else {
+    p.vefa = 0; p.terrain=0; p.fraisSCI=0;
+  }
 
   // ── Affichage
   const show=(id,v)=>{ const e=document.getElementById(id); if(e) e.textContent=v; };
