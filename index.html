@@ -277,16 +277,7 @@ input[type=text]:focus{outline:none;border-color:var(--border2);}
         </div>
         <div class="card-body">
 
-          <!-- Loyer de référence -->
-          <div style="margin-bottom:12px;padding:8px 12px;background:rgba(184,146,42,.08);border-radius:3px;border:1px solid rgba(184,146,42,.25);display:flex;align-items:center;gap:12px;">
-            <div style="flex:1;">
-              <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:2px;">Loyer de référence (taux cible × emplois SCI)</div>
-              <div style="font-size:20px;font-weight:700;font-family:'Syne',sans-serif;color:var(--gold);" id="p-loyer-cible">—</div>
-            </div>
-            <div style="font-size:10px;color:var(--text3);display:flex;align-items:center;gap:6px;">
-              Taux&nbsp;<input type="number" id="p-cible-renta" value="6.5" step="0.1" oninput="autoSave()" style="width:44px;background:var(--bg3);border:1px solid var(--border);border-radius:2px;color:var(--text);font-family:'DM Mono',monospace;font-size:11px;padding:3px 5px;text-align:center;">&nbsp;% — ajustable dans Résultats
-            </div>
-          </div>
+          <div style="display:none;"><span id="p-loyer-cible"></span><input type="number" id="p-cible-renta" value="6.5" step="0.1" oninput="autoSave()"></div>
 
           <!-- 2 pavés : Emplois | Ressources+Dette -->
           <div class="g2" style="gap:10px;">
