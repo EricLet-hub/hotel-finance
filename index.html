@@ -643,11 +643,11 @@ function computeAll(p, loyerOverride){
 
   // Coût SCI
   const isAcq = (p.modeProjet||'neuf')==='acquisition';
-  const vefaMurs = p.vefa||0;
-  const terrainV = isAcq ? 0 : (p.terrain||0);
-  const fraisSCIv = p.fraisSCI||0;
-  const capexV = p.capexRenovation||0;
-  const coutSCI = vefaMurs + terrainV + fraisSCIv + capexV;
+  // Mode acquisition : prixAcqMurs + capexRenovation + honoraires
+  // Mode neuf        : vefa + terrain + fraisSCI + capex
+  const coutSCI = isAcq
+    ? (p.prixAcqGlobal||0) + (p.capexRenovation||0) + (p.fraisAcquisition||0)
+    : (p.vefa||0) + (p.terrain||0) + (p.fraisSCI||0) + (p.capexRenovation||0);
 
   const dSCI = buildDette(p.detteSCI, p.tauxDetteSCI/100, p.dureeSCI);
   const dFDC = buildDette(p.detteFDC, p.tauxDetteFDC/100, p.dureeFDC);
@@ -884,10 +884,10 @@ function autoSave(){
     p.prixAcqGlobal   = n('p-prix-acq');
     p.capexRenovation = n('p-capex-acq');
     p.fraisAcquisition= n('p-frais-acq');
-    p.tauxCapiMurs    = n('p-taux-capi-murs',6.5);
-    p.pctEbitdarLoyer = n('p-pct-ebitdar',60);
-    p.valeurMursRetenue=n('p-valeur-murs');
-    applyVentilation(p);
+    // En mode acquisition, on mappe directement sans calcul intermédiaire
+    p.vefa    = p.prixAcqGlobal;
+    p.terrain = 0;
+    p.fraisSCI= p.fraisAcquisition;
   } else {
     p.vefa     = n('p-vefa');
     p.terrain  = n('p-terrain');
@@ -1262,8 +1262,9 @@ function updateEquilibres(p){
   // Mode neuf    : vefa + terrain + fraisSCI + capex
   // Mode acq     : vefa (= valeur murs) + fraisSCI (= frais acte) + capex
   // terrainV = 0 en mode acquisition (déjà inclus dans valeur murs)
-  const terrainSCI = isAcq ? 0 : (p.terrain||0);
-  const coutSCI = (p.vefa||0) + terrainSCI + (p.fraisSCI||0) + (p.capexRenovation||0);
+  const coutSCI = isAcq
+    ? (p.prixAcqGlobal||0) + (p.capexRenovation||0) + (p.fraisAcquisition||0)
+    : (p.vefa||0) + (p.terrain||0) + (p.fraisSCI||0) + (p.capexRenovation||0);
   const resSCI  = nv('p-equity-sci') + nv('p-cca-sci') + nv('p-dette-sci');
   const e1 = resSCI - coutSCI;
 
