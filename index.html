@@ -351,21 +351,12 @@ input[type=text]:focus{outline:none;border-color:var(--border2);}
 
           </div><!-- /g2 SCI -->
 
-          <!-- Loyer — champ modifiable + indicateur 6,5% -->
-          <div style="margin-top:10px;padding:10px 12px;background:rgba(184,146,42,.07);border-radius:3px;border:1px solid rgba(184,146,42,.25);display:flex;align-items:center;gap:12px;">
-            <div style="flex:1;">
-              <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:4px;">Loyer annuel HT ★</div>
-              <div class="iw loyer" style="max-width:200px;">
-                <input type="number" id="p-loyer" step="10000" oninput="autoSave()" style="background:rgba(184,146,42,.07);">
-                <span class="unit" style="background:rgba(184,146,42,.15);color:var(--gold);">€/an</span>
-              </div>
-              <div style="font-size:9px;color:var(--text3);margin-top:3px;">Variable centrale SCI ↔ FDC</div>
-            </div>
-            <div style="text-align:right;">
-              <div style="font-size:9px;color:var(--text3);margin-bottom:2px;">Référence 6,5% × emplois SCI</div>
-              <div style="font-size:14px;font-weight:600;color:var(--gold);" id="p-loyer-cible">—</div>
-              <div style="font-size:9px;color:var(--text3);margin-top:4px;">Taux <input type="number" id="p-cible-renta" value="6.5" step="0.1" oninput="autoSave()" style="width:38px;background:var(--bg3);border:1px solid var(--border);border-radius:2px;color:var(--text);font-family:'DM Mono',monospace;font-size:10px;padding:2px 4px;text-align:center;"> %</div>
-            </div>
+          <!-- Loyer : rappel informatif uniquement — se paramètre dans Résultats -->
+          <div style="margin-top:8px;padding:6px 10px;background:var(--bg3);border-radius:3px;border:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+            <span style="font-size:9px;color:var(--text3);">Loyer (CA du BP SCI = charge FDC) — paramétrable dans <strong style="color:var(--gold);">Résultats ↗</strong></span>
+            <span style="font-size:9px;color:var(--text3);">Référence 6,5% × emplois : <strong style="color:var(--gold);" id="p-loyer-cible">—</strong>
+              &nbsp;·&nbsp; taux <input type="number" id="p-cible-renta" value="6.5" step="0.1" oninput="autoSave()" style="width:36px;background:var(--bg2);border:1px solid var(--border);border-radius:2px;color:var(--text);font-family:'DM Mono',monospace;font-size:10px;padding:1px 4px;text-align:center;">%
+            </span>
           </div>
 
         </div>
@@ -511,7 +502,7 @@ input[type=text]:focus{outline:none;border-color:var(--border2);}
         <div class="card-hdr"><span class="gold">★</span> Loyer — variable centrale</div>
         <div class="card-body">
           <div class="g4" style="gap:10px;margin-bottom:10px;">
-            <div class="field"><label>Loyer an 1 HT</label><div class="iw loyer"><input type="number" id="r-loyer" step="10000" oninput="onRLoyer()"><span class="unit">€/an</span></div></div>
+            <div class="field"><label>Loyer an 1 HT <span style="font-size:9px;color:var(--text3);">(CA SCI / charge FDC)</span></label><div class="iw loyer"><input type="number" id="r-loyer" step="10000" oninput="onRLoyer()"><span class="unit">€/an</span></div></div>
             <div class="equil-box"><div class="el">Cible 6,5% × coût SCI</div><div class="ev gold" id="r-loyer-cible" style="color:var(--gold);">—</div></div>
             <div class="equil-box"><div class="el">Loyer / CA an 1</div><div class="ev" id="r-poids-loyer">—</div></div>
             <div class="equil-box"><div class="el">Loyer / EBITDAR FDC</div><div class="ev" id="r-poids-ebitdar">—</div></div>
@@ -919,7 +910,7 @@ function autoSave(){
   }
 
   // SCI ressources
-  p.loyer      = n('p-loyer')||p.loyer;
+  p.loyer      = n('r-loyer')||n('p-loyer')||p.loyer;
   p.cibleRenta = n('p-cible-renta',6.5);
   p.tauxTF     = n('p-taux-tf',0.8);
   p.equitySCI  = n('p-equity-sci'); p.ccaSCI=n('p-cca-sci'); p.tauxCcaSCI=n('p-taux-cca-sci',4);
