@@ -1370,9 +1370,13 @@ function pchToTotal(field){
 // ══════════════════════════════════════════════════════════════
 function setMode(mode){
   if(currentId) projects[currentId].modeProjet=mode;
-  const n=document.getElementById('btn-neuf'), a=document.getElementById('btn-acq');
-  if(n){ n.className='mode-btn'+(mode==='neuf'?' on-neuf':''); }
-  if(a){ a.className='mode-btn'+(mode==='acquisition'?' on-acq':''); }
+  // Plusieurs boutons portent le meme id (topbar + carte SCI) — on les cible tous
+  document.querySelectorAll('[id="btn-neuf"]').forEach(n=>{
+    n.className='mode-btn'+(mode==='neuf'?' on-neuf':'');
+  });
+  document.querySelectorAll('[id="btn-acq"]').forEach(a=>{
+    a.className='mode-btn'+(mode==='acquisition'?' on-acq':'');
+  });
   const sn=document.getElementById('sci-neuf'), sa=document.getElementById('sci-acq');
   if(sn) sn.style.display=mode==='neuf'?'flex':'none';
   if(sa) sa.style.display=mode==='acquisition'?'flex':'none';
