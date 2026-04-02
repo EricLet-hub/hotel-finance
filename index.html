@@ -429,92 +429,87 @@ input[type=text]:focus{outline:none;border-color:var(--border2);}
 <!-- BLOC MURS & FONDS -->
 <div id="bloc-mf" style="display:none;">
 
-  <!-- Plan de financement consolidé -->
   <div class="card">
-    <div class="card-hdr"><span class="gold">▪</span> Plan de financement — Murs &amp; Fonds</div>
+    <div class="card-hdr"><span class="gold">&#9660;</span> Plan de financement &mdash; Murs &amp; Fonds</div>
     <div class="card-body">
       <div class="g2" style="gap:10px;">
 
-        <!-- EMPLOIS -->
         <div style="border:1px solid var(--border);border-radius:3px;overflow:hidden;">
           <div style="padding:7px 10px;background:var(--bg3);border-bottom:1px solid var(--border);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);">Emplois</div>
           <div style="padding:10px;display:flex;flex-direction:column;gap:8px;">
             <div style="padding:8px 10px;background:var(--gold-bg);border-radius:3px;border-left:3px solid var(--gold);">
               <div style="font-size:9px;color:var(--text3);margin-bottom:2px;">Total Emplois</div>
-              <div style="font-size:20px;font-weight:700;font-family:'Syne',sans-serif;color:var(--gold);" id="mf-total-empl">—</div>
-              <div style="font-size:9px;color:var(--text3);" id="mf-total-empl-pch">—</div>
+              <div style="font-size:20px;font-weight:700;font-family:'Syne',sans-serif;color:var(--gold);" id="mf-total-empl">--</div>
+              <div style="font-size:9px;color:var(--text3);" id="mf-total-empl-pch"></div>
             </div>
             <div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--text3);padding-top:4px;">Acquisition</div>
-            <div class="field"><label>Asset (murs + FDC)</label><div class="iw"><input type="number" id="mf-asset" value="0" step="100000" oninput="autoSave()"><span class="unit">€</span></div></div>
-            <div class="field"><label>Licence 4★</label><div class="iw"><input type="number" id="mf-licence" value="0" step="10000" oninput="autoSave()"><span class="unit">€</span></div></div>
+            <div class="field"><label>Asset (murs + FDC)</label><div class="iw"><input type="number" id="mf-asset" value="0" step="100000" oninput="autoSave()"><span class="unit">&#8364;</span></div></div>
+            <div class="field"><label>Licence 4&#9733;</label><div class="iw"><input type="number" id="mf-licence" value="0" step="10000" oninput="autoSave()"><span class="unit">&#8364;</span></div></div>
             <div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--text3);padding-top:4px;">Frais</div>
-            <div class="field"><label>Droits d'acquisition</label><div class="iw"><input type="number" id="mf-taux-droits" value="7" step="0.5" oninput="autoSave()"><span class="unit">%</span></div><span class="note">% asset</span></div>
-            <div class="field"><label>Broker HT</label><div class="iw"><input type="number" id="mf-broker" value="0" step="10000" oninput="autoSave()"><span class="unit">€</span></div></div>
-            <div class="field"><label>Avocats</label><div class="iw"><input type="number" id="mf-avocats" value="15000" step="5000" oninput="autoSave()"><span class="unit">€</span></div></div>
+            <div class="field"><label>Droits acquisition</label><div class="iw"><input type="number" id="mf-taux-droits" value="7" step="0.5" oninput="autoSave()"><span class="unit">%</span></div><span class="note">% asset</span></div>
+            <div class="field"><label>Broker HT</label><div class="iw"><input type="number" id="mf-broker" value="0" step="10000" oninput="autoSave()"><span class="unit">&#8364;</span></div></div>
+            <div class="field"><label>Avocats</label><div class="iw"><input type="number" id="mf-avocats" value="15000" step="5000" oninput="autoSave()"><span class="unit">&#8364;</span></div></div>
             <div class="field"><label>SH / autres frais</label><div class="iw"><input type="number" id="mf-taux-sh" value="2.5" step="0.5" oninput="autoSave()"><span class="unit">%</span></div><span class="note">% acq+frais+travaux</span></div>
-            <div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--text3);padding-top:4px;">Opérations</div>
-            <div class="field"><label>Travaux Capex HT</label><div class="iw"><input type="number" id="mf-travaux" value="0" step="100000" oninput="autoSave()"><span class="unit">€</span></div></div>
-            <div class="field"><label>FF&amp;E HT</label><div class="iw"><input type="number" id="mf-ffe" value="0" step="50000" oninput="autoSave()"><span class="unit">€</span></div></div>
+            <div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--text3);padding-top:4px;">Operations</div>
+            <div class="field"><label>Travaux Capex HT</label><div class="iw"><input type="number" id="mf-travaux" value="0" step="100000" oninput="autoSave()"><span class="unit">&#8364;</span></div></div>
+            <div class="field"><label>FF&amp;E HT</label><div class="iw"><input type="number" id="mf-ffe" value="0" step="50000" oninput="autoSave()"><span class="unit">&#8364;</span></div></div>
             <div class="field"><label>AMO travaux</label><div class="iw"><input type="number" id="mf-taux-amo" value="4" step="0.5" oninput="autoSave()"><span class="unit">%</span></div><span class="note">% travaux+FFE</span></div>
-            <div class="field"><label>BFR</label><div class="iw"><input type="number" id="mf-bfr" value="0" step="10000" oninput="autoSave()"><span class="unit">€</span></div></div>
+            <div class="field"><label>BFR</label><div class="iw"><input type="number" id="mf-bfr" value="0" step="10000" oninput="autoSave()"><span class="unit">&#8364;</span></div></div>
           </div>
         </div>
 
-        <!-- RESSOURCES -->
         <div style="border:1px solid var(--border);border-radius:3px;overflow:hidden;">
           <div style="padding:7px 10px;background:var(--bg3);border-bottom:1px solid var(--border);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);">Ressources &amp; Financement</div>
           <div style="padding:10px;display:flex;flex-direction:column;gap:8px;">
             <div style="padding:8px 10px;background:var(--gold-bg);border-radius:3px;border-left:3px solid var(--gold);">
               <div style="font-size:9px;color:var(--text3);margin-bottom:2px;">Total Ressources</div>
-              <div style="font-size:20px;font-weight:700;font-family:'Syne',sans-serif;color:var(--gold);" id="mf-total-res">—</div>
+              <div style="font-size:20px;font-weight:700;font-family:'Syne',sans-serif;color:var(--gold);" id="mf-total-res">--</div>
               <div style="font-size:9px;color:var(--text3);">Equity + CC + Dettes</div>
             </div>
-            <div class="field"><label>Equity</label><div class="iw"><input type="number" id="mf-equity" value="0" step="50000" oninput="autoSave()"><span class="unit">€</span></div><span class="note">Calculé auto 40%</span></div>
-            <div class="field"><label>Compte courant (CC)</label><div class="iw"><input type="number" id="mf-cc" value="0" step="50000" oninput="autoSave()"><span class="unit">€</span></div></div>
+            <div class="field"><label>Equity</label><div class="iw"><input type="number" id="mf-equity" value="0" step="50000" oninput="autoSave()"><span class="unit">&#8364;</span></div><span class="note">auto 40%</span></div>
+            <div class="field"><label>Compte courant (CC)</label><div class="iw"><input type="number" id="mf-cc" value="0" step="50000" oninput="autoSave()"><span class="unit">&#8364;</span></div></div>
             <div class="field"><label>Taux CC</label><div class="iw"><input type="number" id="mf-taux-cc" value="4.0" step="0.1" oninput="autoSave()"><span class="unit">%</span></div></div>
             <div style="height:1px;background:var(--border);margin:2px 0;"></div>
             <div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--text3);">Dettes bancaires</div>
-            <div class="field"><label>Dette acquisition</label><div class="iw"><input type="number" id="mf-dette-acq" value="0" step="100000" oninput="autoSave()"><span class="unit">€</span></div><span class="note">Calculé auto 60%</span></div>
-            <div class="field"><label>Dette travaux</label><div class="iw"><input type="number" id="mf-dette-travaux" value="0" step="100000" oninput="autoSave()"><span class="unit">€</span></div><span class="note">Calculé auto 60%</span></div>
+            <div class="field"><label>Dette acquisition</label><div class="iw"><input type="number" id="mf-dette-acq" value="0" step="100000" oninput="autoSave()"><span class="unit">&#8364;</span></div><span class="note">auto 60%</span></div>
+            <div class="field"><label>Dette travaux</label><div class="iw"><input type="number" id="mf-dette-travaux" value="0" step="100000" oninput="autoSave()"><span class="unit">&#8364;</span></div><span class="note">auto 60%</span></div>
             <div class="field"><label>Taux dette acq</label><div class="iw"><input type="number" id="mf-taux-dette-acq" value="4.0" step="0.1" oninput="autoSave()"><span class="unit">%</span></div></div>
             <div class="field"><label>Taux dette travaux</label><div class="iw"><input type="number" id="mf-taux-dette-trav" value="4.5" step="0.1" oninput="autoSave()"><span class="unit">%</span></div></div>
-            <div class="field"><label>Durée dette acq</label><div class="iw"><input type="number" id="mf-duree-dette-acq" value="15" step="1" min="5" max="25" oninput="autoSave()"><span class="unit">ans</span></div></div>
-            <div class="field"><label>Durée dette travaux</label><div class="iw"><input type="number" id="mf-duree-dette-trav" value="7" step="1" min="3" max="15" oninput="autoSave()"><span class="unit">ans</span></div></div>
+            <div class="field"><label>Duree dette acq</label><div class="iw"><input type="number" id="mf-duree-dette-acq" value="15" step="1" min="5" max="25" oninput="autoSave()"><span class="unit">ans</span></div></div>
+            <div class="field"><label>Duree dette travaux</label><div class="iw"><input type="number" id="mf-duree-dette-trav" value="7" step="1" min="3" max="15" oninput="autoSave()"><span class="unit">ans</span></div></div>
             <div class="field"><label>IS</label><div class="iw"><input type="number" id="mf-taux-is" value="25" step="1" oninput="autoSave()"><span class="unit">%</span></div></div>
             <div style="padding:8px 10px;border-radius:3px;border:1px solid var(--border);" id="mf-equil-box">
-              <div style="font-size:9px;color:var(--text3);margin-bottom:2px;">Équilibre (Ressources − Emplois)</div>
-              <div style="font-size:18px;font-weight:700;font-family:'Syne',sans-serif;" id="mf-equil">—</div>
+              <div style="font-size:9px;color:var(--text3);margin-bottom:2px;">Equilibre (Ressources - Emplois)</div>
+              <div style="font-size:18px;font-weight:700;font-family:'Syne',sans-serif;" id="mf-equil">--</div>
             </div>
           </div>
         </div>
 
-      </div><!-- /g2 -->
+      </div>
     </div>
   </div>
 
-  <!-- Frais de gestion Murs & Fonds -->
   <div class="card">
     <div class="card-body" style="padding:0 12px;">
-      <div class="acc-hdr" onclick="toggleAcc('mf-gestion')"><span class="acc-arrow">▶</span> Frais de gestion &amp; management fees</div>
+      <div class="acc-hdr" onclick="toggleAcc('mf-gestion')"><span class="acc-arrow">&#9658;</span> Frais de gestion &amp; management fees</div>
       <div class="acc-body" id="acc-mf-gestion">
         <div class="g4" style="gap:10px;padding-bottom:12px;">
-          <div class="field"><label>Frais gestion opérations</label><div class="iw"><input type="number" id="mf-frais-ops" value="5" step="0.5" oninput="autoSave()"><span class="unit">% CA</span></div></div>
+          <div class="field"><label>Frais gestion ops</label><div class="iw"><input type="number" id="mf-frais-ops" value="5" step="0.5" oninput="autoSave()"><span class="unit">% CA</span></div></div>
           <div class="field"><label>Asset management</label><div class="iw"><input type="number" id="mf-frais-asset" value="1" step="0.25" oninput="autoSave()"><span class="unit">% GAV</span></div></div>
           <div class="field"><label>Frais holding</label><div class="iw"><input type="number" id="mf-frais-holding" value="0" step="0.5" oninput="autoSave()"><span class="unit">% EBITDA</span></div></div>
-          <div class="field"><label>Frais préouverture</label><div class="iw"><input type="number" id="mf-frais-preo" value="200000" step="10000" oninput="autoSave()"><span class="unit">€</span></div></div>
+          <div class="field"><label>Frais prouverture</label><div class="iw"><input type="number" id="mf-frais-preo" value="200000" step="10000" oninput="autoSave()"><span class="unit">&#8364;</span></div></div>
           <div class="field"><label>Amort. murs</label><div class="iw"><input type="number" id="mf-amort-murs" value="15" step="1" oninput="autoSave()"><span class="unit">ans</span></div></div>
           <div class="field"><label>Amort. travaux</label><div class="iw"><input type="number" id="mf-amort-trav" value="7" step="1" oninput="autoSave()"><span class="unit">ans</span></div></div>
           <div class="field"><label>Amort. frais acq</label><div class="iw"><input type="number" id="mf-amort-frais" value="7" step="1" oninput="autoSave()"><span class="unit">ans</span></div></div>
-          <div class="field"><label>Loyer MF (% CA)</label><div class="iw"><input type="number" id="mf-loyer-pct" value="0" step="0.5" oninput="autoSave()"><span class="unit">%</span></div><span class="note">0 si propriétaire</span></div>
+          <div class="field"><label>Loyer MF</label><div class="iw"><input type="number" id="mf-loyer-pct" value="0" step="0.5" oninput="autoSave()"><span class="unit">% CA</span></div><span class="note">0 si proprietaire</span></div>
         </div>
       </div>
-      <!-- Hypothèses sortie MF -->
-      <div class="acc-hdr" onclick="toggleAcc('mf-sortie')"><span class="acc-arrow">▶</span> Hypothèses de sortie — Murs &amp; Fonds</div>
+      <div class="acc-hdr" onclick="toggleAcc('mf-sortie')"><span class="acc-arrow">&#9658;</span> Hypotheses de sortie &mdash; Murs &amp; Fonds</div>
       <div class="acc-body" id="acc-mf-sortie">
         <div class="g4" style="gap:10px;padding-bottom:12px;">
-          <div class="field"><label>Année sortie</label><div class="iw"><input type="number" id="mf-annee-sortie" value="2037" step="1" oninput="autoSave()"><span class="unit">an</span></div></div>
-          <div class="field"><label>Méthode sortie</label><select id="mf-methode-sortie" onchange="autoSave()"><option value="ebitda_multiple">× EBITDA</option><option value="ca_multiple">× CA</option></select></div>
-          <div class="field"><label>Multiple</label><div class="iw"><input type="number" id="mf-multiple-sortie" value="12" step="1" oninput="autoSave()"><span class="unit">×</span></div></div>
+          <div class="field"><label>Annee sortie</label><div class="iw"><input type="number" id="mf-annee-sortie" value="2037" step="1" oninput="autoSave()"><span class="unit">an</span></div></div>
+          <div class="field"><label>Methode sortie</label><select id="mf-methode-sortie" onchange="autoSave()"><option value="ebitda_multiple">x EBITDA</option><option value="ca_multiple">x CA</option></select></div>
+          <div class="field"><label>Multiple</label><div class="iw"><input type="number" id="mf-multiple-sortie" value="12" step="1" oninput="autoSave()"><span class="unit">x</span></div></div>
           <div class="field"><label>Taux actualisation VAN</label><div class="iw"><input type="number" id="mf-taux-van" value="8" step="0.5" oninput="autoSave()"><span class="unit">%</span></div></div>
         </div>
       </div>
@@ -579,42 +574,41 @@ input[type=text]:focus{outline:none;border-color:var(--border2);}
     <div class="page" id="page-resultats">
     <div style="padding:16px 20px 60px;">
 
-      <!-- KPI SCI/FDC (hidden in MF mode) -->
+      <!-- KPI SCI/FDC -->
       <div id="r-bloc-sci-fdc">
       <div class="g3" style="gap:10px;margin-bottom:14px;">
-        <div class="kpi global"><div class="klabel">TRI Global (consolidé)</div><div class="kvalue" id="r-tri-global">—</div><div class="ksub" id="r-tri-global-sub"></div></div>
-        <div class="kpi sci"><div class="klabel">TRI SCI Murs</div><div class="kvalue" id="r-tri-sci">—</div><div class="ksub" id="r-tri-sci-sub"></div></div>
-        <div class="kpi fdc"><div class="klabel">TRI FDC Exploitation</div><div class="kvalue" id="r-tri-fdc">—</div><div class="ksub" id="r-tri-fdc-sub"></div></div>
-        <div class="kpi global"><div class="klabel">ROCE Global</div><div class="kvalue" id="r-roce-global">—</div><div class="ksub">EBITDA croisière / Invest. total</div></div>
-        <div class="kpi sci"><div class="klabel">ROCE Murs</div><div class="kvalue" id="r-roce-murs">—</div><div class="ksub">Loyer / Coût SCI</div></div>
-        <div class="kpi fdc"><div class="klabel">ROCE FDC</div><div class="kvalue" id="r-roce-fdc">—</div><div class="ksub">EBITDA croisière / Coût FDC</div></div>
+        <div class="kpi global"><div class="klabel">TRI Global (consolidé)</div><div class="kvalue" id="r-tri-global">--</div><div class="ksub" id="r-tri-global-sub"></div></div>
+        <div class="kpi sci"><div class="klabel">TRI SCI Murs</div><div class="kvalue" id="r-tri-sci">--</div><div class="ksub" id="r-tri-sci-sub"></div></div>
+        <div class="kpi fdc"><div class="klabel">TRI FDC Exploitation</div><div class="kvalue" id="r-tri-fdc">--</div><div class="ksub" id="r-tri-fdc-sub"></div></div>
+        <div class="kpi global"><div class="klabel">ROCE Global</div><div class="kvalue" id="r-roce-global">--</div><div class="ksub">EBITDA croisiere / Invest. total</div></div>
+        <div class="kpi sci"><div class="klabel">ROCE Murs</div><div class="kvalue" id="r-roce-murs">--</div><div class="ksub">Loyer / Cout SCI</div></div>
+        <div class="kpi fdc"><div class="klabel">ROCE FDC</div><div class="kvalue" id="r-roce-fdc">--</div><div class="ksub">EBITDA croisiere / Cout FDC</div></div>
       </div>
-      </div><!-- /r-bloc-sci-fdc -->
+      </div>
 
       <!-- KPI Murs & Fonds -->
       <div id="r-bloc-mf" style="display:none;">
         <div class="g3" style="gap:10px;margin-bottom:14px;">
-          <div class="kpi gold"><div class="klabel">TRI Equity (Murs &amp; Fonds)</div><div class="kvalue" id="r-mf-tri">—</div><div class="ksub" id="r-mf-tri-sub"></div></div>
-          <div class="kpi gold"><div class="klabel">ROCE MF</div><div class="kvalue" id="r-mf-roce">—</div><div class="ksub">EBITDA croisière / Invest. total</div></div>
-          <div class="kpi gold"><div class="klabel">Invest. total</div><div class="kvalue" id="r-mf-invest">—</div><div class="ksub" id="r-mf-invest-sub"></div></div>
-          <div class="kpi global"><div class="klabel">EBITDA croisière</div><div class="kvalue" id="r-mf-ebitda">—</div><div class="ksub" id="r-mf-ebitda-sub"></div></div>
-          <div class="kpi global"><div class="klabel">CAF an 1</div><div class="kvalue" id="r-mf-caf">—</div><div class="ksub">Capacité autofinancement</div></div>
-          <div class="kpi global"><div class="klabel">VAN equity</div><div class="kvalue" id="r-mf-van">—</div><div class="ksub" id="r-mf-van-sub"></div></div>
+          <div class="kpi gold"><div class="klabel">TRI Equity (Murs &amp; Fonds)</div><div class="kvalue" id="r-mf-tri">--</div><div class="ksub" id="r-mf-tri-sub"></div></div>
+          <div class="kpi gold"><div class="klabel">ROCE MF</div><div class="kvalue" id="r-mf-roce">--</div><div class="ksub">EBITDA croisiere / Invest. total</div></div>
+          <div class="kpi gold"><div class="klabel">Invest. total</div><div class="kvalue" id="r-mf-invest">--</div><div class="ksub" id="r-mf-invest-sub"></div></div>
+          <div class="kpi global"><div class="klabel">EBITDA croisiere</div><div class="kvalue" id="r-mf-ebitda">--</div><div class="ksub" id="r-mf-ebitda-sub"></div></div>
+          <div class="kpi global"><div class="klabel">CAF an 1</div><div class="kvalue" id="r-mf-caf">--</div><div class="ksub">Capacite autofinancement</div></div>
+          <div class="kpi global"><div class="klabel">VAN equity</div><div class="kvalue" id="r-mf-van">--</div><div class="ksub" id="r-mf-van-sub"></div></div>
         </div>
-        <!-- BP MF accordion -->
         <div class="card" style="margin-bottom:14px;">
           <div class="card-body" style="padding:0 12px;">
-            <div class="acc-hdr" onclick="toggleAcc('bp-mf')"><span class="acc-arrow">▶</span><span style="color:var(--gold);">▪</span> Business Plan Murs &amp; Fonds</div>
+            <div class="acc-hdr" onclick="toggleAcc('bp-mf')"><span class="acc-arrow">&#9658;</span><span style="color:var(--gold);">&#9654;</span> Business Plan Murs &amp; Fonds</div>
             <div class="acc-body" id="acc-bp-mf">
               <div style="overflow-x:auto;padding-bottom:8px;"><table class="tbl" id="r-bp-mf"></table></div>
             </div>
-            <div class="acc-hdr" onclick="toggleAcc('bars-mf')"><span class="acc-arrow">▶</span> Cash-flows annuels MF</div>
+            <div class="acc-hdr" onclick="toggleAcc('bars-mf')"><span class="acc-arrow">&#9658;</span> Cash-flows annuels MF</div>
             <div class="acc-body" id="acc-bars-mf">
               <div id="r-bars-mf"></div>
             </div>
           </div>
         </div>
-      </div><!-- /r-bloc-mf -->
+      </div>
 
       <!-- Loyer (hidden in MF mode) -->
       <div id="r-bloc-loyer">
@@ -640,9 +634,8 @@ input[type=text]:focus{outline:none;border-color:var(--border2);}
       </div>
 
       </div><!-- /r-bloc-loyer -->
-
-      <!-- BP SCI accordéon (hidden in MF) -->
       <div id="r-bloc-bp-sci-fdc">
+      <!-- BP SCI accordéon -->
       <div class="card">
         <div class="card-body" style="padding:0 12px;">
           <div class="acc-hdr" onclick="toggleAcc('bp-sci')"><span class="acc-arrow">▶</span><span style="color:var(--sci);">▪</span> Business Plan SCI Murs</div>
@@ -941,11 +934,7 @@ function computeAll(p, loyerOverride){
   let firstPos=null;
   for(let i=0;i<bpFDC.length;i++) if(bpFDC[i].fluxTrso>0){firstPos=p.annee+i;break;}
 
-  // ── Murs & Fonds consolidé
-  let mfResult = null;
-  if((p.modeProjet||'neuf')==='murs_fonds'){
-    mfResult = computeMF(p, annees, bpFDC);
-  }
+  const mfResult=(p.modeProjet||'neuf')==='murs_fonds' ? computeMF(p,annees,bpFDC) : null;
 
   return {annees,loyers,bpSCI,bpFDC,dSCI,dFDC,coutSCI,fdcTotal,
     triSCI,vanSCI,invSCI,vtSCI,fSCI,
@@ -954,109 +943,6 @@ function computeAll(p, loyerOverride){
     roceGlobal,roceMurs,roceFDC,ebitdaC,
     amortMurs,amortFFE,taxeFonc,assurPNO,fraisGest,intCCA_SCI,intCCA_FDC,
     firstPos,loyer0,iSCI,iFDC,anneeSCI,anneeFDC,tauxVAN,mfResult};
-}
-
-// ══════════════════════════════════════════════════════════════
-// CALCUL MURS & FONDS
-// ══════════════════════════════════════════════════════════════
-function computeMF(p, annees, bpFDC){
-  const nb = p.chambres||1;
-  const mfAcq = (p.mfAsset||0)+(p.mfLicence||0);
-  const mfFrais = mfAcq*((p.mfTauxDroits||7)/100)+(p.mfBroker||0)+(p.mfAvocats||15000);
-  const mfSH = (mfAcq+mfFrais+(p.mfTravaux||0)+(p.mfFFE||0))*((p.mfTauxSH||2.5)/100);
-  const mfAMO = ((p.mfTravaux||0)+(p.mfFFE||0))*((p.mfTauxAMO||4)/100);
-  const mfTotal = mfAcq+mfFrais+mfSH+(p.mfTravaux||0)+(p.mfFFE||0)+mfAMO+(p.mfBFR||0);
-  const mfGAV   = mfTotal; // valeur brute actifs = investissement total
-
-  // Dettes
-  const dDetteAcq  = buildDette(p.mfDetteAcq||0,  (p.mfTauxDetteAcq||4)/100,  p.mfDureeDetteAcq||15);
-  const dDetteTrav = buildDette(p.mfDetteTravaux||0,(p.mfTauxDetteTrav||4.5)/100,p.mfDureeDetteTrav||7);
-
-  // Amortissements
-  const amortMurs  = (p.mfAsset||0)  / (p.mfAmortMurs||15);
-  const amortTrav  = (p.mfTravaux||0)/ (p.mfAmortTrav||7);
-  const amortFrais = (p.mfBroker||0) / (p.mfAmortFrais||7);
-  const intCC      = (p.mfCC||0) * ((p.mfTauxCC||4)/100);
-
-  const bpMF = annees.map((_,i)=>{
-    const ca = bpFDC[i]; // same revenue base
-    const loyer    = ca.ca * ((p.mfLoyerPct||0)/100);
-    const fraisOps = ca.ca * ((p.mfFraisOps||5)/100);
-    const fraisAsset = mfGAV * ((p.mfFraisAsset||1)/100);
-    const fraisHolding = 0; // simplification: % EBITDA calculé après
-
-    // EBITDA' (avant management fees)
-    const ebitdaPrime = ca.gop - loyer;
-    const fraisPreo   = (i===0) ? (p.mfFraisPreo||0) : 0;
-    const ebitda = ebitdaPrime - fraisOps - fraisAsset + fraisPreo;
-
-    // Amortissements totaux
-    const amortTotal = amortMurs + amortTrav + amortFrais;
-    const ebit = ebitda - amortTotal;
-
-    // Intérêts
-    const intDetteAcq  = i<dDetteAcq.length  ? dDetteAcq[i].interets  : 0;
-    const intDetteTrav = i<dDetteTrav.length  ? dDetteTrav[i].interets : 0;
-    const resFin = -(intDetteAcq + intDetteTrav + intCC);
-
-    const resAvIS = ebit + resFin;
-    const tIS = (p.mfTauxIS||25)/100;
-    const is  = Math.max(0, resAvIS * tIS);
-    const resNet = resAvIS - is;
-    const caf = resNet + amortTotal;
-
-    // Remboursements
-    const rembAcq  = i<dDetteAcq.length  ? dDetteAcq[i].amortCap  : 0;
-    const rembTrav = i<dDetteTrav.length  ? dDetteTrav[i].amortCap : 0;
-    const capexRenouv = ca.ca * (i<=2 ? 0.01 : 0.02); // capex de renouvellement
-
-    const fluxTrso = caf - rembAcq - rembTrav - capexRenouv;
-
-    return {...ca, loyer, fraisOps, fraisAsset, ebitdaPrime, ebitda, amortTotal, ebit, resFin, resAvIS, is, resNet, caf,
-      rembAcq, rembTrav, capexRenouv, fluxTrso,
-      intDetteAcq, intDetteTrav, intCC};
-  });
-
-  // TRI sur equity
-  const tauxVAN = (p.mfTauxVAN||8)/100;
-  const iSortie = Math.min(N_YEARS-1, Math.max(0,(p.mfAnneeSortie||2037)-(p.annee||2027)));
-  const bpSortie = bpMF[iSortie];
-  const mFDCm = p.mfMethodeSortie||'ebitda_multiple';
-  const vtBase = mFDCm==='ca_multiple' ? bpSortie?.ca||0 : bpSortie?.ebitda||0;
-  const vtMF = vtBase * (p.mfMultipleSortie||12);
-
-  const invMF = -((p.mfEquity||0)+(p.mfCC||0));
-  const fMF = [invMF];
-  for(let i=0;i<iSortie;i++) fMF.push(bpMF[i]?.fluxTrso||0);
-  fMF.push((bpMF[iSortie]?.fluxTrso||0)+vtMF);
-
-  const triMF  = calcTRI(fMF);
-  const vanMF  = calcVAN(fMF, tauxVAN);
-  const ebitdaCroisiere = bpMF[Math.min(3,bpMF.length-1)]?.ebitda||0;
-  const roceMF = mfTotal>0 ? ebitdaCroisiere/mfTotal : 0;
-
-  return {bpMF, mfTotal, mfAcq, mfFrais, mfSH, mfAMO, mfGAV,
-    triMF, vanMF, invMF, vtMF, fMF, roceMF, ebitdaCroisiere,
-    dDetteAcq, dDetteTrav, iSortie};
-}
-
-function updateEquilibresMF(p){
-  const nb = p.chambres||1;
-  const mfAcq = (p.mfAsset||0)+(p.mfLicence||0);
-  const mfFrais = mfAcq*((p.mfTauxDroits||7)/100)+(p.mfBroker||0)+(p.mfAvocats||15000);
-  const mfSH = (mfAcq+mfFrais+(p.mfTravaux||0)+(p.mfFFE||0))*((p.mfTauxSH||2.5)/100);
-  const mfAMO = ((p.mfTravaux||0)+(p.mfFFE||0))*((p.mfTauxAMO||4)/100);
-  const mfTotal = mfAcq+mfFrais+mfSH+(p.mfTravaux||0)+(p.mfFFE||0)+mfAMO+(p.mfBFR||0);
-  const nv=(id,def=0)=>{const e=document.getElementById(id);return e?(parseFloat(e.value)||def):def;};
-  const mfRes = nv('mf-equity') + nv('mf-cc') + nv('mf-dette-acq') + nv('mf-dette-travaux');
-  const eq = mfRes - mfTotal;
-  setEl('mf-total-empl', fmt(mfTotal));
-  setEl('mf-total-empl-pch', nb>0?fmt(Math.round(mfTotal/nb))+'/ch':'');
-  setEl('mf-total-res', fmt(mfRes));
-  const ee=document.getElementById('mf-equil');
-  if(ee){ee.textContent=fmt(eq);ee.style.color=eq>=0?'var(--green)':'var(--red)';}
-  const eb=document.getElementById('mf-equil-box');
-  if(eb) eb.style.background=eq>=0?'rgba(26,154,92,.07)':'rgba(204,51,51,.07)';
 }
 
 function backSolveParam(p,param,triCible,which){
@@ -1105,16 +991,14 @@ function defaultProject(nom,ville){
     prixDemandeMurs:0, prixDemandeFDC:0,
     associesSCI:[{nom:'Valotel',pct:100}],
     associesFDC:[{nom:'Valotel',pct:100}],
-    // Murs & Fonds
-    mfAsset:0, mfLicence:0, mfTauxDroits:7, mfBroker:0, mfAvocats:15000, mfTauxSH:2.5,
-    mfTravaux:0, mfFFE:0, mfTauxAMO:4, mfBFR:0,
-    mfEquity:0, mfCC:0, mfTauxCC:4.0,
-    mfDetteAcq:0, mfDetteTravaux:0,
-    mfTauxDetteAcq:4.0, mfTauxDetteTrav:4.5,
-    mfDureeDetteAcq:15, mfDureeDetteTrav:7, mfTauxIS:25,
-    mfFraisOps:5, mfFraisAsset:1, mfFraisHolding:0, mfFraisPreo:200000,
-    mfAmortMurs:15, mfAmortTrav:7, mfAmortFrais:7, mfLoyerPct:0,
-    mfAnneeSortie:2037, mfMethodeSortie:'ebitda_multiple', mfMultipleSortie:12, mfTauxVAN:8,
+    mfAsset:0,mfLicence:0,mfTauxDroits:7,mfBroker:0,mfAvocats:15000,mfTauxSH:2.5,
+    mfTravaux:0,mfFFE:0,mfTauxAMO:4,mfBFR:0,
+    mfEquity:0,mfCC:0,mfTauxCC:4.0,
+    mfDetteAcq:0,mfDetteTravaux:0,
+    mfTauxDetteAcq:4.0,mfTauxDetteTrav:4.5,mfDureeDetteAcq:15,mfDureeDetteTrav:7,mfTauxIS:25,
+    mfFraisOps:5,mfFraisAsset:1,mfFraisHolding:0,mfFraisPreo:200000,
+    mfAmortMurs:15,mfAmortTrav:7,mfAmortFrais:7,mfLoyerPct:0,
+    mfAnneeSortie:2037,mfMethodeSortie:'ebitda_multiple',mfMultipleSortie:12,mfTauxVAN:8,
   };
 }
 
@@ -1173,21 +1057,19 @@ function autoSave(){
   p.anneeSortieFDC=Math.round(n('p-sortie-fdc',2037)); p.methodeSortieFDC=sel('p-methode-fdc')||'ebitda_multiple';
   p.multipleFDC=n('p-multiple-fdc',10); p.tauxVAN=n('p-taux-van',8);
 
-  // Murs & Fonds
   if(p.modeProjet==='murs_fonds'){
     p.mfAsset=n('mf-asset'); p.mfLicence=n('mf-licence');
     p.mfTauxDroits=n('mf-taux-droits',7); p.mfBroker=n('mf-broker'); p.mfAvocats=n('mf-avocats',15000); p.mfTauxSH=n('mf-taux-sh',2.5);
     p.mfTravaux=n('mf-travaux'); p.mfFFE=n('mf-ffe'); p.mfTauxAMO=n('mf-taux-amo',4); p.mfBFR=n('mf-bfr');
-    // Auto-calcul equity/dettes si à 0
-    const mfAcq = p.mfAsset+p.mfLicence;
-    const mfFrais = mfAcq*(p.mfTauxDroits/100)+p.mfBroker+p.mfAvocats;
-    const mfOps = p.mfTravaux+p.mfFFE+(p.mfTravaux+p.mfFFE)*(p.mfTauxAMO/100)+p.mfBFR;
-    const mfSH = (mfAcq+mfFrais+p.mfTravaux+p.mfFFE)*(p.mfTauxSH/100);
-    const mfTotal = mfAcq+mfFrais+mfSH+mfOps;
-    const rawEquity = n('mf-equity'); const rawDetteAcq = n('mf-dette-acq'); const rawDetteTrav = n('mf-dette-travaux');
-    p.mfDetteAcq = rawDetteAcq>0 ? rawDetteAcq : Math.round(mfAcq*0.6/10000)*10000;
-    p.mfDetteTravaux = rawDetteTrav>0 ? rawDetteTrav : Math.round((p.mfTravaux+p.mfFFE)*0.6/10000)*10000;
-    p.mfEquity = rawEquity>0 ? rawEquity : Math.max(0, Math.round((mfTotal - p.mfDetteAcq - p.mfDetteTravaux)/10000)*10000);
+    const mfAcq=p.mfAsset+p.mfLicence;
+    const mfFrais=mfAcq*(p.mfTauxDroits/100)+p.mfBroker+p.mfAvocats;
+    const mfOps=p.mfTravaux+p.mfFFE+(p.mfTravaux+p.mfFFE)*(p.mfTauxAMO/100)+p.mfBFR;
+    const mfSH=(mfAcq+mfFrais+p.mfTravaux+p.mfFFE)*(p.mfTauxSH/100);
+    const mfTotal=mfAcq+mfFrais+mfSH+mfOps;
+    const rawEq=n('mf-equity'); const rawDA=n('mf-dette-acq'); const rawDT=n('mf-dette-travaux');
+    p.mfDetteAcq=rawDA>0?rawDA:Math.round(mfAcq*0.6/10000)*10000;
+    p.mfDetteTravaux=rawDT>0?rawDT:Math.round((p.mfTravaux+p.mfFFE)*0.6/10000)*10000;
+    p.mfEquity=rawEq>0?rawEq:Math.max(0,Math.round((mfTotal-p.mfDetteAcq-p.mfDetteTravaux)/10000)*10000);
     p.mfCC=n('mf-cc'); p.mfTauxCC=n('mf-taux-cc',4);
     p.mfTauxDetteAcq=n('mf-taux-dette-acq',4); p.mfTauxDetteTrav=n('mf-taux-dette-trav',4.5);
     p.mfDureeDetteAcq=n('mf-duree-dette-acq',15); p.mfDureeDetteTrav=n('mf-duree-dette-trav',7); p.mfTauxIS=n('mf-taux-is',25);
@@ -1368,6 +1250,32 @@ function renderResultats(p,c){
   // Barres
   renderBars('r-bars-sci',c.annees,c.bpSCI.map(r=>r.cfSCI),'var(--sci)');
   renderBars('r-bars-fdc',c.annees,c.bpFDC.map(r=>r.fluxTrso),'var(--fdc)');
+
+  // Show/hide blocs based on mode
+  const _isMF=(p.modeProjet||'neuf')==='murs_fonds';
+  const _sh=(id,v)=>{const e=document.getElementById(id);if(e)e.style.display=v;};
+  _sh('r-bloc-sci-fdc',_isMF?'none':'block');
+  _sh('r-bloc-mf',_isMF?'block':'none');
+  _sh('r-bloc-loyer',_isMF?'none':'block');
+  _sh('r-bloc-bp-sci-fdc',_isMF?'none':'block');
+
+  if(_isMF && c.mfResult){
+    const mf=c.mfResult;
+    const G=(v,lo,hi)=>v>=hi?'var(--green)':v>=lo?'var(--amber)':'var(--red)';
+    setEl('r-mf-tri',fmtTRI(mf.triMF),isFinite(mf.triMF)?G(mf.triMF,0.08,0.12):'var(--text3)');
+    setEl('r-mf-tri-sub','cible 10% — VAN '+fmt(mf.vanMF)+' — invest. equity '+fmt(Math.abs(mf.invMF)));
+    setEl('r-mf-roce',fmtP(mf.roceMF,1),G(mf.roceMF,0.05,0.10));
+    setEl('r-mf-invest',fmt(mf.mfTotal));
+    setEl('r-mf-invest-sub','Asset '+fmt(mf.mfAcq)+' · Frais '+fmt(mf.mfFrais+mf.mfSH));
+    setEl('r-mf-ebitda',fmt(mf.ebitdaCroisiere));
+    const caC=c.bpFDC[Math.min(3,c.bpFDC.length-1)]?.ca||0;
+    setEl('r-mf-ebitda-sub',fmtP(caC>0?mf.ebitdaCroisiere/caC:0,1)+' CA · croisiere an 4');
+    setEl('r-mf-caf',fmt(mf.bpMF[0]?.caf||0));
+    setEl('r-mf-van',fmt(mf.vanMF));
+    setEl('r-mf-van-sub','actualisation '+(p.mfTauxVAN||8)+'%');
+    renderBPMF(mf.bpMF,c.annees);
+    renderBarsMF(mf.bpMF,c.annees);
+  }
 }
 
 function renderBP(id,yrs,rows,data){
@@ -1503,33 +1411,7 @@ function updateSliderRange(p,c){
 
       </div>
 
-      <div id="r-loyer-alert" style="margin-top:8px;"></div>
-
       `;
-
-  // Bloc comparatif loyer capi vs max FDC
-  const alertEl = document.getElementById('r-loyer-alert');
-  if(alertEl){
-    const ecart = loyerMaxFDC - loyerCapi;
-    const ecartAbs = Math.abs(ecart);
-    const surplusPct = loyerCapi > 0 ? (ecartAbs / loyerCapi * 100).toFixed(1).replace('.',',') : '0,0';
-    if(loyerMaxFDC < loyerCapi){
-      alertEl.innerHTML = `<div style="padding:10px 14px;border-radius:3px;background:rgba(204,51,51,.06);border:1px solid rgba(204,51,51,.35);display:flex;align-items:flex-start;gap:10px;">
-        <div style="font-size:18px;flex-shrink:0;color:var(--red);">⚠</div>
-        <div>
-          <div style="font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--red);margin-bottom:3px;">Loyer demandé par la SCI supérieur au loyer supportable par le FDC</div>
-          <div style="font-size:10px;color:var(--text2);">Écart : <strong style="color:var(--red);">${fmt(ecartAbs)}</strong> soit <strong style="color:var(--red);">${surplusPct} %</strong> au-dessus du maximum FDC — renégocier le loyer ou améliorer l'exploitation.</div>
-        </div>
-      </div>`;
-    } else {
-      alertEl.innerHTML = `<div style="padding:10px 14px;border-radius:3px;background:rgba(26,154,92,.06);border:1px solid rgba(26,154,92,.30);display:flex;align-items:flex-start;gap:10px;">
-        <div style="font-size:18px;flex-shrink:0;color:var(--green);">✓</div>
-        <div>
-          <div style="font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--green);margin-bottom:3px;">Loyer demandé par la SCI inférieur au loyer supportable par le FDC</div>
-          <div style="font-size:10px;color:var(--text2);">Marge : <strong style="color:var(--green);">${fmt(ecartAbs)}</strong> soit <strong style="color:var(--green);">${surplusPct} %</strong> sous le maximum FDC — équilibre favorable pour l'exploitation.</div>
-        </div>
-      </div>`;
-    }
   }
 }
 
@@ -1662,23 +1544,15 @@ function pchToTotal(field){
 // ══════════════════════════════════════════════════════════════
 function setMode(mode){
   if(currentId) projects[currentId].modeProjet=mode;
-  document.querySelectorAll('[id="btn-neuf"]').forEach(n=>{
-    n.className='mode-btn'+(mode==='neuf'?' on-neuf':'');
-  });
-  document.querySelectorAll('[id="btn-acq"]').forEach(a=>{
-    a.className='mode-btn'+(mode==='acquisition'?' on-acq':'');
-  });
-  document.querySelectorAll('[id="btn-mf"]').forEach(b=>{
-    b.className='mode-btn'+(mode==='murs_fonds'?' on-mf':'');
-  });
-  const isMF = mode==='murs_fonds';
+  document.querySelectorAll('[id="btn-neuf"]').forEach(n=>{ n.className='mode-btn'+(mode==='neuf'?' on-neuf':''); });
+  document.querySelectorAll('[id="btn-acq"]').forEach(a=>{ a.className='mode-btn'+(mode==='acquisition'?' on-acq':''); });
+  document.querySelectorAll('[id="btn-mf"]').forEach(b=>{ b.className='mode-btn'+(mode==='murs_fonds'?' on-mf':''); });
+  const isMF=mode==='murs_fonds';
   const sn=document.getElementById('sci-neuf'), sa=document.getElementById('sci-acq');
   if(sn) sn.style.display=mode==='neuf'?'flex':'none';
   if(sa) sa.style.display=mode==='acquisition'?'flex':'none';
-  const bsf=document.getElementById('bloc-sci-fdc');
-  if(bsf) bsf.style.display=isMF?'none':'block';
-  const bmf=document.getElementById('bloc-mf');
-  if(bmf) bmf.style.display=isMF?'block':'none';
+  const bsf=document.getElementById('bloc-sci-fdc'); if(bsf) bsf.style.display=isMF?'none':'block';
+  const bmf=document.getElementById('bloc-mf'); if(bmf) bmf.style.display=isMF?'block':'none';
   autoSave();
 }
 
@@ -1693,8 +1567,7 @@ function showTab(name){
   document.querySelectorAll('.tab').forEach(t=>{
     if(t.getAttribute('onclick')?.includes("'"+name+"'")) t.classList.add('active');
   });
-  const pe=document.getElementById('page-empty');
-  if(pe) pe.style.display='none';
+  const _pe=document.getElementById('page-empty'); if(_pe) _pe.style.display='none';
   if(name==='parametres'){ loadParamForm(); buildRampTable(); }
   if(name==='memo') renderMemo();
   if(name==='comparaison') renderComparaison();
@@ -1727,6 +1600,16 @@ function loadParamForm(){
   set('p-multiple-fdc',p.multipleFDC);set('p-taux-van',p.tauxVAN);
   const ms=document.getElementById('p-methode-sci');if(ms)ms.value=p.methodeSortieSCI||'loyer_multiple';
   const mf=document.getElementById('p-methode-fdc');if(mf)mf.value=p.methodeSortieFDC||'ebitda_multiple';
+  set('mf-asset',p.mfAsset||0); set('mf-licence',p.mfLicence||0);
+  set('mf-taux-droits',p.mfTauxDroits||7); set('mf-broker',p.mfBroker||0); set('mf-avocats',p.mfAvocats||15000); set('mf-taux-sh',p.mfTauxSH||2.5);
+  set('mf-travaux',p.mfTravaux||0); set('mf-ffe',p.mfFFE||0); set('mf-taux-amo',p.mfTauxAMO||4); set('mf-bfr',p.mfBFR||0);
+  set('mf-equity',p.mfEquity||0); set('mf-cc',p.mfCC||0); set('mf-taux-cc',p.mfTauxCC||4);
+  set('mf-dette-acq',p.mfDetteAcq||0); set('mf-dette-travaux',p.mfDetteTravaux||0);
+  set('mf-taux-dette-acq',p.mfTauxDetteAcq||4); set('mf-taux-dette-trav',p.mfTauxDetteTrav||4.5);
+  set('mf-duree-dette-acq',p.mfDureeDetteAcq||15); set('mf-duree-dette-trav',p.mfDureeDetteTrav||7); set('mf-taux-is',p.mfTauxIS||25);
+  set('mf-frais-ops',p.mfFraisOps||5); set('mf-frais-asset',p.mfFraisAsset||1); set('mf-frais-holding',p.mfFraisHolding||0); set('mf-frais-preo',p.mfFraisPreo||200000);
+  set('mf-amort-murs',p.mfAmortMurs||15); set('mf-amort-trav',p.mfAmortTrav||7); set('mf-amort-frais',p.mfAmortFrais||7); set('mf-loyer-pct',p.mfLoyerPct||0);
+  set('mf-annee-sortie',p.mfAnneeSortie||2037); set('mf-methode-sortie',p.mfMethodeSortie||'ebitda_multiple'); set('mf-multiple-sortie',p.mfMultipleSortie||12); set('mf-taux-van',p.mfTauxVAN||8);
   setMode(p.modeProjet||'neuf');
   syncPch();
   updateEquilibres(p);
@@ -1770,6 +1653,128 @@ function buildRampTable(){
 }
 function onRamp(f,i,v){ if(!currentId)return; const p=projects[currentId]; const val=v===''?null:parseFloat(v); if(f==='TO')p.rampTO[i]=val; else p.rampPM[i]=val; saveStore(); }
 function resetRamp(f){ if(!currentId)return; const p=projects[currentId]; if(!f||f==='TO')p.rampTO=Array(N_YEARS).fill(null); if(!f||f==='PM')p.rampPM=Array(N_YEARS).fill(null); saveStore(); buildRampTable(); }
+
+// ══════════════════════════════════════════════════════════════
+// CALCUL MURS & FONDS
+// ══════════════════════════════════════════════════════════════
+function computeMF(p,annees,bpFDC){
+  const nb=p.chambres||1;
+  const mfAcq=(p.mfAsset||0)+(p.mfLicence||0);
+  const mfFrais=mfAcq*((p.mfTauxDroits||7)/100)+(p.mfBroker||0)+(p.mfAvocats||15000);
+  const mfSH=(mfAcq+mfFrais+(p.mfTravaux||0)+(p.mfFFE||0))*((p.mfTauxSH||2.5)/100);
+  const mfAMO=((p.mfTravaux||0)+(p.mfFFE||0))*((p.mfTauxAMO||4)/100);
+  const mfTotal=mfAcq+mfFrais+mfSH+(p.mfTravaux||0)+(p.mfFFE||0)+mfAMO+(p.mfBFR||0);
+  const mfGAV=mfTotal;
+  const dDetteAcq=buildDette(p.mfDetteAcq||0,(p.mfTauxDetteAcq||4)/100,p.mfDureeDetteAcq||15);
+  const dDetteTrav=buildDette(p.mfDetteTravaux||0,(p.mfTauxDetteTrav||4.5)/100,p.mfDureeDetteTrav||7);
+  const amortMurs=(p.mfAsset||0)/(p.mfAmortMurs||15);
+  const amortTrav=(p.mfTravaux||0)/(p.mfAmortTrav||7);
+  const amortFrais=(p.mfBroker||0)/(p.mfAmortFrais||7);
+  const intCC=(p.mfCC||0)*((p.mfTauxCC||4)/100);
+  const bpMF=annees.map((_,i)=>{
+    const ca=bpFDC[i];
+    const loyer=ca.ca*((p.mfLoyerPct||0)/100);
+    const fraisOps=ca.ca*((p.mfFraisOps||5)/100);
+    const fraisAsset=mfGAV*((p.mfFraisAsset||1)/100);
+    const ebitdaPrime=ca.gop-loyer;
+    const fraisPreo=(i===0)?(p.mfFraisPreo||0):0;
+    const ebitda=ebitdaPrime-fraisOps-fraisAsset+fraisPreo;
+    const amortTotal=amortMurs+amortTrav+amortFrais;
+    const ebit=ebitda-amortTotal;
+    const intDetteAcq=i<dDetteAcq.length?dDetteAcq[i].interets:0;
+    const intDetteTrav=i<dDetteTrav.length?dDetteTrav[i].interets:0;
+    const resFin=-(intDetteAcq+intDetteTrav+intCC);
+    const resAvIS=ebit+resFin;
+    const tIS=(p.mfTauxIS||25)/100;
+    const is=Math.max(0,resAvIS*tIS);
+    const resNet=resAvIS-is;
+    const caf=resNet+amortTotal;
+    const rembAcq=i<dDetteAcq.length?dDetteAcq[i].amortCap:0;
+    const rembTrav=i<dDetteTrav.length?dDetteTrav[i].amortCap:0;
+    const capexRenouv=ca.ca*(i<=2?0.01:0.02);
+    const fluxTrso=caf-rembAcq-rembTrav-capexRenouv;
+    return {...ca,loyer,fraisOps,fraisAsset,ebitdaPrime,ebitda,amortTotal,ebit,resFin,resAvIS,is,resNet,caf,rembAcq,rembTrav,capexRenouv,fluxTrso,intDetteAcq,intDetteTrav,intCC};
+  });
+  const tauxVAN=(p.mfTauxVAN||8)/100;
+  const iSortie=Math.min(N_YEARS-1,Math.max(0,(p.mfAnneeSortie||2037)-(p.annee||2027)));
+  const bpSortie=bpMF[iSortie];
+  const mFm=p.mfMethodeSortie||'ebitda_multiple';
+  const vtBase=mFm==='ca_multiple'?bpSortie?.ca||0:bpSortie?.ebitda||0;
+  const vtMF=vtBase*(p.mfMultipleSortie||12);
+  const invMF=-((p.mfEquity||0)+(p.mfCC||0));
+  const fMF=[invMF];
+  for(let i=0;i<iSortie;i++) fMF.push(bpMF[i]?.fluxTrso||0);
+  fMF.push((bpMF[iSortie]?.fluxTrso||0)+vtMF);
+  const triMF=calcTRI(fMF);
+  const vanMF=calcVAN(fMF,tauxVAN);
+  const ebitdaCroisiere=bpMF[Math.min(3,bpMF.length-1)]?.ebitda||0;
+  const roceMF=mfTotal>0?ebitdaCroisiere/mfTotal:0;
+  return {bpMF,mfTotal,mfAcq,mfFrais,mfSH,mfAMO,mfGAV,triMF,vanMF,invMF,vtMF,fMF,roceMF,ebitdaCroisiere,dDetteAcq,dDetteTrav,iSortie};
+}
+
+function updateEquilibresMF(p){
+  const nb=p.chambres||1;
+  const mfAcq=(p.mfAsset||0)+(p.mfLicence||0);
+  const mfFrais=mfAcq*((p.mfTauxDroits||7)/100)+(p.mfBroker||0)+(p.mfAvocats||15000);
+  const mfSH=(mfAcq+mfFrais+(p.mfTravaux||0)+(p.mfFFE||0))*((p.mfTauxSH||2.5)/100);
+  const mfAMO=((p.mfTravaux||0)+(p.mfFFE||0))*((p.mfTauxAMO||4)/100);
+  const mfTotal=mfAcq+mfFrais+mfSH+(p.mfTravaux||0)+(p.mfFFE||0)+mfAMO+(p.mfBFR||0);
+  const nv=(id,def=0)=>{const e=document.getElementById(id);return e?(parseFloat(e.value)||def):def;};
+  const mfRes=nv('mf-equity')+nv('mf-cc')+nv('mf-dette-acq')+nv('mf-dette-travaux');
+  const eq=mfRes-mfTotal;
+  setEl('mf-total-empl',fmt(mfTotal));
+  setEl('mf-total-empl-pch',nb>0?fmt(Math.round(mfTotal/nb))+'/ch':'');
+  setEl('mf-total-res',fmt(mfRes));
+  const ee=document.getElementById('mf-equil');
+  if(ee){ee.textContent=fmt(eq);ee.style.color=eq>=0?'var(--green)':'var(--red)';}
+  const eb=document.getElementById('mf-equil-box');
+  if(eb) eb.style.background=eq>=0?'rgba(26,154,92,.07)':'rgba(204,51,51,.07)';
+}
+
+// ══════════════════════════════════════════════════════════════
+// RENDER BP MURS & FONDS
+// ══════════════════════════════════════════════════════════════
+function renderBPMF(bpMF,annees){
+  const tbl=document.getElementById('r-bp-mf'); if(!tbl) return;
+  const yrs=annees.slice(0,Math.min(7,N_YEARS));
+  const th='<thead><tr><th>Indicateur</th>'+yrs.map(y=>'<th>'+y+'</th>').join('')+'</tr></thead>';
+  const row=(lbl,key,cls,fn)=>'<tr class="'+(cls||'')+'"><td>'+lbl+'</td>'+bpMF.slice(0,yrs.length).map(r=>'<td>'+(fn?fn(r):fmt(r[key]))+'</td>').join('')+'</tr>';
+  const pct=(lbl,num,den)=>'<tr class="dim"><td style="padding-left:14px;color:var(--text3);">'+lbl+'</td>'+bpMF.slice(0,yrs.length).map(r=>'<td class="dim">'+fmtP(r[den]>0?r[num]/r[den]:0,1)+'</td>').join('')+'</tr>';
+  const sep=(lbl)=>'<tr class="tsec"><td colspan="'+(yrs.length+1)+'">'+lbl+'</td></tr>';
+  tbl.innerHTML=th+'<tbody>'+
+    sep('CA & Exploitation')+
+    row('CA HT total','ca','ttot')+
+    row("EBITDA avant mgmt",'ebitdaPrime')+
+    pct('% CA','ebitdaPrime','ca')+
+    row('Frais gestion ops','fraisOps','',r=>fmt(-r.fraisOps))+
+    row('Asset management','fraisAsset','',r=>fmt(-r.fraisAsset))+
+    row('EBITDA','ebitda','ttot')+
+    pct('% CA','ebitda','ca')+
+    row('Amortissements','amortTotal','',r=>fmt(-r.amortTotal))+
+    row('EBIT','ebit')+
+    row('Resultat financier','resFin')+
+    row('Resultat avant IS','resAvIS')+
+    row('IS','is','',r=>fmt(-r.is))+
+    row('Resultat net','resNet','ttot')+
+    row('CAF','caf','ttot')+
+    sep('Cash-flow')+
+    row('Remb. dette acq','rembAcq','',r=>fmt(-r.rembAcq))+
+    row('Remb. dette travaux','rembTrav','',r=>fmt(-r.rembTrav))+
+    row('Capex renouvellement','capexRenouv','',r=>fmt(-r.capexRenouv))+
+    row('Flux tresorerie','fluxTrso','ttot')+
+  '</tbody>';
+}
+
+function renderBarsMF(bpMF,annees){
+  const wrap=document.getElementById('r-bars-mf'); if(!wrap) return;
+  const vals=bpMF.map(r=>r.fluxTrso);
+  const mx=Math.max(...vals.map(Math.abs),1);
+  wrap.innerHTML=vals.map((v,i)=>{
+    const pct=Math.round(Math.abs(v)/mx*100);
+    const col=v>=0?'var(--green)':'var(--red)';
+    return '<div class="bar-row"><span class="bar-yr">'+annees[i]+'</span><div class="bar-track"><div class="bar-fill" style="width:'+pct+'%;background:'+col+';"></div></div><span class="bar-val" style="color:'+col+';">'+fmt(v)+'</span></div>';
+  }).join('');
+}
 
 // ══════════════════════════════════════════════════════════════
 // MÉMO
@@ -1898,15 +1903,13 @@ function createProject(){
 function openProject(id){
   currentId=id;
   const p=projects[id];
-  const tabs=document.getElementById('tabs');
-  const pe=document.getElementById('page-empty');
-  if(tabs) tabs.style.display='block';
-  if(pe) pe.style.display='none';
+  document.getElementById('tabs').style.display='block';
+  document.getElementById('page-empty').style.display='none';
   const el=document.getElementById('proj-name');
   const parts=(p.nom||'Projet').split(' ');
   el.innerHTML=parts.slice(0,-1).join(' ')+(parts.length>1?' ':'')+`<em>${parts[parts.length-1]}</em>`;
   renderProjectList();
-  try{ renderAll(); }catch(e){ console.error('renderAll error:',e); }
+  try{ renderAll(); }catch(e){ console.error('renderAll:',e); }
   showTab('parametres');
 }
 
@@ -1965,39 +1968,13 @@ function importProject(e){
       if(!p.rampPM) p.rampPM=Array(N_YEARS).fill(null);
       if(!p.associesSCI) p.associesSCI=[{nom:'Valotel',pct:100}];
       if(!p.associesFDC) p.associesFDC=[{nom:'Valotel',pct:100}];
-      // Ensure MF fields exist for older exports
-      if(p.mfAsset===undefined) p.mfAsset=0;
-      if(p.mfLicence===undefined) p.mfLicence=0;
-      if(p.mfTauxDroits===undefined) p.mfTauxDroits=7;
-      if(p.mfBroker===undefined) p.mfBroker=0;
-      if(p.mfAvocats===undefined) p.mfAvocats=15000;
-      if(p.mfTauxSH===undefined) p.mfTauxSH=2.5;
-      if(p.mfTravaux===undefined) p.mfTravaux=0;
-      if(p.mfFFE===undefined) p.mfFFE=0;
-      if(p.mfTauxAMO===undefined) p.mfTauxAMO=4;
-      if(p.mfBFR===undefined) p.mfBFR=0;
-      if(p.mfEquity===undefined) p.mfEquity=0;
-      if(p.mfCC===undefined) p.mfCC=0;
-      if(p.mfTauxCC===undefined) p.mfTauxCC=4;
-      if(p.mfDetteAcq===undefined) p.mfDetteAcq=0;
-      if(p.mfDetteTravaux===undefined) p.mfDetteTravaux=0;
-      if(p.mfTauxDetteAcq===undefined) p.mfTauxDetteAcq=4;
-      if(p.mfTauxDetteTrav===undefined) p.mfTauxDetteTrav=4.5;
-      if(p.mfDureeDetteAcq===undefined) p.mfDureeDetteAcq=15;
-      if(p.mfDureeDetteTrav===undefined) p.mfDureeDetteTrav=7;
-      if(p.mfTauxIS===undefined) p.mfTauxIS=25;
-      if(p.mfFraisOps===undefined) p.mfFraisOps=5;
-      if(p.mfFraisAsset===undefined) p.mfFraisAsset=1;
-      if(p.mfFraisHolding===undefined) p.mfFraisHolding=0;
-      if(p.mfFraisPreo===undefined) p.mfFraisPreo=200000;
-      if(p.mfAmortMurs===undefined) p.mfAmortMurs=15;
-      if(p.mfAmortTrav===undefined) p.mfAmortTrav=7;
-      if(p.mfAmortFrais===undefined) p.mfAmortFrais=7;
-      if(p.mfLoyerPct===undefined) p.mfLoyerPct=0;
-      if(p.mfAnneeSortie===undefined) p.mfAnneeSortie=2037;
-      if(p.mfMethodeSortie===undefined) p.mfMethodeSortie='ebitda_multiple';
-      if(p.mfMultipleSortie===undefined) p.mfMultipleSortie=12;
-      if(p.mfTauxVAN===undefined) p.mfTauxVAN=8;
+      const mfDef={mfAsset:0,mfLicence:0,mfTauxDroits:7,mfBroker:0,mfAvocats:15000,mfTauxSH:2.5,
+        mfTravaux:0,mfFFE:0,mfTauxAMO:4,mfBFR:0,mfEquity:0,mfCC:0,mfTauxCC:4,
+        mfDetteAcq:0,mfDetteTravaux:0,mfTauxDetteAcq:4,mfTauxDetteTrav:4.5,mfDureeDetteAcq:15,mfDureeDetteTrav:7,mfTauxIS:25,
+        mfFraisOps:5,mfFraisAsset:1,mfFraisHolding:0,mfFraisPreo:200000,
+        mfAmortMurs:15,mfAmortTrav:7,mfAmortFrais:7,mfLoyerPct:0,
+        mfAnneeSortie:2037,mfMethodeSortie:'ebitda_multiple',mfMultipleSortie:12,mfTauxVAN:8};
+      Object.keys(mfDef).forEach(k=>{ if(p[k]===undefined) p[k]=mfDef[k]; });
       projects[p.id]=p; saveStore(); openProject(p.id);
     }catch(err){alert('Fichier JSON invalide');}
   };
