@@ -54,7 +54,7 @@ body{font-family:'DM Mono',monospace;font-size:12px;background:var(--bg);color:v
 
 /* ── PAGES ── */
 .page{display:none;flex:1;overflow-y:auto;}
-.page.active{display:block;}
+.page.active{display:flex;flex-direction:column;}
 #page-empty{display:flex;flex:1;align-items:center;justify-content:center;}
 
 /* ── BOUTONS ── */
@@ -1693,7 +1693,8 @@ function showTab(name){
   document.querySelectorAll('.tab').forEach(t=>{
     if(t.getAttribute('onclick')?.includes("'"+name+"'")) t.classList.add('active');
   });
-  document.getElementById('page-empty').style.display='none';
+  const pe=document.getElementById('page-empty');
+  if(pe) pe.style.display='none';
   if(name==='parametres'){ loadParamForm(); buildRampTable(); }
   if(name==='memo') renderMemo();
   if(name==='comparaison') renderComparaison();
@@ -1897,13 +1898,15 @@ function createProject(){
 function openProject(id){
   currentId=id;
   const p=projects[id];
-  document.getElementById('tabs').style.display='block';
-  document.getElementById('page-empty').style.display='none';
+  const tabs=document.getElementById('tabs');
+  const pe=document.getElementById('page-empty');
+  if(tabs) tabs.style.display='block';
+  if(pe) pe.style.display='none';
   const el=document.getElementById('proj-name');
   const parts=(p.nom||'Projet').split(' ');
   el.innerHTML=parts.slice(0,-1).join(' ')+(parts.length>1?' ':'')+`<em>${parts[parts.length-1]}</em>`;
   renderProjectList();
-  renderAll();
+  try{ renderAll(); }catch(e){ console.error('renderAll error:',e); }
   showTab('parametres');
 }
 
@@ -1962,6 +1965,39 @@ function importProject(e){
       if(!p.rampPM) p.rampPM=Array(N_YEARS).fill(null);
       if(!p.associesSCI) p.associesSCI=[{nom:'Valotel',pct:100}];
       if(!p.associesFDC) p.associesFDC=[{nom:'Valotel',pct:100}];
+      // Ensure MF fields exist for older exports
+      if(p.mfAsset===undefined) p.mfAsset=0;
+      if(p.mfLicence===undefined) p.mfLicence=0;
+      if(p.mfTauxDroits===undefined) p.mfTauxDroits=7;
+      if(p.mfBroker===undefined) p.mfBroker=0;
+      if(p.mfAvocats===undefined) p.mfAvocats=15000;
+      if(p.mfTauxSH===undefined) p.mfTauxSH=2.5;
+      if(p.mfTravaux===undefined) p.mfTravaux=0;
+      if(p.mfFFE===undefined) p.mfFFE=0;
+      if(p.mfTauxAMO===undefined) p.mfTauxAMO=4;
+      if(p.mfBFR===undefined) p.mfBFR=0;
+      if(p.mfEquity===undefined) p.mfEquity=0;
+      if(p.mfCC===undefined) p.mfCC=0;
+      if(p.mfTauxCC===undefined) p.mfTauxCC=4;
+      if(p.mfDetteAcq===undefined) p.mfDetteAcq=0;
+      if(p.mfDetteTravaux===undefined) p.mfDetteTravaux=0;
+      if(p.mfTauxDetteAcq===undefined) p.mfTauxDetteAcq=4;
+      if(p.mfTauxDetteTrav===undefined) p.mfTauxDetteTrav=4.5;
+      if(p.mfDureeDetteAcq===undefined) p.mfDureeDetteAcq=15;
+      if(p.mfDureeDetteTrav===undefined) p.mfDureeDetteTrav=7;
+      if(p.mfTauxIS===undefined) p.mfTauxIS=25;
+      if(p.mfFraisOps===undefined) p.mfFraisOps=5;
+      if(p.mfFraisAsset===undefined) p.mfFraisAsset=1;
+      if(p.mfFraisHolding===undefined) p.mfFraisHolding=0;
+      if(p.mfFraisPreo===undefined) p.mfFraisPreo=200000;
+      if(p.mfAmortMurs===undefined) p.mfAmortMurs=15;
+      if(p.mfAmortTrav===undefined) p.mfAmortTrav=7;
+      if(p.mfAmortFrais===undefined) p.mfAmortFrais=7;
+      if(p.mfLoyerPct===undefined) p.mfLoyerPct=0;
+      if(p.mfAnneeSortie===undefined) p.mfAnneeSortie=2037;
+      if(p.mfMethodeSortie===undefined) p.mfMethodeSortie='ebitda_multiple';
+      if(p.mfMultipleSortie===undefined) p.mfMultipleSortie=12;
+      if(p.mfTauxVAN===undefined) p.mfTauxVAN=8;
       projects[p.id]=p; saveStore(); openProject(p.id);
     }catch(err){alert('Fichier JSON invalide');}
   };
