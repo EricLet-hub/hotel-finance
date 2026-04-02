@@ -386,7 +386,7 @@ input[type=text]:focus{outline:none;border-color:var(--border2);}
                 <div style="height:1px;background:var(--border);margin:2px 0;"></div>
                 <div class="field"><label>Dette FF&amp;E</label><div class="iw"><input type="number" id="p-dette-fdc" value="1500000" step="50000" oninput="autoSave()"><span class="unit">€</span></div></div>
                 <div class="field"><label>Taux dette</label><div class="iw"><input type="number" id="p-taux-dette-fdc" value="4.5" step="0.1" oninput="autoSave()"><span class="unit">%</span></div></div>
-                <div class="field"><label>Durée</label><div class="iw"><input type="number" id="p-duree-fdc" value="7" step="1" min="3" max="15" oninput="autoSave()"><span class="unit">ans</span></div></div>
+                <div class="field"><label>Durée</label><div class="iw"><input type="number" id="p-duree-fdc" value="10" step="1" min="3" max="15" oninput="autoSave()"><span class="unit">ans</span></div></div>
                 <div class="field"><label>IS</label><div class="iw"><input type="number" id="p-taux-is" value="25" step="1" oninput="autoSave()"><span class="unit">%</span></div></div>
                 <div style="padding:8px 10px;border-radius:3px;border:1px solid var(--border);" id="p-equil-fdc-box">
                   <div style="font-size:9px;color:var(--text3);margin-bottom:2px;">Équilibre (Ressources − Emplois)</div>
@@ -529,11 +529,23 @@ input[type=text]:focus{outline:none;border-color:var(--border2);}
               <div class="field"><label>Autres charges</label><div class="iw"><input type="number" id="p-autres" value="9" step="0.5" oninput="autoSave()"><span class="unit">%</span></div></div>
             </div>
           </div>
-          <!-- Taxe foncière SCI -->
-          <div class="acc-hdr" onclick="toggleAcc('taxe')"><span class="acc-arrow">▶</span> Paramètres SCI — Taxe foncière</div>
-          <div class="acc-body" id="acc-taxe">
-            <div class="g4" style="gap:10px;padding-bottom:12px;">
-              <div class="field"><label>Taxe foncière</label><div class="iw"><input type="number" id="p-taux-tf" value="0.8" step="0.1" oninput="autoSave()"><span class="unit">% coût SCI</span></div><span class="note">Charge BP SCI — défaut 0,8%</span></div>
+          <!-- Paramètres SCI avancés -->
+          <div class="acc-hdr" onclick="toggleAcc('sci-avance')"><span class="acc-arrow">▶</span><span style="color:var(--sci);">▪</span> Paramètres SCI — Amortissements &amp; IS</div>
+          <div class="acc-body" id="acc-sci-avance">
+            <div style="padding-bottom:12px;">
+              <div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--text3);padding:6px 0 8px;">Taxe foncière</div>
+              <div class="g4" style="gap:10px;margin-bottom:12px;">
+                <div class="field"><label>Taxe foncière</label><div class="iw"><input type="number" id="p-taux-tf" value="0.8" step="0.1" oninput="autoSave()"><span class="unit">% coût SCI</span></div><span class="note">Refacturée au FDC — neutre SCI</span></div>
+                <div class="field"><label>IS SCI</label><div class="iw"><input type="number" id="p-taux-is-sci" value="15" step="1" oninput="autoSave()"><span class="unit">%</span></div><span class="note">Taux IS SCI (0 si IR)</span></div>
+              </div>
+              <div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--text3);padding:6px 0 8px;">Amortissements SCI par composants — durées linéaires</div>
+              <div class="g4" style="gap:10px;">
+                <div class="field"><label>Structure (40% coût)</label><div class="iw"><input type="number" id="p-amort-structure" value="40" step="5" min="10" max="50" oninput="autoSave()"><span class="unit">ans</span></div></div>
+                <div class="field"><label>Façades (30% coût)</label><div class="iw"><input type="number" id="p-amort-facades" value="40" step="5" min="10" max="50" oninput="autoSave()"><span class="unit">ans</span></div></div>
+                <div class="field"><label>IGT (25% coût)</label><div class="iw"><input type="number" id="p-amort-igt" value="20" step="5" min="10" max="40" oninput="autoSave()"><span class="unit">ans</span></div></div>
+                <div class="field"><label>Agencements (5% coût)</label><div class="iw"><input type="number" id="p-amort-agenc" value="15" step="5" min="5" max="25" oninput="autoSave()"><span class="unit">ans</span></div></div>
+              </div>
+              <div style="font-size:9px;color:var(--text3);margin-top:6px;">Amortissement total annuel = <span id="p-amort-total-display" style="color:var(--sci);">—</span></div>
             </div>
           </div>
           <!-- Montée en charge -->
@@ -787,33 +799,55 @@ function computeAll(p, loyerOverride){
   const dSCI = buildDette(p.detteSCI, p.tauxDetteSCI/100, p.dureeSCI);
   const dFDC = buildDette(p.detteFDC, p.tauxDetteFDC/100, p.dureeFDC);
 
-  const amortMurs  = coutSCI/40;
-  const taxeFonc   = coutSCI*(p.tauxTF||0.8)/100;   // ← taxe foncière
-  const assurPNO   = coutSCI*0.001;                   // assurance PNO 0,1%
-  const fraisGest  = 5000;                             // frais gestion SCI fixes
+  // Amortissements SCI par composants (structure fichier réel)
+  // Construction neuve : base = vefa (hors terrain et frais)
+  // Acquisition : base = prixAcqGlobal
+  const baseConstruc = isAcq ? (p.prixAcqGlobal||0) : (p.vefa||0);
+  const pStructure = 0.40, pFacades = 0.30, pIGT = 0.25, pAgenc = 0.05;
+  const dStructure = p.amortStructure||40, dFacades = p.amortFacades||40;
+  const dIGT = p.amortIGT||20, dAgenc = p.amortAgenc||15;
+  const amortMursAnnuel = baseConstruc * (
+    pStructure/dStructure + pFacades/dFacades + pIGT/dIGT + pAgenc/dAgenc
+  );
+  // Taxe foncière : calculée mais REFACTURÉE au FDC → neutre SCI (charge annulée par produit)
+  const taxeFonc   = coutSCI*(p.tauxTF||0.8)/100;   // pour info dans BP, net = 0
+  const assurPNO   = coutSCI*0.001;
+  const fraisGest  = 5000;
   const intCCA_SCI = (p.ccaSCI||0)*(p.tauxCcaSCI||0)/100;
   const intCCA_FDC = (p.ccaFDC||0)*(p.tauxCcaFDC||0)/100;
-  const amortFFE   = (p.ffe||0)/7;
+  const amortFFE   = (p.ffe||0)/(p.dureeFDC||10);
 
   const bpSCI = annees.map((_,i)=>{
     const loyer=loyers[i];
-    const intDette = i<dSCI.length?dSCI[i].interets:0;
-    const remb     = i<dSCI.length?dSCI[i].amortCap:0;
-    const totalCharges = intDette+intCCA_SCI+amortMurs+taxeFonc+assurPNO+fraisGest;
-    const resultat = loyer-totalCharges;
-    const cfSCI    = resultat+amortMurs-remb;
-    return {loyer,intDette,intCCA:intCCA_SCI,amortMurs,taxeFonc,assurPNO,fraisGest,totalCharges,resultat,cfSCI,remb};
+    const intDette  = i<dSCI.length?dSCI[i].interets:0;
+    const remb      = i<dSCI.length?dSCI[i].amortCap:0;
+    // TF refacturée = neutre → on ne l'inclut pas dans les charges nettes
+    const totalCharges = intDette+intCCA_SCI+amortMursAnnuel+assurPNO+fraisGest;
+    const resultatAvIS = loyer-totalCharges;
+    return {loyer,intDette,intCCA:intCCA_SCI,amortMurs:amortMursAnnuel,taxeFonc,assurPNO,fraisGest,totalCharges,resultatAvIS,remb};
   });
-  // Capitaux propres SCI cumulés + trésorerie cumulée
-  let cpSCI = (p.equitySCI||0);  // capital social = equity, CCA exclu
-  let tresoCumSCI = 0;
-  bpSCI.forEach(r=>{
-    cpSCI += r.resultat;
-    r.cpCumul = cpSCI;
-    tresoCumSCI += r.cfSCI;
-    r.tresoCumul = tresoCumSCI;
-    r.tresoAnnuelle = r.cfSCI;
-  });
+  // IS SCI avec report de déficit
+  {
+    const tauISci = (p.tauxIsSci||15)/100;
+    let deficitReporte = 0;
+    let cpSCI = (p.equitySCI||0);
+    let tresoCumSCI = 0;
+    bpSCI.forEach(r=>{
+      let baseIS = r.resultatAvIS + deficitReporte; // déficit réduit la base
+      let isSCI = 0;
+      if(baseIS > 0){ isSCI = baseIS * tauISci; deficitReporte = 0; }
+      else { deficitReporte = baseIS; }  // report du déficit
+      const resultat = r.resultatAvIS - isSCI;
+      const cfSCI    = resultat + r.amortMurs - r.remb;
+      r.isSCI = isSCI; r.resultat = resultat; r.cfSCI = cfSCI;
+      r.totalCharges = r.totalCharges + isSCI; // charges includes IS
+      cpSCI += resultat;
+      r.cpCumul = cpSCI;
+      tresoCumSCI += cfSCI;
+      r.tresoCumul = tresoCumSCI;
+      r.tresoAnnuelle = cfSCI;
+    });
+  }
 
   const bpFDC = annees.map((_,i)=>{
     const ca=computeCA(p,i);
@@ -832,14 +866,25 @@ function computeAll(p, loyerOverride){
     const intDette=i<dFDC.length?dFDC[i].interets:0;
     const remb    =i<dFDC.length?dFDC[i].amortCap:0;
     const resAvIS = ebitda-amortFFE-intDette-intCCA_FDC;
-    const tIS     = (p.tauxIS||25)/100;
-    const is      = Math.max(0,resAvIS*tIS);
-    const resNet  = resAvIS-is;
-    const fluxTrso= ebitda-remb-is;
-    return {...ca,loyer,fb,sal,franch,comm,energ,honor,holdi,autres,totalHL,gop,ebitda,intDette,remb,amortFFE,intCCA:intCCA_FDC,resAvIS,is,resNet,fluxTrso};
+    return {...ca,loyer,fb,sal,franch,comm,energ,honor,holdi,autres,totalHL,gop,ebitda,intDette,remb,amortFFE,intCCA:intCCA_FDC,resAvIS};
   });
-  let cpCumul=p.equityFDC||0;  // capital social FDC = equity uniquement
-  bpFDC.forEach(r=>{cpCumul+=r.resNet;r.cpCumul=cpCumul;});
+  // IS FDC avec report de déficit
+  {
+    const tIS = (p.tauxIS||25)/100;
+    let deficitFDC = 0;
+    let cpFDC = (p.equityFDC||0);
+    bpFDC.forEach(r=>{
+      let baseIS = r.resAvIS + deficitFDC;
+      let is = 0;
+      if(baseIS > 0){ is = baseIS * tIS; deficitFDC = 0; }
+      else { deficitFDC = baseIS; }
+      const resNet   = r.resAvIS - is;
+      const fluxTrso = r.ebitda - r.remb - is;
+      r.is = is; r.resNet = resNet; r.fluxTrso = fluxTrso;
+      cpFDC += resNet;
+      r.cpCumul = cpFDC;
+    });
+  }
 
   // Sorties
   const anneeSCI=Math.max(p.annee+1,p.anneeSortieSCI||2037);
@@ -958,7 +1003,7 @@ function computeAll(p, loyerOverride){
     triFDC,vanFDC,invFDC,vtFDC,fFDC,
     triGlobal,vanGlobal,invGlobal,fGlobal,
     roceGlobal,roceMurs,roceFDC,ebitdaC,
-    amortMurs,amortFFE,taxeFonc,assurPNO,fraisGest,intCCA_SCI,intCCA_FDC,
+    amortMursAnnuel,amortFFE,taxeFonc,assurPNO,fraisGest,intCCA_SCI,intCCA_FDC,
     firstPos,loyer0,iSCI,iFDC,anneeSCI,anneeFDC,tauxVAN,mfResult};
 }
 
@@ -994,7 +1039,8 @@ function defaultProject(nom,ville){
     prixAcqGlobal:0, fraisAcquisition:0, tauxCapiMurs:6.5, pctEbitdarLoyer:60, valeurMursRetenue:0,
     equitySCI:2000000, ccaSCI:6000000, tauxCcaSCI:4.0,
     detteSCI:9000000, tauxDetteSCI:4.0, dureeSCI:15,
-    cibleRenta:6.5, tauxTF:0.8,
+    cibleRenta:6.5, tauxTF:0.8, tauxIsSci:15,
+    amortStructure:40, amortFacades:40, amortIGT:20, amortAgenc:15,
     ffe:3000000, bfr:150000, fraisFDC:50000,
     equityFDC:500000, ccaFDC:1200000, tauxCcaFDC:4.0,
     detteFDC:1500000, tauxDetteFDC:4.5, dureeFDC:7, tauxIS:25,
@@ -1054,6 +1100,18 @@ function autoSave(){
   p.loyer      = n('r-loyer')||n('p-loyer')||p.loyer;
   p.cibleRenta = n('p-cible-renta',6.5);
   p.tauxTF     = n('p-taux-tf',0.8);
+  p.tauxIsSci  = n('p-taux-is-sci',15);
+  p.amortStructure = n('p-amort-structure',40);
+  p.amortFacades   = n('p-amort-facades',40);
+  p.amortIGT       = n('p-amort-igt',20);
+  p.amortAgenc     = n('p-amort-agenc',15);
+  // Affiche amortissement total annuel estimé
+  {
+    const base = p.modeProjet==='acquisition' ? (p.prixAcqGlobal||0) : (p.vefa||0);
+    const amTot = base*(0.4/(p.amortStructure||40)+0.3/(p.amortFacades||40)+0.25/(p.amortIGT||20)+0.05/(p.amortAgenc||15));
+    const el = document.getElementById('p-amort-total-display');
+    if(el) el.textContent = amTot>0 ? Math.round(amTot).toLocaleString('fr-FR')+' €/an' : '—';
+  }
   p.equitySCI  = n('p-equity-sci'); p.ccaSCI=n('p-cca-sci'); p.tauxCcaSCI=n('p-taux-cca-sci',4);
   p.detteSCI   = n('p-dette-sci');  p.tauxDetteSCI=n('p-taux-dette-sci',4); p.dureeSCI=n('p-duree-sci',15);
 
@@ -1247,10 +1305,12 @@ function renderResultats(p,c){
   renderBP('r-bp-sci',yrs,[
     {s:'Produits'},{l:'Loyer HT',k:'loyer',cls:'tloyer'},
     {s:'Charges SCI'},{l:'Intérêts dette murs',k:'intDette'},{l:'Intérêts CCA SCI',k:'intCCA'},
-    {l:'Amort. murs (40 ans)',k:'amortMurs'},{l:'Taxe foncière',k:'taxeFonc'},
+    {l:'Amort. par composants',k:'amortMurs'},{l:'Taxe foncière (refact.)',k:'taxeFonc'},
     {l:'Assurance PNO',k:'assurPNO'},{l:'Frais gestion SCI',k:'fraisGest'},
-    {l:'Total charges',k:'totalCharges',cls:'ttot'},
-    {s:'Résultats'},{l:'Résultat net',k:'resultat',sign:true},{l:'Cash-flow SCI',k:'cfSCI',sign:true},
+    {l:'Total charges (hors IS)',k:'totalCharges',cls:'ttot'},
+    {s:'Résultats'},{l:'Résultat avant IS',k:'resultatAvIS',sign:true},
+    {l:'IS SCI',k:'isSCI',sign:false},{l:'Résultat net',k:'resultat',sign:true,cls:'ttot'},
+    {l:'Cash-flow SCI',k:'cfSCI',sign:true},
   ],c.bpSCI);
 
   // BP FDC
@@ -1260,6 +1320,7 @@ function renderResultats(p,c){
     {s:'Charges'},{l:'⚑ Loyer versé SCI',k:'loyer',cls:'tloyer'},
     {l:'F&B marchandises',k:'fb'},{l:'Salaires',k:'sal'},{l:'Franchise',k:'franch'},{l:'Commission',k:'comm'},
     {s:'Résultats'},{l:'GOP (avant loyer)',k:'gop',sign:true},{l:'EBITDA (après loyer)',k:'ebitda',sign:true},
+    {l:'Résultat avant IS',k:'resAvIS',sign:true},{l:'IS FDC',k:'is',sign:false},
     {l:'Résultat net',k:'resNet',sign:true,cls:'ttot'},{l:'Cash-flow FDC',k:'fluxTrso',sign:true},
     {l:'Cap. propres cumulés',k:'cpCumul',sign:true},
   ],c.bpFDC);
@@ -1605,6 +1666,9 @@ function loadParamForm(){
   set('p-prix-acq',p.prixAcqGlobal||0);set('p-capex-acq',p.capexRenovation||0);set('p-frais-acq',p.fraisAcquisition||0);
   set('p-taux-capi-murs',p.tauxCapiMurs||6.5);set('p-pct-ebitdar',p.pctEbitdarLoyer||60);set('p-valeur-murs',p.valeurMursRetenue||0);
   set('p-loyer',p.loyer);set('p-cible-renta',p.cibleRenta);set('p-taux-tf',p.tauxTF||0.8);
+  set('p-taux-is-sci',p.tauxIsSci||15);
+  set('p-amort-structure',p.amortStructure||40);set('p-amort-facades',p.amortFacades||40);
+  set('p-amort-igt',p.amortIGT||20);set('p-amort-agenc',p.amortAgenc||15);
   set('p-equity-sci',p.equitySCI);set('p-cca-sci',p.ccaSCI);set('p-taux-cca-sci',p.tauxCcaSCI);
   set('p-dette-sci',p.detteSCI);set('p-taux-dette-sci',p.tauxDetteSCI);set('p-duree-sci',p.dureeSCI);
   set('p-ffe',p.ffe);set('p-bfr',p.bfr);set('p-frais-fdc',p.fraisFDC);
@@ -1805,7 +1869,7 @@ function renderSanteSCI(p, c){
   const bpSCI  = c.bpSCI;
   if(!bpSCI || !bpSCI.length){ wrap.innerHTML=''; return; }
 
-  const capitalSocial = (p.equitySCI||0);  // capital social = equity uniquement (CCA = dette)
+  const capitalSocial = (p.equitySCI||0);  // capital social = equity
   const seuilAlerte   = capitalSocial * 0.5;  // moitié du capital social
 
   // Séries
