@@ -649,6 +649,19 @@ input[type=text]:focus{outline:none;border-color:var(--border2);}
               <div><div style="font-size:9px;color:var(--fdc);margin-bottom:6px;letter-spacing:1px;">CF FDC</div><div id="r-bars-fdc"></div></div>
             </div>
           </div>
+          <!-- Santé financière SCI -->
+          <div class="acc-hdr" onclick="toggleAcc('sante-sci')"><span class="acc-arrow">▶</span><span style="color:var(--sci);">▪</span> Santé financière SCI — Capitaux propres &amp; Trésorerie</div>
+          <div class="acc-body" id="acc-sante-sci">
+            <div style="padding-bottom:12px;">
+              <div style="font-size:10px;color:var(--text3);margin-bottom:10px;">
+                <span style="display:inline-block;width:12px;height:3px;background:var(--sci);border-radius:2px;vertical-align:middle;margin-right:4px;"></span>Capitaux propres
+                <span style="display:inline-block;width:12px;height:3px;background:var(--red);border-radius:2px;border-top:2px dashed var(--red);vertical-align:middle;margin-left:12px;margin-right:4px;"></span>Seuil alerte (½ capital social)
+                <span style="display:inline-block;width:12px;height:3px;background:var(--fdc);border-radius:2px;vertical-align:middle;margin-left:12px;margin-right:4px;"></span>Trésorerie annuelle
+                <span style="display:inline-block;width:12px;height:3px;background:var(--gold);border-radius:2px;vertical-align:middle;margin-left:12px;margin-right:4px;"></span>Trésorerie cumulée
+              </div>
+              <div id="r-chart-sante" style="width:100%;"></div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -790,6 +803,16 @@ function computeAll(p, loyerOverride){
     const resultat = loyer-totalCharges;
     const cfSCI    = resultat+amortMurs-remb;
     return {loyer,intDette,intCCA:intCCA_SCI,amortMurs,taxeFonc,assurPNO,fraisGest,totalCharges,resultat,cfSCI,remb};
+  });
+  // Capitaux propres SCI cumulés + trésorerie cumulée
+  let cpSCI = (p.equitySCI||0) + (p.ccaSCI||0);
+  let tresoCumSCI = 0;
+  bpSCI.forEach(r=>{
+    cpSCI += r.resultat;
+    r.cpCumul = cpSCI;
+    tresoCumSCI += r.cfSCI;
+    r.tresoCumul = tresoCumSCI;
+    r.tresoAnnuelle = r.cfSCI;
   });
 
   const bpFDC = annees.map((_,i)=>{
@@ -1244,6 +1267,7 @@ function renderResultats(p,c){
   // Barres
   renderBars('r-bars-sci',c.annees,c.bpSCI.map(r=>r.cfSCI),'var(--sci)');
   renderBars('r-bars-fdc',c.annees,c.bpFDC.map(r=>r.fluxTrso),'var(--fdc)');
+  renderSanteSCI(p,c);
 
   // Show/hide blocs based on mode
   const _isMF=(p.modeProjet||'neuf')==='murs_fonds';
@@ -1768,6 +1792,140 @@ function renderBarsMF(bpMF,annees){
     const col=v>=0?'var(--green)':'var(--red)';
     return '<div class="bar-row"><span class="bar-yr">'+annees[i]+'</span><div class="bar-track"><div class="bar-fill" style="width:'+pct+'%;background:'+col+';"></div></div><span class="bar-val" style="color:'+col+';">'+fmt(v)+'</span></div>';
   }).join('');
+}
+
+// ══════════════════════════════════════════════════════════════
+// COURBES SANTÉ FINANCIÈRE SCI
+// ══════════════════════════════════════════════════════════════
+function renderSanteSCI(p, c){
+  const wrap = document.getElementById('r-chart-sante');
+  if(!wrap) return;
+
+  const annees = c.annees;
+  const bpSCI  = c.bpSCI;
+  if(!bpSCI || !bpSCI.length){ wrap.innerHTML=''; return; }
+
+  const capitalSocial = (p.equitySCI||0) + (p.ccaSCI||0);
+  const seuilAlerte   = capitalSocial * 0.5;  // moitié du capital social
+
+  // Séries
+  const cpData    = bpSCI.map(r => r.cpCumul||0);
+  const tresoAnn  = bpSCI.map(r => r.tresoAnnuelle||0);
+  const tresoCum  = bpSCI.map(r => r.tresoCumul||0);
+
+  // Dimensions
+  const W=800, H=260, ML=70, MR=20, MT=20, MB=36;
+  const cW=W-ML-MR, cH=H-MT-MB;
+
+  const allVals = [...cpData, ...tresoAnn, ...tresoCum, seuilAlerte, 0];
+  const minV = Math.min(...allVals);
+  const maxV = Math.max(...allVals);
+  const range = maxV - minV || 1;
+  const pad   = range * 0.1;
+  const yMin  = minV - pad;
+  const yMax  = maxV + pad;
+
+  const xOf = i => ML + (i / (annees.length-1)) * cW;
+  const yOf = v => MT + cH - ((v - yMin) / (yMax - yMin)) * cH;
+
+  // Y=0 line
+  const y0 = yOf(0);
+
+  // Polyline helper
+  const poly = (data, color, dash='', strokeW=2) => {
+    const pts = data.map((v,i)=>xOf(i)+','+yOf(v)).join(' ');
+    return '<polyline points="'+pts+'" fill="none" stroke="'+color+'" stroke-width="'+strokeW+'" stroke-dasharray="'+dash+'" stroke-linejoin="round" stroke-linecap="round"/>';
+  };
+
+  // Dots helper
+  const dots = (data, color, r=3) => data.map((v,i)=>
+    '<circle cx="'+xOf(i)+'" cy="'+yOf(v)+'" r="'+r+'" fill="'+color+'"/>'
+  ).join('');
+
+  // Alert band if CP goes below seuil
+  let alertBands = '';
+  bpSCI.forEach((row, i) => {
+    if(row.cpCumul < seuilAlerte){
+      const x1 = i===0 ? xOf(0) : (xOf(i-1)+xOf(i))/2;
+      const x2 = i===bpSCI.length-1 ? xOf(i) : (xOf(i)+xOf(i+1))/2;
+      alertBands += '<rect x="'+x1+'" y="'+MT+'" width="'+(x2-x1)+'" height="'+cH+'" fill="rgba(204,51,51,.06)"/>';
+    }
+  });
+
+  // Negative treso band
+  let negBands = '';
+  bpSCI.forEach((row, i) => {
+    if(row.tresoAnnuelle < 0){
+      const x1 = i===0 ? xOf(0) : (xOf(i-1)+xOf(i))/2;
+      const x2 = i===bpSCI.length-1 ? xOf(i) : (xOf(i)+xOf(i+1))/2;
+      negBands += '<rect x="'+x1+'" y="'+MT+'" width="'+(x2-x1)+'" height="'+cH+'" fill="rgba(192,112,0,.05)"/>';
+    }
+  });
+
+  // Y-axis ticks
+  const nTicks = 5;
+  let yTicks = '';
+  for(let t=0;t<=nTicks;t++){
+    const v = yMin + (yMax-yMin)*t/nTicks;
+    const y = yOf(v);
+    const lbl = Math.abs(v) >= 1000000
+      ? (Math.round(v/100000)/10).toFixed(1)+'M'
+      : Math.round(v/1000)+'k';
+    yTicks += '<line x1="'+ML+'" y1="'+y+'" x2="'+(ML+cW)+'" y2="'+y+'" stroke="var(--border)" stroke-width="1"/>';
+    yTicks += '<text x="'+(ML-6)+'" y="'+(y+4)+'" text-anchor="end" font-size="9" fill="var(--text3)" font-family="DM Mono,monospace">'+lbl+'</text>';
+  }
+
+  // X-axis labels
+  let xLabels = '';
+  annees.forEach((yr,i)=>{
+    xLabels += '<text x="'+xOf(i)+'" y="'+(H-MB+16)+'" text-anchor="middle" font-size="9" fill="var(--text3)" font-family="DM Mono,monospace">'+yr+'</text>';
+  });
+
+  // Seuil alerte dashed line
+  const ySeuil = yOf(seuilAlerte);
+  const seuilLine = '<line x1="'+ML+'" y1="'+ySeuil+'" x2="'+(ML+cW)+'" y2="'+ySeuil+'" stroke="var(--red)" stroke-width="1.5" stroke-dasharray="5,3"/>';
+  const seuilLbl  = '<text x="'+(ML+cW+2)+'" y="'+(ySeuil+4)+'" font-size="8" fill="var(--red)" font-family="DM Mono,monospace">½ cap.</text>';
+
+  // Zero line
+  const zeroLine = y0>=MT && y0<=MT+cH
+    ? '<line x1="'+ML+'" y1="'+y0+'" x2="'+(ML+cW)+'" y2="'+y0+'" stroke="var(--border2)" stroke-width="1" stroke-dasharray="2,2"/>'
+    : '';
+
+  wrap.innerHTML = '<div style="overflow-x:auto;">'+
+    '<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;max-width:'+W+'px;display:block;" xmlns="http://www.w3.org/2000/svg">'+
+      // Background
+      '<rect x="'+ML+'" y="'+MT+'" width="'+cW+'" height="'+cH+'" fill="var(--bg3)" rx="2"/>'+
+      alertBands + negBands +
+      yTicks + zeroLine +
+      seuilLine + seuilLbl +
+      // Courbes
+      poly(tresoCum,  'var(--gold)', '',    1.5) +
+      poly(tresoAnn,  'var(--fdc)',  '',    1.5) +
+      poly(cpData,    'var(--sci)',  '',    2.5) +
+      // Points
+      dots(tresoCum,  'var(--gold)', 2.5) +
+      dots(tresoAnn,  'var(--fdc)',  2.5) +
+      dots(cpData,    'var(--sci)',  3) +
+      xLabels +
+      // Axes
+      '<line x1="'+ML+'" y1="'+MT+'" x2="'+ML+'" y2="'+(MT+cH)+'" stroke="var(--border2)" stroke-width="1"/>'+
+      '<line x1="'+ML+'" y1="'+(MT+cH)+'" x2="'+(ML+cW)+'" y2="'+(MT+cH)+'" stroke="var(--border2)" stroke-width="1"/>'+
+    '</svg>'+
+    // Alertes textuelles
+    (function(){
+      let alerts = '';
+      const cpNeg = bpSCI.filter(r=>r.cpCumul<0);
+      const cpAlerte = bpSCI.filter(r=>r.cpCumul>=0 && r.cpCumul<seuilAlerte);
+      const tresoNeg = bpSCI.filter((_,i)=>tresoAnn[i]<0);
+      if(cpNeg.length)
+        alerts += '<div style="margin-top:8px;padding:7px 10px;border-radius:3px;background:rgba(204,51,51,.07);border:1px solid rgba(204,51,51,.3);font-size:10px;color:var(--red);">⚠ Capitaux propres négatifs sur '+cpNeg.length+' an(s) — risque de dissolution légale</div>';
+      else if(cpAlerte.length)
+        alerts += '<div style="margin-top:8px;padding:7px 10px;border-radius:3px;background:rgba(192,112,0,.07);border:1px solid rgba(192,112,0,.3);font-size:10px;color:var(--amber);">⚠ Capitaux propres inférieurs à la moitié du capital social sur '+cpAlerte.length+' an(s) — procédure de continuité à engager</div>';
+      if(tresoNeg.length)
+        alerts += '<div style="margin-top:6px;padding:7px 10px;border-radius:3px;background:rgba(192,112,0,.07);border:1px solid rgba(192,112,0,.3);font-size:10px;color:var(--amber);">⚠ Trésorerie annuelle négative sur '+tresoNeg.length+' an(s) — vérifier la couverture par equity / CCA</div>';
+      return alerts;
+    })()+
+  '</div>';
 }
 
 // ══════════════════════════════════════════════════════════════
