@@ -213,10 +213,12 @@ input[type=text]:focus{outline:none;border-color:var(--border2);}
     <div id="project-list"></div>
     <div id="sidebar-btns">
       <button class="btn gold full" onclick="openNewModal()">+ Nouveau projet</button>
-      <button class="btn full" onclick="triggerImport()">↑ Importer</button>
+      <label class="btn full" style="cursor:pointer;text-align:center;display:block;">
+        ↑ Importer
+        <input type="file" id="import-input" accept=".json" style="display:none;position:absolute;width:0;height:0;" onchange="importProject(event)">
+      </label>
       <button class="btn full" onclick="exportProject()">↓ Exporter</button>
       <button class="btn full" onclick="duplicateProject()">⎘ Dupliquer</button>
-      <input type="file" id="import-input" accept=".json" style="display:none" onchange="importProject(event)">
     </div>
   </div>
 
@@ -1947,7 +1949,6 @@ function duplicateProject(){
   projects[copy.id]=copy; saveStore(); openProject(copy.id);
 }
 
-function triggerImport(){document.getElementById('import-input').click();}
 function importProject(e){
   const file=e.target.files[0]; if(!file) return;
   const r=new FileReader();
