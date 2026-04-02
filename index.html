@@ -164,6 +164,32 @@ input[type=text]:focus{outline:none;border-color:var(--border2);}
 /* ── SEPARATEUR ── */
 .sep{height:1px;background:var(--border);margin:10px 0;}
 
+/* ── RESULTS LAYOUT ── */
+#resultats-layout{display:flex;gap:0;flex:1;overflow:hidden;height:100%;}
+#r-panel-left{width:210px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;padding:12px 10px;gap:10px;}
+#r-panel-main{flex:1;overflow-y:auto;padding:16px 20px 60px;}
+.r-panel-kpi{background:var(--bg3);border-radius:var(--r);border:1px solid var(--border);padding:8px 10px;}
+.r-panel-kpi .rkl{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-bottom:3px;}
+.r-panel-kpi .rkv{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;line-height:1;}
+.r-panel-kpi .rks{font-size:9px;color:var(--text3);margin-top:2px;}
+.r-panel-sep{height:1px;background:var(--border);margin:2px 0;}
+.r-panel-label{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);padding:4px 0 2px;}
+
+/* Slider vertical */
+#r-slider-v-wrap{display:flex;flex-direction:column;align-items:center;gap:6px;padding:4px 0;}
+#r-loyer-slider-v{-webkit-appearance:slider-vertical;writing-mode:vertical-lr;direction:rtl;width:28px;height:140px;cursor:pointer;accent-color:var(--gold);}
+#r-loyer-slider-v::-webkit-slider-thumb{background:var(--gold);}
+
+/* KPI grid compact */
+.kpi-grid-compact{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
+.kpi-sm{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:8px 10px;}
+.kpi-sm.sci{border-left:3px solid var(--sci);}
+.kpi-sm.fdc{border-left:3px solid var(--fdc);}
+.kpi-sm.global{border-left:3px solid var(--text2);}
+.kpi-sm .ksl{font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--text3);margin-bottom:3px;}
+.kpi-sm .ksv{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;line-height:1;}
+.kpi-sm .kss{font-size:8px;color:var(--text3);margin-top:2px;}
+
 /* ── MODAL ── */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;z-index:999;}
 .modal-overlay.hidden{display:none;}
@@ -578,17 +604,87 @@ input[type=text]:focus{outline:none;border-color:var(--border2);}
          PAGE RÉSULTATS
     ══════════════════════════════════════════════ -->
     <div class="page" id="page-resultats">
-    <div style="padding:16px 20px 60px;">
+    <div id="resultats-layout">
 
-      <!-- KPI SCI/FDC -->
+    <!-- PANNEAU GAUCHE : loyer + indicateurs clés -->
+    <div id="r-panel-left">
+
+      <!-- Loyer input -->
+      <div>
+        <div class="r-panel-label">Loyer an 1 HT</div>
+        <div class="iw loyer" style="margin-bottom:6px;">
+          <input type="number" id="r-loyer" step="10000" oninput="onRLoyer()" style="font-size:13px;font-weight:600;">
+          <span class="unit">€/an</span>
+        </div>
+      </div>
+
+      <!-- Slider vertical -->
+      <div id="r-slider-v-wrap">
+        <div style="font-size:8px;color:var(--text3);">▲ loyer</div>
+        <input type="range" id="r-loyer-slider" min="100000" max="3000000" step="10000"
+          oninput="onLoyerSlider()"
+          style="-webkit-appearance:slider-vertical;writing-mode:vertical-lr;direction:rtl;width:28px;height:150px;cursor:pointer;accent-color:var(--gold);">
+        <div style="font-size:8px;color:var(--text3);">▼ loyer</div>
+        <!-- Marqueurs repositionnés -->
+        <div id="r-slider-markers" style="display:none;"></div>
+      </div>
+
+      <div class="r-panel-sep"></div>
+
+      <!-- Loyer cible SCI -->
+      <div class="r-panel-kpi" style="border-left:3px solid var(--sci);">
+        <div class="rkl" style="color:var(--sci);">① Cible SCI (6,5%)</div>
+        <div class="rkv" id="r-loyer-cible" style="color:var(--sci);">—</div>
+        <div class="rks">loyer que méritent les murs</div>
+      </div>
+
+      <!-- Max FDC -->
+      <div class="r-panel-kpi" style="border-left:3px solid var(--fdc);">
+        <div class="rkl" style="color:var(--fdc);">② Max FDC supportable</div>
+        <div class="rkv" id="r-panel-max-fdc" style="color:var(--fdc);">—</div>
+        <div class="rks">65% × EBITDAR</div>
+      </div>
+
+      <!-- Alerte loyer -->
+      <div id="r-panel-loyer-alert"></div>
+
+      <div class="r-panel-sep"></div>
+
+      <!-- TRI SCI -->
+      <div class="r-panel-kpi" style="border-left:3px solid var(--sci);">
+        <div class="rkl">TRI SCI Murs</div>
+        <div class="rkv" id="r-panel-tri-sci">—</div>
+        <div class="rks" id="r-panel-tri-sci-sub"></div>
+      </div>
+
+      <!-- TRI FDC -->
+      <div class="r-panel-kpi" style="border-left:3px solid var(--fdc);">
+        <div class="rkl">TRI FDC</div>
+        <div class="rkv" id="r-panel-tri-fdc">—</div>
+        <div class="rks" id="r-panel-tri-fdc-sub"></div>
+      </div>
+
+      <!-- TRI Global -->
+      <div class="r-panel-kpi">
+        <div class="rkl">TRI Global consolidé</div>
+        <div class="rkv" id="r-panel-tri-global">—</div>
+        <div class="rks" id="r-panel-tri-global-sub"></div>
+      </div>
+
+    </div><!-- /r-panel-left -->
+
+    <!-- ZONE PRINCIPALE -->
+    <div id="r-panel-main">
+
+      <!-- KPI compact SCI/FDC -->
       <div id="r-bloc-sci-fdc">
-      <div class="g3" style="gap:10px;margin-bottom:14px;">
-        <div class="kpi global"><div class="klabel">TRI Global (consolidé)</div><div class="kvalue" id="r-tri-global">--</div><div class="ksub" id="r-tri-global-sub"></div></div>
-        <div class="kpi sci"><div class="klabel">TRI SCI Murs</div><div class="kvalue" id="r-tri-sci">--</div><div class="ksub" id="r-tri-sci-sub"></div></div>
-        <div class="kpi fdc"><div class="klabel">TRI FDC Exploitation</div><div class="kvalue" id="r-tri-fdc">--</div><div class="ksub" id="r-tri-fdc-sub"></div></div>
-        <div class="kpi global"><div class="klabel">ROCE Global</div><div class="kvalue" id="r-roce-global">--</div><div class="ksub">EBITDA croisiere / Invest. total</div></div>
-        <div class="kpi sci"><div class="klabel">ROCE Murs</div><div class="kvalue" id="r-roce-murs">--</div><div class="ksub">Loyer / Cout SCI</div></div>
-        <div class="kpi fdc"><div class="klabel">ROCE FDC</div><div class="kvalue" id="r-roce-fdc">--</div><div class="ksub">EBITDA croisiere / Cout FDC</div></div>
+      <div class="kpi-grid-compact" style="margin-bottom:10px;">
+        <div class="kpi-sm global"><div class="ksl">TRI Global</div><div class="ksv" id="r-tri-global">--</div><div class="kss" id="r-tri-global-sub"></div></div>
+        <div class="kpi-sm sci"><div class="ksl">ROCE Murs</div><div class="ksv" id="r-roce-murs">--</div><div class="kss">Loyer / Coût SCI</div></div>
+        <div class="kpi-sm fdc"><div class="ksl">ROCE FDC</div><div class="ksv" id="r-roce-fdc">--</div><div class="kss">EBITDA cr. / Coût FDC</div></div>
+        <div class="kpi-sm global"><div class="ksl">ROCE Global</div><div class="ksv" id="r-roce-global">--</div><div class="kss">EBITDA cr. / Invest. total</div></div>
+        <div class="kpi-sm sci"><div class="ksl">VAN SCI</div><div class="ksv" id="r-tri-sci">--</div><div class="kss" id="r-tri-sci-sub"></div></div>
+        <div class="kpi-sm fdc"><div class="ksl">VAN FDC</div><div class="ksv" id="r-tri-fdc">--</div><div class="kss" id="r-tri-fdc-sub"></div></div>
       </div>
       </div>
 
@@ -616,29 +712,9 @@ input[type=text]:focus{outline:none;border-color:var(--border2);}
         </div>
       </div>
 
-      <!-- Loyer (hidden in MF mode) -->
+      <!-- Loyer legend (under slider) -->
       <div id="r-bloc-loyer">
-      <div class="card" style="margin-bottom:14px;">
-        <div class="card-hdr"><span class="gold">★</span> Loyer — variable centrale</div>
-        <div class="card-body">
-          <div class="g2" style="gap:10px;margin-bottom:10px;max-width:500px;">
-            <div class="field"><label>Loyer an 1 HT <span style="font-size:9px;color:var(--text3);">(CA SCI / charge FDC)</span></label><div class="iw loyer"><input type="number" id="r-loyer" step="10000" oninput="onRLoyer()"><span class="unit">€/an</span></div></div>
-            <div class="equil-box"><div class="el">Cible 6,5% × coût SCI</div><div class="ev gold" id="r-loyer-cible" style="color:var(--gold);">—</div></div>
-          </div>
-          <!-- Slider avec 3 repères -->
-          <div style="margin-top:8px;">
-            <!-- Slider + marqueurs dans une zone à hauteur fixe -->
-            <div style="position:relative;height:44px;">
-              <input type="range" id="r-loyer-slider" min="100000" max="3000000" step="10000" oninput="onLoyerSlider()" style="position:absolute;top:0;left:0;right:0;width:100%;z-index:2;">
-              <!-- Repères verticaux sous la barre -->
-              <div id="r-slider-markers" style="position:absolute;top:18px;left:0;right:0;height:26px;pointer-events:none;z-index:1;"></div>
-            </div>
-            <!-- Cartes séparées, hors du bloc positionné -->
-            <div id="r-slider-legend" style="margin-top:14px;"></div>
-          </div>
-        </div>
-      </div>
-
+      <div id="r-slider-legend" style="margin-bottom:12px;"></div>
       </div><!-- /r-bloc-loyer -->
       <div id="r-bloc-bp-sci-fdc">
       <!-- BP SCI accordéon -->
@@ -662,8 +738,8 @@ input[type=text]:focus{outline:none;border-color:var(--border2);}
             </div>
           </div>
           <!-- Santé financière SCI -->
-          <div class="acc-hdr" onclick="toggleAcc('sante-sci')"><span class="acc-arrow">▶</span><span style="color:var(--sci);">▪</span> Santé financière SCI — Capitaux propres &amp; Trésorerie</div>
-          <div class="acc-body" id="acc-sante-sci">
+          <div class="acc-hdr" onclick="toggleAcc('sante-sci')"><span class="acc-arrow open">▶</span><span style="color:var(--sci);">▪</span> Santé financière SCI — Capitaux propres &amp; Trésorerie</div>
+          <div class="acc-body open" id="acc-sante-sci">
             <div style="padding-bottom:12px;">
               <div style="font-size:10px;color:var(--text3);margin-bottom:10px;">
                 <span style="display:inline-block;width:12px;height:3px;background:var(--sci);border-radius:2px;vertical-align:middle;margin-right:4px;"></span>Capitaux propres
@@ -678,7 +754,8 @@ input[type=text]:focus{outline:none;border-color:var(--border2);}
       </div>
 
       </div><!-- /r-bloc-bp-sci-fdc -->
-    </div>
+    </div><!-- /r-panel-main -->
+    </div><!-- /resultats-layout -->
     </div><!-- /page-resultats -->
 
     <!-- ══════════════════════════════════════════════
@@ -1261,13 +1338,21 @@ function renderResultats(p,c){
   // TRI
   const tgCol=triCols(c.triGlobal,0.10);
   setEl('r-tri-global',fmtTRI(c.triGlobal),tgCol);
-  setEl('r-tri-global-sub',`VAN ${fmt(c.vanGlobal)} — invest. ${fmt(Math.abs(c.invGlobal))}`);
+  setEl('r-tri-global-sub','VAN '+fmt(c.vanGlobal)+' — invest. '+fmt(Math.abs(c.invGlobal)));
   const tsCol=triCols(c.triSCI,(p.triCibleSCI||8)/100);
-  setEl('r-tri-sci',fmtTRI(c.triSCI),tsCol);
-  setEl('r-tri-sci-sub',`cible ${p.triCibleSCI||8}% — VAN ${fmt(c.vanSCI)}`);
+  setEl('r-tri-sci','VAN '+fmt(c.vanSCI),tsCol);
+  setEl('r-tri-sci-sub','TRI '+fmtTRI(c.triSCI)+' · cible '+(p.triCibleSCI||8)+'%');
   const tfCol=triCols(c.triFDC,(p.triCibleFDC||12)/100);
-  setEl('r-tri-fdc',fmtTRI(c.triFDC),tfCol);
-  setEl('r-tri-fdc-sub',`cible ${p.triCibleFDC||12}% — VAN ${fmt(c.vanFDC)}`);
+  setEl('r-tri-fdc','VAN '+fmt(c.vanFDC),tfCol);
+  setEl('r-tri-fdc-sub','TRI '+fmtTRI(c.triFDC)+' · cible '+(p.triCibleFDC||12)+'%');
+
+  // Left panel — TRI
+  setEl('r-panel-tri-sci',fmtTRI(c.triSCI),tsCol);
+  setEl('r-panel-tri-sci-sub','cible '+(p.triCibleSCI||8)+'% — VAN '+fmt(c.vanSCI));
+  setEl('r-panel-tri-fdc',fmtTRI(c.triFDC),tfCol);
+  setEl('r-panel-tri-fdc-sub','cible '+(p.triCibleFDC||12)+'% — VAN '+fmt(c.vanFDC));
+  setEl('r-panel-tri-global',fmtTRI(c.triGlobal),tgCol);
+  setEl('r-panel-tri-global-sub','VAN '+fmt(c.vanGlobal));
 
   // ROCE
   const G=(v,lo,hi)=>v>=hi?'var(--green)':v>=lo?'var(--amber)':'var(--red)';
@@ -1329,6 +1414,17 @@ function renderResultats(p,c){
   renderBars('r-bars-sci',c.annees,c.bpSCI.map(r=>r.cfSCI),'var(--sci)');
   renderBars('r-bars-fdc',c.annees,c.bpFDC.map(r=>r.fluxTrso),'var(--fdc)');
   renderSanteSCI(p,c);
+
+  // ── Panneau gauche : Max FDC + alerte loyer
+  const _ebitdarLP = c.bpFDC[Math.min(3,c.bpFDC.length-1)]?.gop||0;
+  const _loyerMaxFDC = _ebitdarLP * 0.65;
+  const _loyerCur = p.loyer||0;
+  setEl('r-panel-max-fdc', fmt(_loyerMaxFDC));
+  const _alertP = document.getElementById('r-panel-loyer-alert');
+  if(_alertP && _loyerCur>0 && _loyerMaxFDC>0){
+    const _ok = _loyerCur <= _loyerMaxFDC;
+    _alertP.innerHTML = '<div style="padding:6px 8px;border-radius:3px;border:1px solid '+(_ok?'rgba(26,154,92,.3)':'rgba(204,51,51,.35)')+';background:'+(_ok?'rgba(26,154,92,.06)':'rgba(204,51,51,.06)')+';font-size:9px;color:'+(_ok?'var(--green)':'var(--red)')+';text-align:center;font-weight:600;">'+(_ok?'✓ FDC peut payer':'⚠ Loyer > Max FDC')+'</div>';
+  } else if(_alertP){ _alertP.innerHTML=''; }
 
   // Show/hide blocs based on mode
   const _isMF=(p.modeProjet||'neuf')==='murs_fonds';
@@ -1395,8 +1491,16 @@ function onRLoyer(){
   const pl=document.getElementById('p-loyer'); if(pl) pl.value=v;
   saveStore();
   try{ calcCache=computeAll(projects[currentId]); renderResultats(projects[currentId],calcCache); updateSliderRange(projects[currentId],calcCache); }catch(e){}
+  syncLoyerSlider();
 }
 
+function syncLoyerSlider(){
+  // Sync the slider position to current loyer value
+  if(!currentId) return;
+  const sl=document.getElementById('r-loyer-slider');
+  const p=projects[currentId];
+  if(sl && p) sl.value = p.loyer||0;
+}
 function onLoyerSlider(){
   const sl=document.getElementById('r-loyer-slider');
   if(!sl||!currentId) return;
@@ -1425,7 +1529,7 @@ function updateSliderRange(p,c){
   const mx = Math.round(Math.max(loyerCapi, loyerMaxFDC) * 1.3 / 10000) * 10000;
 
   const sl = document.getElementById('r-loyer-slider'); if(!sl) return;
-  sl.min = mn; sl.max = mx; sl.step = 10000; sl.value = p.loyer;
+  sl.min = mn; sl.max = mx; sl.step = 10000; sl.value = p.loyer||0;
 
   // ── Positionner les marqueurs sur la barre
   const pct = v => Math.max(0, Math.min(100, (v - mn) / (mx - mn) * 100));
